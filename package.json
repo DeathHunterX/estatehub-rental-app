@@ -1,0 +1,24 @@
+{
+    "name": "estatehub-enterprise-rental-app",
+    "version": "1.0.0",
+    "description": "EstateHub - Enterprise Rental App project",
+    "homepage": "https://github.com/DeathHunterX/estatehub-enterprise-rental-app#readme",
+    "bugs": {
+        "url": "https://github.com/DeathHunterX/estatehub-enterprise-rental-app/issues"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/DeathHunterX/estatehub-enterprise-rental-app.git"
+    },
+    "license": "ISC",
+    "author": "Loi Phan <phanthanhloi22112001@gmail.com>",
+    "type": "commonjs",
+    "main": "index.js",
+    "scripts": {
+        "dev:client": "cd client && npm run dev",
+        "dev:server": "cd server && npm run dev"
+    },
+    "devDependencies": {
+        "@types/lodash": "^4.17.20"
+    }
+}

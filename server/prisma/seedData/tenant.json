@@ -1,0 +1,131 @@
+[
+    {
+        "id": 1,
+        "userId": "817b3540-a061-707b-742a-a28391181149",
+        "properties": {
+            "connect": [{ "id": 5 }, { "id": 6 }]
+        }
+    },
+    {
+        "id": 2,
+        "userId": "us-east-2:87654321-90ab-cdef-1234-567890abcdef",
+        "favorites": {
+            "connect": [{ "id": 2 }]
+        }
+    },
+    {
+        "id": 3,
+        "userId": "us-east-2:98765432-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": []
+        },
+        "favorites": {
+            "connect": []
+        }
+    },
+    {
+        "id": 4,
+        "userId": "us-east-2:65432109-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 4 }]
+        },
+        "favorites": {
+            "connect": [{ "id": 4 }, { "id": 5 }]
+        }
+    },
+    {
+        "id": 5,
+        "userId": "us-east-2:54321098-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 2 }, { "id": 9 }]
+        },
+        "favorites": {
+            "connect": [{ "id": 1 }, { "id": 5 }, { "id": 6 }]
+        }
+    },
+    {
+        "id": 6,
+        "userId": "us-east-2:43210987-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 10 }]
+        }
+    },
+    {
+        "id": 7,
+        "userId": "us-east-2:32109876-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 6 }]
+        },
+        "favorites": {
+            "connect": [{ "id": 3 }, { "id": 7 }]
+        }
+    },
+    {
+        "id": 8,
+        "userId": "us-east-2:21098765-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 3 }]
+        }
+    },
+    {
+        "id": 9,
+        "userId": "us-east-2:10987654-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 7 }, { "id": 8 }]
+        },
+        "favorites": {
+            "connect": [{ "id": 7 }, { "id": 9 }]
+        }
+    },
+    {
+        "id": 10,
+        "userId": "us-east-2:09876543-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 10 }]
+        },
+        "favorites": {
+            "connect": [{ "id": 2 }, { "id": 10 }]
+        }
+    },
+    {
+        "id": 11,
+        "userId": "us-east-2:a9876543-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 2 }]
+        },
+        "favorites": {
+            "connect": [{ "id": 1 }, { "id": 4 }, { "id": 7 }]
+        }
+    },
+    {
+        "id": 12,
+        "userId": "us-east-2:b9876543-90ab-cdef-1234-567890abcdef",
+        "favorites": {
+            "connect": [{ "id": 3 }, { "id": 6 }, { "id": 9 }]
+        }
+    },
+    {
+        "id": 13,
+        "userId": "us-east-2:c9876543-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 4 }]
+        }
+    },
+    {
+        "id": 14,
+        "userId": "us-east-2:d9876543-90ab-cdef-1234-567890abcdef",
+        "favorites": {
+            "connect": [{ "id": 1 }, { "id": 10 }]
+        }
+    },
+    {
+        "id": 15,
+        "userId": "us-east-2:e9876543-90ab-cdef-1234-567890abcdef",
+        "properties": {
+            "connect": [{ "id": 5 }]
+        },
+        "favorites": {
+            "connect": [{ "id": 4 }, { "id": 7 }, { "id": 9 }]
+        }
+    }
+]

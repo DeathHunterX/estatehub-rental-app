@@ -1,0 +1,16 @@
+**/node_modules/
+**/dist/
+
+.env
+
+*.env
+*.env.local
+*.env.development
+*.env.production
+
+client/.next/
+
+.DS_Store
+Thumbs.db
+
+server/prisma/migrations/

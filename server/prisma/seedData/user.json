@@ -1,0 +1,177 @@
+[
+    {
+        "id": "817b3540-a061-707b-742a-a28391181149",
+        "email": "carol.white@example.com",
+        "name": "Carol White",
+        "phoneNumber": "+1 (555) 555-6666",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:87654321-90ab-cdef-1234-567890abcdef",
+        "email": "bob.green@example.com",
+        "name": "Bob Green",
+        "phoneNumber": "+1 (555) 333-4444",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:98765432-90ab-cdef-1234-567890abcdef",
+        "email": "alice.brown@example.com",
+        "name": "Alice Brown",
+        "phoneNumber": "+1 (555) 111-2222",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:65432109-90ab-cdef-1234-567890abcdef",
+        "email": "david.lee@example.com",
+        "name": "David Lee",
+        "phoneNumber": "+1 (555) 777-8888",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:54321098-90ab-cdef-1234-567890abcdef",
+        "email": "emma.taylor@example.com",
+        "name": "Emma Taylor",
+        "phoneNumber": "+1 (555) 999-0000",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:43210987-90ab-cdef-1234-567890abcdef",
+        "email": "frank.wilson@example.com",
+        "name": "Frank Wilson",
+        "phoneNumber": "+1 (555) 222-3333",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:32109876-90ab-cdef-1234-567890abcdef",
+        "email": "grace.miller@example.com",
+        "name": "Grace Miller",
+        "phoneNumber": "+1 (555) 444-5555",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:21098765-90ab-cdef-1234-567890abcdef",
+        "email": "henry.wilson@example.com",
+        "name": "Henry Wilson",
+        "phoneNumber": "+1 (555) 444-5555",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:10987654-90ab-cdef-1234-567890abcdef",
+        "email": "isabella.garcia@example.com",
+        "name": "Isabella Garcia",
+        "phoneNumber": "+1 (555) 666-7777",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:09876543-90ab-cdef-1234-567890abcdef",
+        "email": "jack.thompson@example.com",
+        "name": "Jack Thompson",
+        "phoneNumber": "+1 (555) 888-9999",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:a9876543-90ab-cdef-1234-567890abcdef",
+        "email": "karen.martinez@example.com",
+        "name": "Karen Martinez",
+        "phoneNumber": "+1 (555) 123-4567",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:b9876543-90ab-cdef-1234-567890abcdef",
+        "email": "liam.johnson@example.com",
+        "name": "Liam Johnson",
+        "phoneNumber": "+1 (555) 987-6543",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:c9876543-90ab-cdef-1234-567890abcdef",
+        "email": "mia.rodriguez@example.com",
+        "name": "Mia Rodriguez",
+        "phoneNumber": "+1 (555) 246-8135",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:d9876543-90ab-cdef-1234-567890abcdef",
+        "email": "noah.kim@example.com",
+        "name": "Noah Kim",
+        "phoneNumber": "+1 (555) 369-2580",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:e9876543-90ab-cdef-1234-567890abcdef",
+        "email": "olivia.chen@example.com",
+        "name": "Olivia Chen",
+        "phoneNumber": "+1 (555) 159-7531",
+        "role": "Tenant"
+    },
+    {
+        "id": "us-east-2:010be580-60a1-70ae-780e-18a6fd94ad32",
+        "email": "john.smith@example.com",
+        "name": "John Smith",
+        "phoneNumber": "+1 (555) 123-4567",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:23456789-90ab-cdef-1234-567890abcdef",
+        "email": "sarah.johnson@example.com",
+        "name": "Sarah Johnson",
+        "phoneNumber": "+1 (555) 987-6543",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:34567890-90ab-cdef-1234-567890abcdef",
+        "email": "michael.brown@example.com",
+        "name": "Michael Brown",
+        "phoneNumber": "+1 (555) 456-7890",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:45678901-90ab-cdef-1234-567890abcdef",
+        "email": "emily.davis@example.com",
+        "name": "Emily Davis",
+        "phoneNumber": "+1 (555) 234-5678",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:56789012-90ab-cdef-1234-567890abcdef",
+        "email": "robert.wilson@example.com",
+        "name": "Robert Wilson",
+        "phoneNumber": "+1 (555) 876-5432",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:67890123-90ab-cdef-1234-567890abcdef",
+        "email": "lisa.thompson@example.com",
+        "name": "Lisa Thompson",
+        "phoneNumber": "+1 (555) 345-6789",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:78901234-90ab-cdef-1234-567890abcdef",
+        "email": "daniel.martinez@example.com",
+        "name": "Daniel Martinez",
+        "phoneNumber": "+1 (555) 789-0123",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:89012345-90ab-cdef-1234-567890abcdef",
+        "email": "olivia.garcia@example.com",
+        "name": "Olivia Garcia",
+        "phoneNumber": "+1 (555) 678-9012",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:90123456-90ab-cdef-1234-567890abcdef",
+        "email": "ethan.rodriguez@example.com",
+        "name": "Ethan Rodriguez",
+        "phoneNumber": "+1 (555) 567-8901",
+        "role": "Manager"
+    },
+    {
+        "id": "us-east-2:01234567-90ab-cdef-1234-567890abcdef",
+        "email": "sophia.kim@example.com",
+        "name": "Sophia Kim",
+        "phoneNumber": "+1 (555) 456-7890",
+        "role": "Manager"
+    }
+]
