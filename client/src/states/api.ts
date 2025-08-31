@@ -1,8 +1,10 @@
 import { cleanParams, withToast } from "@/lib/utils";
 import {
     Application,
+    Chat,
     Lease,
     Manager,
+    Message,
     Payment,
     Property,
     Tenant,
@@ -35,6 +37,7 @@ export const api = createApi({
         "Leases",
         "Payments",
         "Applications",
+        "Chats",
     ],
     endpoints: (builder) => ({
         // user related endpoints
@@ -408,6 +411,51 @@ export const api = createApi({
                 });
             },
         }),
+
+        // Chat related endpoints
+        getChats: builder.query<Chat[], void>({
+            query: () => ({
+                url: "/chats",
+                method: "GET",
+            }),
+            transformResponse: (response: { success: boolean; data: Chat[] }) =>
+                response.data,
+        }),
+        getChat: builder.query<Chat, number>({
+            query: (chatId) => ({
+                url: `/chats/${chatId}`,
+                method: "GET",
+            }),
+            transformResponse: (response: { success: boolean; data: Chat }) =>
+                response.data,
+            providesTags: (result) => [{ type: "Chats", id: result?.id }],
+        }),
+        sendMessage: builder.mutation<
+            Message,
+            { chatId: number; message: string }
+        >({
+            query: ({ chatId, message }) => ({
+                url: `/messages/${chatId}`,
+                method: "POST",
+                body: { content: message },
+            }),
+            transformResponse: (response: {
+                success: boolean;
+                data: Message;
+            }) => response.data,
+            invalidatesTags: (result) => [
+                { type: "Chats", id: result?.chatId },
+            ],
+        }),
+        readChat: builder.mutation<Chat, number>({
+            query: (chatId) => ({
+                url: `/chats/read/${chatId}`,
+                method: "PUT",
+            }),
+            transformResponse: (response: { success: boolean; data: Chat }) =>
+                response.data,
+            invalidatesTags: (result) => [{ type: "Chats", id: result?.id }],
+        }),
     }),
 });
 
@@ -434,4 +482,9 @@ export const {
     useGetApplicationsQuery,
     useUpdateApplicationStatusMutation,
     useCreateApplicationMutation,
+    // chat related endpoints
+    useGetChatsQuery,
+    useGetChatQuery,
+    useSendMessageMutation,
+    useReadChatMutation,
 } = api;

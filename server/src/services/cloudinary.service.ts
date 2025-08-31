@@ -2,7 +2,7 @@ import { v2 as cloudinary } from "cloudinary";
 import { unlink, writeFile } from "fs/promises";
 import { tmpdir } from "os";
 import path from "path";
-import { BadRequestError } from "../lib/http-error";
+import { BadRequestError } from "../errors/http-error";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,

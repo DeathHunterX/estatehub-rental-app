@@ -14,24 +14,13 @@ export interface FiltersState {
 }
 
 interface InitialStateTypes {
-    filters: FiltersState;
+    chatId: number | null;
     isFiltersFullOpen: boolean;
     viewMode: "grid" | "list";
 }
 
 export const initialState: InitialStateTypes = {
-    filters: {
-        location: "Los Angeles",
-        beds: "any",
-        baths: "any",
-        propertyType: "any",
-        amenities: [],
-        availableFrom: "any",
-        priceRange: [null, null],
-        squareFeet: [null, null],
-        latitude: 34.05,
-        longitude: -118.25,
-    },
+    chatId: null,
     isFiltersFullOpen: false,
     viewMode: "grid",
 };
@@ -46,9 +35,13 @@ export const globalSlice = createSlice({
         setViewMode: (state, action: PayloadAction<"grid" | "list">) => {
             state.viewMode = action.payload;
         },
+        setChatId: (state, action: PayloadAction<number | null>) => {
+            state.chatId = action.payload;
+        },
     },
 });
 
-export const { toggleFiltersFullOpen, setViewMode } = globalSlice.actions;
+export const { toggleFiltersFullOpen, setViewMode, setChatId } =
+    globalSlice.actions;
 
 export default globalSlice.reducer;

@@ -87,6 +87,7 @@ model User {
   accounts    Account[]
   manager     Manager?
   tenant      Tenant?
+  messages    Message[]
 }
 
 model Account {
@@ -141,6 +142,7 @@ model Manager {
   
 
   managedProperties Property[]
+  chats             Chat[]
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -154,6 +156,7 @@ model Tenant {
   favorites    Property[]    @relation("TenantFavorites")
   applications Application[]
   leases       Lease[]
+  chats        Chat[]
 
   user User @relation(fields: [userId], references: [id])
 }
@@ -175,7 +178,7 @@ model Application {
   applicationDate DateTime
   status          ApplicationStatus
   propertyId      Int
-  tenantUserId String
+  tenantUserId    String
   name            String
   email           String
   phoneNumber     String
@@ -212,4 +215,31 @@ model Payment {
   leaseId       Int
 
   lease Lease @relation(fields: [leaseId], references: [id])
+}
+
+model Chat {
+  id                Int      @id @default(autoincrement())
+  tenantUserId      String
+  managerUserId     String
+  createdAt         DateTime @default(now())
+  tenantLastReadAt  DateTime?
+  managerLastReadAt DateTime?
+  lastMessageId     Int?      @unique
+
+  tenant      Tenant   @relation(fields: [tenantUserId], references: [userId])
+  manager     Manager  @relation(fields: [managerUserId], references: [userId])
+  messages    Message[]
+  lastMessage Message? @relation("LastMessage", fields: [lastMessageId], references: [id])
+}
+
+model Message {
+  id        Int      @id @default(autoincrement())
+  chatId    Int
+  senderId  String   // references User.id
+  content   String
+  createdAt DateTime @default(now())
+
+  chat        Chat @relation(fields: [chatId], references: [id])
+  sender      User @relation(fields: [senderId], references: [id])
+  lastMessage Chat? @relation("LastMessage")
 }

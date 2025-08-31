@@ -3,28 +3,33 @@
 import { Bell, MessageCircle, Plus, Search } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-
-// Components
-import { Button } from "../ui/button";
-
-// Constants
-import { NAVBAR_HEIGHT } from "@/constants";
-import { useGetAuthCurrentUserQuery } from "@/states/api";
-import { logout } from "@/states/slices/auth.slice";
 import { usePathname, useRouter } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { Avatar, AvatarFallback, AvatarImage } from "../ui/avatar";
+
+// Components
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Button } from "@/components/ui/button";
 import {
     DropdownMenu,
     DropdownMenuContent,
     DropdownMenuItem,
     DropdownMenuSeparator,
     DropdownMenuTrigger,
-} from "../ui/dropdown-menu";
+} from "@/components/ui/dropdown-menu";
+
+// Constants
+import { NAVBAR_HEIGHT } from "@/constants";
+
+// States
+// import { getSocket } from "@/services/socket";
+import { useGetAuthCurrentUserQuery } from "@/states/api";
+import { logout } from "@/states/slices/auth.slice";
+import ChatDropdown from "./chat-dropdown";
 
 const Navbar = () => {
     const { data: authUser } = useGetAuthCurrentUserQuery();
     const dispatch = useDispatch();
+    // const socket = getSocket();
 
     const router = useRouter();
     const pathname = usePathname();
@@ -108,10 +113,14 @@ const Navbar = () => {
                 <div className="flex items-center gap-5">
                     {authUser ? (
                         <>
-                            <div className="relative hidden md:block">
-                                <MessageCircle className="w-6 h-6 cursor-pointer text-primary-200 hover:text-primary-400" />
-                                <span className="absolute top-0 right-0 w-2 h-2 bg-secondary-700 rounded-full"></span>
-                            </div>
+                            <ChatDropdown
+                                trigger={
+                                    <div className="relative hidden md:block">
+                                        <MessageCircle className="w-6 h-6 cursor-pointer text-primary-200 hover:text-primary-400" />
+                                        <span className="absolute top-0 right-0 w-2 h-2 bg-secondary-700 rounded-full"></span>
+                                    </div>
+                                }
+                            />
                             <div className="relative hidden md:block">
                                 <Bell className="w-6 h-6 cursor-pointer text-primary-200 hover:text-primary-400" />
                                 <span className="absolute top-0 right-0 w-2 h-2 bg-secondary-700 rounded-full"></span>

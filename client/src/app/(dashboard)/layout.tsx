@@ -1,7 +1,7 @@
 "use client";
 
-import Navbar from "@/components/shared/navbar";
 import AppSidebar from "@/components/shared/sidebar/app-sidebar";
+import AdaptiveWrapper from "@/components/shared/wrapper/adaptive-wrapper";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { NAVBAR_HEIGHT } from "@/constants";
 import { useGetAuthCurrentUserQuery } from "@/states/api";
@@ -42,21 +42,22 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <SidebarProvider>
             <div className="min-h-screen bg-primary-100 w-full">
-                <Navbar />
-                <div style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
-                    <main className="flex">
-                        <AppSidebar
-                            userType={
-                                authUser.user.role.toLowerCase() as
-                                    | "manager"
-                                    | "tenant"
-                            }
-                        />
-                        <div className="flex-grow transition-all duration-300">
-                            {children}
-                        </div>
-                    </main>
-                </div>
+                <AdaptiveWrapper>
+                    <div style={{ paddingTop: `${NAVBAR_HEIGHT}px` }}>
+                        <main className="flex">
+                            <AppSidebar
+                                userType={
+                                    authUser.user.role.toLowerCase() as
+                                        | "manager"
+                                        | "tenant"
+                                }
+                            />
+                            <div className="flex-grow transition-all duration-300">
+                                {children}
+                            </div>
+                        </main>
+                    </div>
+                </AdaptiveWrapper>
             </div>
         </SidebarProvider>
     );

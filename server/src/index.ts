@@ -7,13 +7,16 @@ import helmet from "helmet";
 import morgan from "morgan";
 
 /* MIDDLEWARE IMPORTS */
+import errorHandler from "./errors/error-handler";
 import authMiddleware from "./middleware/auth";
 
 /* ROUTE IMPORTS */
 import applicationRoutes from "./routes/application.routes";
 import authRoutes from "./routes/auth.routes";
+import chatRoutes from "./routes/chat.route";
 import leaseRoutes from "./routes/lease.routes";
 import managerRoutes from "./routes/manager.routes";
+import messageRoutes from "./routes/message.route";
 import propertyRoutes from "./routes/property.routes";
 import tenantRoutes from "./routes/tenant.routes";
 import userRoutes from "./routes/user.route";
@@ -42,6 +45,11 @@ app.use(
     authMiddleware(["manager", "tenant"]),
     applicationRoutes
 );
+
+app.use("/api/chats", authMiddleware(["manager", "tenant"]), chatRoutes);
+app.use("/api/messages", authMiddleware(["manager", "tenant"]), messageRoutes);
+
+app.use(errorHandler);
 
 app.get("/", (req, res) => {
     res.send("Hello World");
