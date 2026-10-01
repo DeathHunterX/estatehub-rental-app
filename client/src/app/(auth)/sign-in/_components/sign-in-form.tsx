@@ -1,6 +1,14 @@
 "use client";
 
-// UI Components
+// Libraries
+import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+
+// Components
 import { Icons } from "@/components/shared/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -12,21 +20,18 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { toast } from "react-hot-toast";
 
-// Form validation and handling
+// Validation
 import { SignInFormData, signInSchema } from "@/lib/schemas/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
-// Navigation
-import Link from "next/link";
+// APIs
+import { useSignInMutation } from "@/lib/api/auth-api.slice";
 
-// State management
-import { useSignInMutation } from "@/states/api/auth-api.slice";
+// State
 import { setCredentials } from "@/states/slices/auth.slice";
-import { useRouter } from "next/navigation";
-import { useDispatch } from "react-redux";
+
+// Libs
+import { destinationAfterSignIn } from "@/features/auth/lib/session-navigation";
 
 export function SignInForm() {
     const dispatch = useDispatch();
@@ -36,8 +41,8 @@ export function SignInForm() {
     const form = useForm<SignInFormData>({
         resolver: zodResolver(signInSchema),
         defaultValues: {
-            email: "phanthanhloi22112001@gmail.com",
-            password: "Kingroyal!23",
+            email: "",
+            password: "",
         },
     });
 
@@ -47,13 +52,13 @@ export function SignInForm() {
             .then((res) => {
                 dispatch(setCredentials(res.data));
                 toast.success(res.data.message);
-                navigate.push("/");
+                navigate.replace(destinationAfterSignIn(res.data.user.role));
             })
             .catch((error) => {
                 if (error.status === "FETCH_ERROR") {
                     toast.error("Network error");
                 } else {
-                    toast.error(error.data.error.message);
+                    toast.error(error.data?.error?.message || "Sign in failed");
                 }
             });
     }
@@ -98,7 +103,7 @@ export function SignInForm() {
                                 </FormLabel>
                                 <Link
                                     href="/forgot-password"
-                                    className="text-sm text-primary-500 hover:underline hover:text-primary-800"
+                                    className="text-muted-foreground hover:text-foreground text-sm hover:underline"
                                 >
                                     Forgot password?
                                 </Link>
@@ -108,7 +113,7 @@ export function SignInForm() {
                                     placeholder="********"
                                     type="password"
                                     autoCapitalize="none"
-                                    autoComplete="password"
+                                    autoComplete="current-password"
                                     autoCorrect="off"
                                     disabled={isLoading}
                                     {...field}
@@ -121,7 +126,7 @@ export function SignInForm() {
 
                 <Button
                     disabled={isLoading}
-                    className="hover:bg-primary-100/65 w-full"
+                    className="w-full"
                     variant="default"
                 >
                     {isLoading ? (

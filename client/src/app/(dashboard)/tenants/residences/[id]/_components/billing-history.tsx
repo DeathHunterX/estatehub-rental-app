@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { downloadPaymentRecord, downloadPaymentsCsv } from "@/lib/downloads";
 import {
     Table,
     TableBody,
@@ -12,28 +13,28 @@ import { ArrowDownToLineIcon, Check, Download, FileText } from "lucide-react";
 
 const BillingHistory = ({ payments }: { payments: Payment[] }) => {
     return (
-        <div className="mt-8 bg-white rounded-xl shadow-md overflow-hidden p-6">
+        <div className="mt-8 overflow-hidden rounded-xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-6">
             {/* Header */}
-            <div className="flex justify-between items-center">
+            <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
                     <h2 className="text-2xl font-bold mb-1">Billing History</h2>
-                    <p className="text-sm text-gray-500">
-                        Download your previous plan receipts and usage details.
+                    <p className="text-sm text-muted-foreground">
+                        Export your payment records.
                     </p>
                 </div>
                 <div>
-                    <Button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
+                    <Button onClick={() => downloadPaymentsCsv(payments)} disabled={!payments.length} className="flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-card-foreground hover:bg-accent hover:text-accent-foreground">
                         <Download className="w-5 h-5 mr-2" />
-                        <span>Download All</span>
+                        <span>Export Payments</span>
                     </Button>
                 </div>
             </div>
-            <hr className="mt-4 mb-1" />
+            <hr className="mb-1 mt-4 border-border" />
             <div className="overflow-x-auto">
                 <Table>
                     <TableHeader>
                         <TableRow>
-                            <TableHead>Invoice</TableHead>
+                            <TableHead>Payment</TableHead>
                             <TableHead>Status</TableHead>
                             <TableHead>Billing Date</TableHead>
                             <TableHead>Amount</TableHead>
@@ -46,7 +47,7 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
                                 <TableCell className="font-medium">
                                     <div className="flex items-center">
                                         <FileText className="w-4 h-4 mr-2" />
-                                        Invoice #{payment.id} -{" "}
+                                        Payment #{payment.id} -{" "}
                                         {new Date(
                                             payment.paymentDate
                                         ).toLocaleString("default", {
@@ -78,13 +79,20 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
                                     ${payment.amountPaid.toFixed(2)}
                                 </TableCell>
                                 <TableCell>
-                                    <Button className="border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center font-semibold hover:bg-primary-700 hover:text-primary-50">
+                                    <Button onClick={() => downloadPaymentRecord(payment)} className="flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 font-semibold text-card-foreground hover:bg-accent hover:text-accent-foreground">
                                         <ArrowDownToLineIcon className="w-4 h-4 mr-1" />
-                                        Download
+                                        Download Record
                                     </Button>
                                 </TableCell>
                             </TableRow>
                         ))}
+                        {payments.length === 0 && (
+                            <TableRow>
+                                <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                                    No payment records yet.
+                                </TableCell>
+                            </TableRow>
+                        )}
                     </TableBody>
                 </Table>
             </div>

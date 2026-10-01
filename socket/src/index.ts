@@ -1,5 +1,10 @@
 import { Server } from "socket.io";
 import config from "./config";
+import { verifyAccessToken } from "./utils/auth";
+
+if (!config.accessTokenSecret) {
+    throw new Error("JWT_ACCESS_TOKEN_SECRET is required for the socket server");
+}
 
 const io = new Server({
     cors: {
@@ -7,55 +12,68 @@ const io = new Server({
     },
 });
 
-interface User {
-    userId: string;
-    socketId: string;
-}
-
-let onlineUser: User[] = [];
-
-const addUser = (userId: string, socketId: string) => {
-    const userExits = onlineUser.find((user) => user.userId === userId);
-    if (!userExits) {
-        onlineUser.push({ userId, socketId });
-    }
-};
-
-const removeUser = (socketId: string) => {
-    onlineUser = onlineUser.filter((user) => user.socketId !== socketId);
-};
-
-const getUser = (userId: string) => {
-    return onlineUser.find((user) => user.userId === userId) as User;
-};
+io.use((socket, next) => {
+    const token = socket.handshake.auth?.token;
+    const claims = verifyAccessToken(token, config.accessTokenSecret!);
+    if (!claims) return next(new Error("Unauthorized"));
+    socket.data.userId = claims.id;
+    socket.data.accessToken = token;
+    socket.data.expiresAt = claims.exp;
+    next();
+});
 
 io.on("connection", (socket) => {
-    socket.on("newUser", (userId: string) => {
-        addUser(userId, socket.id);
-    });
-
-    socket.on("join-chat", (chatId: number) => {
-        socket.join(`chat-${chatId}`);
-    });
+    socket.join(`user-${socket.data.userId}`);
+    let expiryTimer: ReturnType<typeof setTimeout>;
+    // Re-arm long timers because JavaScript timeouts cannot represent the full JWT lifetime.
+    const scheduleExpiry = () => {
+        const remaining = socket.data.expiresAt * 1000 - Date.now();
+        if (remaining <= 0) return socket.disconnect(true);
+        expiryTimer = setTimeout(scheduleExpiry, Math.min(remaining, 2_147_483_647));
+    };
+    scheduleExpiry();
+    socket.on("disconnect", () => clearTimeout(expiryTimer));
+    const authorizedChats = new Map<number, string>();
+    // Check chat membership through the API before relaying events, then cache it per socket.
+    const canNotify = async (chatId: number, receiverId: string) => {
+        if (authorizedChats.get(chatId) === receiverId) return true;
+        try {
+            const response = await fetch(`${config.apiBaseUrl}/chats/${chatId}`, {
+                headers: { Authorization: `Bearer ${socket.data.accessToken}` },
+                signal: AbortSignal.timeout(3000),
+            });
+            if (!response.ok) return false;
+            const body = await response.json() as { data?: { receiverId?: string } };
+            if (body.data?.receiverId !== receiverId) return false;
+            authorizedChats.set(chatId, receiverId);
+            return true;
+        } catch {
+            return false;
+        }
+    };
 
     socket.on(
         "sendMessage",
-        ({ receiverId, data }: { receiverId: string; data: any }) => {
-            // Send to specific user
-            const receiver = getUser(receiverId);
-            if (receiver) {
-                io.to(receiver.socketId).emit("getMessage", data);
-            }
-
-            // Also broadcast to chat room
-            if (data.chatId) {
-                io.to(`chat-${data.chatId}`).emit("getMessage", data);
-            }
+        async (payload: { receiverId: string; chatId: number } | null) => {
+            if (!payload || typeof payload !== "object") return;
+            const { receiverId, chatId } = payload;
+            if (typeof receiverId !== "string" || !Number.isInteger(chatId) || chatId <= 0) return;
+            if (!(await canNotify(chatId, receiverId))) return;
+            // Only notify clients to refetch through the authorized HTTP API.
+            io.to(`user-${receiverId}`).emit("getMessage", { chatId });
         }
     );
 
-    socket.on("disconnect", () => {
-        removeUser(socket.id);
+    socket.on("typing", async (payload: {
+        receiverId: string;
+        chatId: number;
+        isTyping: boolean;
+    } | null) => {
+        if (!payload || typeof payload !== "object") return;
+        const { receiverId, chatId, isTyping } = payload;
+        if (typeof receiverId !== "string" || !Number.isInteger(chatId) || chatId <= 0 || typeof isTyping !== "boolean") return;
+        if (!(await canNotify(chatId, receiverId))) return;
+        io.to(`user-${receiverId}`).emit("typing", { chatId, isTyping });
     });
 });
 

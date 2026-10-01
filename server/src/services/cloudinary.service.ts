@@ -2,7 +2,9 @@ import { v2 as cloudinary } from "cloudinary";
 import { unlink, writeFile } from "fs/promises";
 import { tmpdir } from "os";
 import path from "path";
+import { randomUUID } from "crypto";
 import { BadRequestError } from "../errors/http-error";
+import { cloudinaryPublicId } from "../utils/property-photos";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -24,8 +26,10 @@ export const uploadImage = async (
 
     const buffer = file.buffer;
 
-    const tempPath = path.join(tmpdir(), file.originalname);
-    await writeFile(tempPath, buffer);
+    const tempPath = path.join(
+        tmpdir(),
+        `${randomUUID()}${path.extname(file.originalname)}`
+    );
 
     try {
         await writeFile(tempPath, buffer);
@@ -44,20 +48,11 @@ export const uploadImage = async (
 };
 
 export const deleteImage = async (imageUrl: string) => {
-    const publicId = imageUrl.split("/").pop()?.split(".")[0];
-
-    if (!publicId) {
-        throw new BadRequestError("Invalid image URL");
-    }
-
     try {
-        await cloudinary.uploader.destroy(publicId).then((result) => {
-            if (result.result !== "ok") {
-                return false;
-            }
-
-            return true;
-        });
+        const result = await cloudinary.uploader.destroy(
+            cloudinaryPublicId(imageUrl)
+        );
+        return result.result === "ok" || result.result === "not found";
     } catch (error) {
         return false;
     }

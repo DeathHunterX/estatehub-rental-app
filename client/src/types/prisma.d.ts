@@ -15,59 +15,69 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
 
 /**
  * Model User
- * 
+ *
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
  * Model Account
- * 
+ *
  */
 export type Account = $Result.DefaultSelection<Prisma.$AccountPayload>
 /**
  * Model Property
- * 
+ *
  */
 export type Property = $Result.DefaultSelection<Prisma.$PropertyPayload>
 /**
  * Model Manager
- * 
+ *
  */
 export type Manager = $Result.DefaultSelection<Prisma.$ManagerPayload>
 /**
+ * Model ManagerSigningProfile
+ *
+ */
+export type ManagerSigningProfile = $Result.DefaultSelection<Prisma.$ManagerSigningProfilePayload>
+/**
  * Model Tenant
- * 
+ *
  */
 export type Tenant = $Result.DefaultSelection<Prisma.$TenantPayload>
 /**
  * Model Location
- * 
+ *
  */
 export type Location = $Result.DefaultSelection<Prisma.$LocationPayload>
 /**
  * Model Application
- * 
+ *
  */
 export type Application = $Result.DefaultSelection<Prisma.$ApplicationPayload>
 /**
  * Model Lease
- * 
+ *
  */
 export type Lease = $Result.DefaultSelection<Prisma.$LeasePayload>
 /**
  * Model Payment
- * 
+ *
  */
 export type Payment = $Result.DefaultSelection<Prisma.$PaymentPayload>
 /**
  * Model Chat
- * 
+ *
  */
 export type Chat = $Result.DefaultSelection<Prisma.$ChatPayload>
 /**
  * Model Message
- * 
+ *
  */
 export type Message = $Result.DefaultSelection<Prisma.$MessagePayload>
+/**
+ * Model Notification
+ *
+ */
+export type Notification = $Result.DefaultSelection<Prisma.$NotificationPayload>
 
 /**
  * Enums
@@ -128,10 +138,37 @@ export type PropertyType = (typeof PropertyType)[keyof typeof PropertyType]
 export const ApplicationStatus: {
   Pending: 'Pending',
   Denied: 'Denied',
-  Approved: 'Approved'
+  Approved: 'Approved',
+  Paid: 'Paid',
+  Withdrawn: 'Withdrawn'
 };
 
 export type ApplicationStatus = (typeof ApplicationStatus)[keyof typeof ApplicationStatus]
+
+
+export const PropertyListingStatus: {
+  Free: 'Free',
+  Closed: 'Closed'
+};
+
+export type PropertyListingStatus = (typeof PropertyListingStatus)[keyof typeof PropertyListingStatus]
+
+
+export const SettlementMethod: {
+  Cash: 'Cash',
+  BankTransfer: 'BankTransfer'
+};
+
+export type SettlementMethod = (typeof SettlementMethod)[keyof typeof SettlementMethod]
+
+
+export const RenewalStatus: {
+  Requested: 'Requested',
+  Approved: 'Approved',
+  Denied: 'Denied'
+};
+
+export type RenewalStatus = (typeof RenewalStatus)[keyof typeof RenewalStatus]
 
 
 export const PaymentStatus: {
@@ -178,6 +215,18 @@ export type ApplicationStatus = $Enums.ApplicationStatus
 
 export const ApplicationStatus: typeof $Enums.ApplicationStatus
 
+export type PropertyListingStatus = $Enums.PropertyListingStatus
+
+export const PropertyListingStatus: typeof $Enums.PropertyListingStatus
+
+export type SettlementMethod = $Enums.SettlementMethod
+
+export const SettlementMethod: typeof $Enums.SettlementMethod
+
+export type RenewalStatus = $Enums.RenewalStatus
+
+export const RenewalStatus: typeof $Enums.RenewalStatus
+
 export type PaymentStatus = $Enums.PaymentStatus
 
 export const PaymentStatus: typeof $Enums.PaymentStatus
@@ -206,7 +255,7 @@ export const ProviderType: typeof $Enums.ProviderType
  */
 export class PrismaClient<
   ClientOptions extends Prisma.PrismaClientOptions = Prisma.PrismaClientOptions,
-  U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
+  const U = 'log' extends keyof ClientOptions ? ClientOptions['log'] extends Array<Prisma.LogLevel | Prisma.LogDefinition> ? Prisma.GetEvents<ClientOptions['log']> : never : never,
   ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs
 > {
   [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['other'] }
@@ -238,13 +287,6 @@ export class PrismaClient<
    * Disconnect from the database
    */
   $disconnect(): $Utils.JsPromise<void>;
-
-  /**
-   * Add a middleware
-   * @deprecated since 4.16.0. For new code, prefer client extensions instead.
-   * @see https://pris.ly/d/extensions
-   */
-  $use(cb: Prisma.Middleware): void
 
 /**
    * Executes a prepared raw query and returns the number of affected rows.
@@ -303,7 +345,7 @@ export class PrismaClient<
    *   prisma.user.create({ data: { name: 'Alice' } }),
    * ])
    * ```
-   * 
+   *
    * Read more in our [docs](https://www.prisma.io/docs/concepts/components/prisma-client/transactions).
    */
   $transaction<P extends Prisma.PrismaPromise<any>[]>(arg: [...P], options?: { isolationLevel?: Prisma.TransactionIsolationLevel }): $Utils.JsPromise<runtime.Types.Utils.UnwrapTuple<P>>
@@ -354,6 +396,16 @@ export class PrismaClient<
     * ```
     */
   get manager(): Prisma.ManagerDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.managerSigningProfile`: Exposes CRUD operations for the **ManagerSigningProfile** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more ManagerSigningProfiles
+    * const managerSigningProfiles = await prisma.managerSigningProfile.findMany()
+    * ```
+    */
+  get managerSigningProfile(): Prisma.ManagerSigningProfileDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.tenant`: Exposes CRUD operations for the **Tenant** model.
@@ -424,6 +476,16 @@ export class PrismaClient<
     * ```
     */
   get message(): Prisma.MessageDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.notification`: Exposes CRUD operations for the **Notification** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Notifications
+    * const notifications = await prisma.notification.findMany()
+    * ```
+    */
+  get notification(): Prisma.NotificationDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -482,8 +544,8 @@ export namespace Prisma {
   export import Exact = $Public.Exact
 
   /**
-   * Prisma Client JS version: 6.11.1
-   * Query Engine version: f40f79ec31188888a2e33acda0ecc8fd10a853a9
+   * Prisma Client JS version: 6.19.3
+   * Query Engine version: c2990dca591cba766e3b7ef5d9e8a84796e47ab7
    */
   export type PrismaVersion = {
     client: string
@@ -496,6 +558,7 @@ export namespace Prisma {
    */
 
 
+  export import Bytes = runtime.Bytes
   export import JsonObject = runtime.JsonObject
   export import JsonArray = runtime.JsonArray
   export import JsonValue = runtime.JsonValue
@@ -868,13 +931,15 @@ export namespace Prisma {
     Account: 'Account',
     Property: 'Property',
     Manager: 'Manager',
+    ManagerSigningProfile: 'ManagerSigningProfile',
     Tenant: 'Tenant',
     Location: 'Location',
     Application: 'Application',
     Lease: 'Lease',
     Payment: 'Payment',
     Chat: 'Chat',
-    Message: 'Message'
+    Message: 'Message',
+    Notification: 'Notification'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -893,7 +958,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "account" | "property" | "manager" | "tenant" | "location" | "application" | "lease" | "payment" | "chat" | "message"
+      modelProps: "user" | "account" | "property" | "manager" | "managerSigningProfile" | "tenant" | "location" | "application" | "lease" | "payment" | "chat" | "message" | "notification"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1190,6 +1255,80 @@ export namespace Prisma {
           count: {
             args: Prisma.ManagerCountArgs<ExtArgs>
             result: $Utils.Optional<ManagerCountAggregateOutputType> | number
+          }
+        }
+      }
+      ManagerSigningProfile: {
+        payload: Prisma.$ManagerSigningProfilePayload<ExtArgs>
+        fields: Prisma.ManagerSigningProfileFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.ManagerSigningProfileFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.ManagerSigningProfileFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>
+          }
+          findFirst: {
+            args: Prisma.ManagerSigningProfileFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.ManagerSigningProfileFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>
+          }
+          findMany: {
+            args: Prisma.ManagerSigningProfileFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>[]
+          }
+          create: {
+            args: Prisma.ManagerSigningProfileCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>
+          }
+          createMany: {
+            args: Prisma.ManagerSigningProfileCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.ManagerSigningProfileCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>[]
+          }
+          delete: {
+            args: Prisma.ManagerSigningProfileDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>
+          }
+          update: {
+            args: Prisma.ManagerSigningProfileUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>
+          }
+          deleteMany: {
+            args: Prisma.ManagerSigningProfileDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.ManagerSigningProfileUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.ManagerSigningProfileUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>[]
+          }
+          upsert: {
+            args: Prisma.ManagerSigningProfileUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$ManagerSigningProfilePayload>
+          }
+          aggregate: {
+            args: Prisma.ManagerSigningProfileAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateManagerSigningProfile>
+          }
+          groupBy: {
+            args: Prisma.ManagerSigningProfileGroupByArgs<ExtArgs>
+            result: $Utils.Optional<ManagerSigningProfileGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.ManagerSigningProfileCountArgs<ExtArgs>
+            result: $Utils.Optional<ManagerSigningProfileCountAggregateOutputType> | number
           }
         }
       }
@@ -1695,6 +1834,80 @@ export namespace Prisma {
           }
         }
       }
+      Notification: {
+        payload: Prisma.$NotificationPayload<ExtArgs>
+        fields: Prisma.NotificationFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.NotificationFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.NotificationFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findFirst: {
+            args: Prisma.NotificationFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.NotificationFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          findMany: {
+            args: Prisma.NotificationFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          create: {
+            args: Prisma.NotificationCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          createMany: {
+            args: Prisma.NotificationCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          createManyAndReturn: {
+            args: Prisma.NotificationCreateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          delete: {
+            args: Prisma.NotificationDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          update: {
+            args: Prisma.NotificationUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          deleteMany: {
+            args: Prisma.NotificationDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.NotificationUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateManyAndReturn: {
+            args: Prisma.NotificationUpdateManyAndReturnArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>[]
+          }
+          upsert: {
+            args: Prisma.NotificationUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$NotificationPayload>
+          }
+          aggregate: {
+            args: Prisma.NotificationAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateNotification>
+          }
+          groupBy: {
+            args: Prisma.NotificationGroupByArgs<ExtArgs>
+            result: $Utils.Optional<NotificationGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.NotificationCountArgs<ExtArgs>
+            result: $Utils.Optional<NotificationCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -1738,16 +1951,24 @@ export namespace Prisma {
     /**
      * @example
      * ```
-     * // Defaults to stdout
+     * // Shorthand for `emit: 'stdout'`
      * log: ['query', 'info', 'warn', 'error']
-     * 
-     * // Emit as events
+     *
+     * // Emit as events only
      * log: [
-     *   { emit: 'stdout', level: 'query' },
-     *   { emit: 'stdout', level: 'info' },
-     *   { emit: 'stdout', level: 'warn' }
-     *   { emit: 'stdout', level: 'error' }
+     *   { emit: 'event', level: 'query' },
+     *   { emit: 'event', level: 'info' },
+     *   { emit: 'event', level: 'warn' }
+     *   { emit: 'event', level: 'error' }
      * ]
+     *
+     * / Emit as events and log to stdout
+     * og: [
+     *  { emit: 'stdout', level: 'query' },
+     *  { emit: 'stdout', level: 'info' },
+     *  { emit: 'stdout', level: 'warn' }
+     *  { emit: 'stdout', level: 'error' }
+     *
      * ```
      * Read more in our [docs](https://www.prisma.io/docs/reference/tools-and-interfaces/prisma-client/logging#the-log-option).
      */
@@ -1763,8 +1984,12 @@ export namespace Prisma {
       isolationLevel?: Prisma.TransactionIsolationLevel
     }
     /**
+     * Instance of a Driver Adapter, e.g., like one provided by `@prisma/adapter-planetscale`
+     */
+    adapter?: runtime.SqlDriverAdapterFactory | null
+    /**
      * Global configuration for omitting model fields by default.
-     * 
+     *
      * @example
      * ```
      * const prisma = new PrismaClient({
@@ -1783,6 +2008,7 @@ export namespace Prisma {
     account?: AccountOmit
     property?: PropertyOmit
     manager?: ManagerOmit
+    managerSigningProfile?: ManagerSigningProfileOmit
     tenant?: TenantOmit
     location?: LocationOmit
     application?: ApplicationOmit
@@ -1790,6 +2016,7 @@ export namespace Prisma {
     payment?: PaymentOmit
     chat?: ChatOmit
     message?: MessageOmit
+    notification?: NotificationOmit
   }
 
   /* Types for Logging */
@@ -1799,10 +2026,15 @@ export namespace Prisma {
     emit: 'stdout' | 'event'
   }
 
-  export type GetLogType<T extends LogLevel | LogDefinition> = T extends LogDefinition ? T['emit'] extends 'event' ? T['level'] : never : never
-  export type GetEvents<T extends any> = T extends Array<LogLevel | LogDefinition> ?
-    GetLogType<T[0]> | GetLogType<T[1]> | GetLogType<T[2]> | GetLogType<T[3]>
-    : never
+  export type CheckIsLogLevel<T> = T extends LogLevel ? T : never;
+
+  export type GetLogType<T> = CheckIsLogLevel<
+    T extends LogDefinition ? T['level'] : T
+  >;
+
+  export type GetEvents<T extends any[]> = T extends Array<LogLevel | LogDefinition>
+    ? GetLogType<T[number]>
+    : never;
 
   export type QueryEvent = {
     timestamp: Date
@@ -1843,25 +2075,6 @@ export namespace Prisma {
     | 'findRaw'
     | 'groupBy'
 
-  /**
-   * These options are being passed into the middleware as "params"
-   */
-  export type MiddlewareParams = {
-    model?: ModelName
-    action: PrismaAction
-    args: any
-    dataPath: string[]
-    runInTransaction: boolean
-  }
-
-  /**
-   * The `T` type makes sure, that the `return proceed` is not forgotten in the middleware implementation
-   */
-  export type Middleware<T = any> = (
-    params: MiddlewareParams,
-    next: (params: MiddlewareParams) => $Utils.JsPromise<T>,
-  ) => $Utils.JsPromise<T>
-
   // tested in getLogLevel.test.ts
   export function getLogLevel(log: Array<LogLevel | LogDefinition>): LogLevel | undefined;
 
@@ -1886,11 +2099,13 @@ export namespace Prisma {
   export type UserCountOutputType = {
     accounts: number
     messages: number
+    notifications: number
   }
 
   export type UserCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     accounts?: boolean | UserCountOutputTypeCountAccountsArgs
     messages?: boolean | UserCountOutputTypeCountMessagesArgs
+    notifications?: boolean | UserCountOutputTypeCountNotificationsArgs
   }
 
   // Custom InputTypes
@@ -1916,6 +2131,13 @@ export namespace Prisma {
    */
   export type UserCountOutputTypeCountMessagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: MessageWhereInput
+  }
+
+  /**
+   * UserCountOutputType without action
+   */
+  export type UserCountOutputTypeCountNotificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
   }
 
 
@@ -2255,43 +2477,43 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Users
     **/
     _count?: true | UserCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: UserMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: UserMaxAggregateInputType
@@ -2357,6 +2579,7 @@ export namespace Prisma {
     manager?: boolean | User$managerArgs<ExtArgs>
     tenant?: boolean | User$tenantArgs<ExtArgs>
     messages?: boolean | User$messagesArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["user"]>
 
@@ -2393,6 +2616,7 @@ export namespace Prisma {
     manager?: boolean | User$managerArgs<ExtArgs>
     tenant?: boolean | User$tenantArgs<ExtArgs>
     messages?: boolean | User$messagesArgs<ExtArgs>
+    notifications?: boolean | User$notificationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
   }
   export type UserIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {}
@@ -2405,6 +2629,7 @@ export namespace Prisma {
       manager: Prisma.$ManagerPayload<ExtArgs> | null
       tenant: Prisma.$TenantPayload<ExtArgs> | null
       messages: Prisma.$MessagePayload<ExtArgs>[]
+      notifications: Prisma.$NotificationPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -2492,13 +2717,13 @@ export namespace Prisma {
      * @example
      * // Get all Users
      * const users = await prisma.user.findMany()
-     * 
+     *
      * // Get first 10 Users
      * const users = await prisma.user.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const userWithIdOnly = await prisma.user.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends UserFindManyArgs>(args?: SelectSubset<T, UserFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -2512,7 +2737,7 @@ export namespace Prisma {
      *     // ... data to create a User
      *   }
      * })
-     * 
+     *
      */
     create<T extends UserCreateArgs>(args: SelectSubset<T, UserCreateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -2526,7 +2751,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends UserCreateManyArgs>(args?: SelectSubset<T, UserCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -2540,7 +2765,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Users and only return the `id`
      * const userWithIdOnly = await prisma.user.createManyAndReturn({
      *   select: { id: true },
@@ -2550,7 +2775,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends UserCreateManyAndReturnArgs>(args?: SelectSubset<T, UserCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -2564,7 +2789,7 @@ export namespace Prisma {
      *     // ... filter to delete one User
      *   }
      * })
-     * 
+     *
      */
     delete<T extends UserDeleteArgs>(args: SelectSubset<T, UserDeleteArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -2581,7 +2806,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends UserUpdateArgs>(args: SelectSubset<T, UserUpdateArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -2595,7 +2820,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends UserDeleteManyArgs>(args?: SelectSubset<T, UserDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -2614,7 +2839,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends UserUpdateManyArgs>(args: SelectSubset<T, UserUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -2631,7 +2856,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Users and only return the `id`
      * const userWithIdOnly = await prisma.user.updateManyAndReturn({
      *   select: { id: true },
@@ -2644,7 +2869,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends UserUpdateManyAndReturnArgs>(args: SelectSubset<T, UserUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -2733,7 +2958,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends UserGroupByArgs,
@@ -2811,6 +3036,7 @@ export namespace Prisma {
     manager<T extends User$managerArgs<ExtArgs> = {}>(args?: Subset<T, User$managerArgs<ExtArgs>>): Prisma__ManagerClient<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     tenant<T extends User$tenantArgs<ExtArgs> = {}>(args?: Subset<T, User$tenantArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     messages<T extends User$messagesArgs<ExtArgs> = {}>(args?: Subset<T, User$messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    notifications<T extends User$notificationsArgs<ExtArgs> = {}>(args?: Subset<T, User$notificationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -2847,7 +3073,7 @@ export namespace Prisma {
     readonly role: FieldRef<"User", 'UserRole'>
     readonly createdAt: FieldRef<"User", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -2916,31 +3142,31 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Users.
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Users.
      */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
@@ -2968,31 +3194,31 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Users.
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Users.
      */
     distinct?: UserScalarFieldEnum | UserScalarFieldEnum[]
@@ -3020,25 +3246,25 @@ export namespace Prisma {
     where?: UserWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Users to fetch.
      */
     orderBy?: UserOrderByWithRelationInput | UserOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Users.
      */
     cursor?: UserWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Users from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Users.
      */
     skip?: number
@@ -3320,6 +3546,30 @@ export namespace Prisma {
   }
 
   /**
+   * User.notifications
+   */
+  export type User$notificationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    cursor?: NotificationWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
    * User without action
    */
   export type UserDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3430,43 +3680,43 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Accounts
     **/
     _count?: true | AccountCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: AccountMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: AccountMaxAggregateInputType
@@ -3680,13 +3930,13 @@ export namespace Prisma {
      * @example
      * // Get all Accounts
      * const accounts = await prisma.account.findMany()
-     * 
+     *
      * // Get first 10 Accounts
      * const accounts = await prisma.account.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const accountWithIdOnly = await prisma.account.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends AccountFindManyArgs>(args?: SelectSubset<T, AccountFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -3700,7 +3950,7 @@ export namespace Prisma {
      *     // ... data to create a Account
      *   }
      * })
-     * 
+     *
      */
     create<T extends AccountCreateArgs>(args: SelectSubset<T, AccountCreateArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -3714,7 +3964,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends AccountCreateManyArgs>(args?: SelectSubset<T, AccountCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -3728,7 +3978,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Accounts and only return the `id`
      * const accountWithIdOnly = await prisma.account.createManyAndReturn({
      *   select: { id: true },
@@ -3738,7 +3988,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends AccountCreateManyAndReturnArgs>(args?: SelectSubset<T, AccountCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -3752,7 +4002,7 @@ export namespace Prisma {
      *     // ... filter to delete one Account
      *   }
      * })
-     * 
+     *
      */
     delete<T extends AccountDeleteArgs>(args: SelectSubset<T, AccountDeleteArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -3769,7 +4019,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends AccountUpdateArgs>(args: SelectSubset<T, AccountUpdateArgs<ExtArgs>>): Prisma__AccountClient<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -3783,7 +4033,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends AccountDeleteManyArgs>(args?: SelectSubset<T, AccountDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -3802,7 +4052,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends AccountUpdateManyArgs>(args: SelectSubset<T, AccountUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -3819,7 +4069,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Accounts and only return the `id`
      * const accountWithIdOnly = await prisma.account.updateManyAndReturn({
      *   select: { id: true },
@@ -3832,7 +4082,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends AccountUpdateManyAndReturnArgs>(args: SelectSubset<T, AccountUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$AccountPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -3921,7 +4171,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends AccountGroupByArgs,
@@ -4035,7 +4285,7 @@ export namespace Prisma {
     readonly accessTokenExpiresAt: FieldRef<"Account", 'DateTime'>
     readonly refreshTokenExpiresAt: FieldRef<"Account", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -4104,31 +4354,31 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Accounts.
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Accounts.
      */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
@@ -4156,31 +4406,31 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Accounts.
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Accounts.
      */
     distinct?: AccountScalarFieldEnum | AccountScalarFieldEnum[]
@@ -4208,25 +4458,25 @@ export namespace Prisma {
     where?: AccountWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Accounts to fetch.
      */
     orderBy?: AccountOrderByWithRelationInput | AccountOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Accounts.
      */
     cursor?: AccountWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Accounts from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Accounts.
      */
     skip?: number
@@ -4504,6 +4754,9 @@ export namespace Prisma {
     numberOfReviews: number | null
     locationId: number | null
     managerUserId: string | null
+    listingStatus: $Enums.PropertyListingStatus | null
+    closedAt: Date | null
+    archivedAt: Date | null
   }
 
   export type PropertyMaxAggregateOutputType = {
@@ -4524,6 +4777,9 @@ export namespace Prisma {
     numberOfReviews: number | null
     locationId: number | null
     managerUserId: string | null
+    listingStatus: $Enums.PropertyListingStatus | null
+    closedAt: Date | null
+    archivedAt: Date | null
   }
 
   export type PropertyCountAggregateOutputType = {
@@ -4547,6 +4803,9 @@ export namespace Prisma {
     numberOfReviews: number
     locationId: number
     managerUserId: number
+    listingStatus: number
+    closedAt: number
+    archivedAt: number
     _all: number
   }
 
@@ -4595,6 +4854,9 @@ export namespace Prisma {
     numberOfReviews?: true
     locationId?: true
     managerUserId?: true
+    listingStatus?: true
+    closedAt?: true
+    archivedAt?: true
   }
 
   export type PropertyMaxAggregateInputType = {
@@ -4615,6 +4877,9 @@ export namespace Prisma {
     numberOfReviews?: true
     locationId?: true
     managerUserId?: true
+    listingStatus?: true
+    closedAt?: true
+    archivedAt?: true
   }
 
   export type PropertyCountAggregateInputType = {
@@ -4638,6 +4903,9 @@ export namespace Prisma {
     numberOfReviews?: true
     locationId?: true
     managerUserId?: true
+    listingStatus?: true
+    closedAt?: true
+    archivedAt?: true
     _all?: true
   }
 
@@ -4648,55 +4916,55 @@ export namespace Prisma {
     where?: PropertyWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Properties to fetch.
      */
     orderBy?: PropertyOrderByWithRelationInput | PropertyOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: PropertyWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Properties from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Properties.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Properties
     **/
     _count?: true | PropertyCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: PropertyAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: PropertySumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: PropertyMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: PropertyMaxAggregateInputType
@@ -4748,6 +5016,9 @@ export namespace Prisma {
     numberOfReviews: number | null
     locationId: number
     managerUserId: string
+    listingStatus: $Enums.PropertyListingStatus
+    closedAt: Date | null
+    archivedAt: Date | null
     _count: PropertyCountAggregateOutputType | null
     _avg: PropertyAvgAggregateOutputType | null
     _sum: PropertySumAggregateOutputType | null
@@ -4790,6 +5061,9 @@ export namespace Prisma {
     numberOfReviews?: boolean
     locationId?: boolean
     managerUserId?: boolean
+    listingStatus?: boolean
+    closedAt?: boolean
+    archivedAt?: boolean
     location?: boolean | LocationDefaultArgs<ExtArgs>
     manager?: boolean | ManagerDefaultArgs<ExtArgs>
     leases?: boolean | Property$leasesArgs<ExtArgs>
@@ -4820,6 +5094,9 @@ export namespace Prisma {
     numberOfReviews?: boolean
     locationId?: boolean
     managerUserId?: boolean
+    listingStatus?: boolean
+    closedAt?: boolean
+    archivedAt?: boolean
     location?: boolean | LocationDefaultArgs<ExtArgs>
     manager?: boolean | ManagerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["property"]>
@@ -4845,6 +5122,9 @@ export namespace Prisma {
     numberOfReviews?: boolean
     locationId?: boolean
     managerUserId?: boolean
+    listingStatus?: boolean
+    closedAt?: boolean
+    archivedAt?: boolean
     location?: boolean | LocationDefaultArgs<ExtArgs>
     manager?: boolean | ManagerDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["property"]>
@@ -4870,9 +5150,12 @@ export namespace Prisma {
     numberOfReviews?: boolean
     locationId?: boolean
     managerUserId?: boolean
+    listingStatus?: boolean
+    closedAt?: boolean
+    archivedAt?: boolean
   }
 
-  export type PropertyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pricePerMonth" | "securityDeposit" | "applicationFee" | "photoUrls" | "amenities" | "highlights" | "isPetsAllowed" | "isParkingIncluded" | "beds" | "baths" | "squareFeet" | "propertyType" | "postedDate" | "averageRating" | "numberOfReviews" | "locationId" | "managerUserId", ExtArgs["result"]["property"]>
+  export type PropertyOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "pricePerMonth" | "securityDeposit" | "applicationFee" | "photoUrls" | "amenities" | "highlights" | "isPetsAllowed" | "isParkingIncluded" | "beds" | "baths" | "squareFeet" | "propertyType" | "postedDate" | "averageRating" | "numberOfReviews" | "locationId" | "managerUserId" | "listingStatus" | "closedAt" | "archivedAt", ExtArgs["result"]["property"]>
   export type PropertyInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     location?: boolean | LocationDefaultArgs<ExtArgs>
     manager?: boolean | ManagerDefaultArgs<ExtArgs>
@@ -4922,6 +5205,9 @@ export namespace Prisma {
       numberOfReviews: number | null
       locationId: number
       managerUserId: string
+      listingStatus: $Enums.PropertyListingStatus
+      closedAt: Date | null
+      archivedAt: Date | null
     }, ExtArgs["result"]["property"]>
     composites: {}
   }
@@ -5001,13 +5287,13 @@ export namespace Prisma {
      * @example
      * // Get all Properties
      * const properties = await prisma.property.findMany()
-     * 
+     *
      * // Get first 10 Properties
      * const properties = await prisma.property.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const propertyWithIdOnly = await prisma.property.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends PropertyFindManyArgs>(args?: SelectSubset<T, PropertyFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -5021,7 +5307,7 @@ export namespace Prisma {
      *     // ... data to create a Property
      *   }
      * })
-     * 
+     *
      */
     create<T extends PropertyCreateArgs>(args: SelectSubset<T, PropertyCreateArgs<ExtArgs>>): Prisma__PropertyClient<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -5035,7 +5321,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends PropertyCreateManyArgs>(args?: SelectSubset<T, PropertyCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -5049,7 +5335,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Properties and only return the `id`
      * const propertyWithIdOnly = await prisma.property.createManyAndReturn({
      *   select: { id: true },
@@ -5059,7 +5345,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends PropertyCreateManyAndReturnArgs>(args?: SelectSubset<T, PropertyCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -5073,7 +5359,7 @@ export namespace Prisma {
      *     // ... filter to delete one Property
      *   }
      * })
-     * 
+     *
      */
     delete<T extends PropertyDeleteArgs>(args: SelectSubset<T, PropertyDeleteArgs<ExtArgs>>): Prisma__PropertyClient<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -5090,7 +5376,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends PropertyUpdateArgs>(args: SelectSubset<T, PropertyUpdateArgs<ExtArgs>>): Prisma__PropertyClient<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -5104,7 +5390,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends PropertyDeleteManyArgs>(args?: SelectSubset<T, PropertyDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -5123,7 +5409,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends PropertyUpdateManyArgs>(args: SelectSubset<T, PropertyUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -5140,7 +5426,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Properties and only return the `id`
      * const propertyWithIdOnly = await prisma.property.updateManyAndReturn({
      *   select: { id: true },
@@ -5153,7 +5439,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends PropertyUpdateManyAndReturnArgs>(args: SelectSubset<T, PropertyUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -5242,7 +5528,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends PropertyGroupByArgs,
@@ -5371,8 +5657,11 @@ export namespace Prisma {
     readonly numberOfReviews: FieldRef<"Property", 'Int'>
     readonly locationId: FieldRef<"Property", 'Int'>
     readonly managerUserId: FieldRef<"Property", 'String'>
+    readonly listingStatus: FieldRef<"Property", 'PropertyListingStatus'>
+    readonly closedAt: FieldRef<"Property", 'DateTime'>
+    readonly archivedAt: FieldRef<"Property", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -5441,31 +5730,31 @@ export namespace Prisma {
     where?: PropertyWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Properties to fetch.
      */
     orderBy?: PropertyOrderByWithRelationInput | PropertyOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Properties.
      */
     cursor?: PropertyWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Properties from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Properties.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Properties.
      */
     distinct?: PropertyScalarFieldEnum | PropertyScalarFieldEnum[]
@@ -5493,31 +5782,31 @@ export namespace Prisma {
     where?: PropertyWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Properties to fetch.
      */
     orderBy?: PropertyOrderByWithRelationInput | PropertyOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Properties.
      */
     cursor?: PropertyWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Properties from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Properties.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Properties.
      */
     distinct?: PropertyScalarFieldEnum | PropertyScalarFieldEnum[]
@@ -5545,25 +5834,25 @@ export namespace Prisma {
     where?: PropertyWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Properties to fetch.
      */
     orderBy?: PropertyOrderByWithRelationInput | PropertyOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Properties.
      */
     cursor?: PropertyWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Properties from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Properties.
      */
     skip?: number
@@ -5949,55 +6238,55 @@ export namespace Prisma {
     where?: ManagerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Managers to fetch.
      */
     orderBy?: ManagerOrderByWithRelationInput | ManagerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: ManagerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Managers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Managers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Managers
     **/
     _count?: true | ManagerCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: ManagerAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: ManagerSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: ManagerMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: ManagerMaxAggregateInputType
@@ -6057,6 +6346,7 @@ export namespace Prisma {
     userId?: boolean
     managedProperties?: boolean | Manager$managedPropertiesArgs<ExtArgs>
     chats?: boolean | Manager$chatsArgs<ExtArgs>
+    signingProfile?: boolean | Manager$signingProfileArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | ManagerCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["manager"]>
@@ -6082,6 +6372,7 @@ export namespace Prisma {
   export type ManagerInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     managedProperties?: boolean | Manager$managedPropertiesArgs<ExtArgs>
     chats?: boolean | Manager$chatsArgs<ExtArgs>
+    signingProfile?: boolean | Manager$signingProfileArgs<ExtArgs>
     user?: boolean | UserDefaultArgs<ExtArgs>
     _count?: boolean | ManagerCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -6097,6 +6388,7 @@ export namespace Prisma {
     objects: {
       managedProperties: Prisma.$PropertyPayload<ExtArgs>[]
       chats: Prisma.$ChatPayload<ExtArgs>[]
+      signingProfile: Prisma.$ManagerSigningProfilePayload<ExtArgs> | null
       user: Prisma.$UserPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -6181,13 +6473,13 @@ export namespace Prisma {
      * @example
      * // Get all Managers
      * const managers = await prisma.manager.findMany()
-     * 
+     *
      * // Get first 10 Managers
      * const managers = await prisma.manager.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const managerWithIdOnly = await prisma.manager.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends ManagerFindManyArgs>(args?: SelectSubset<T, ManagerFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -6201,7 +6493,7 @@ export namespace Prisma {
      *     // ... data to create a Manager
      *   }
      * })
-     * 
+     *
      */
     create<T extends ManagerCreateArgs>(args: SelectSubset<T, ManagerCreateArgs<ExtArgs>>): Prisma__ManagerClient<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -6215,7 +6507,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends ManagerCreateManyArgs>(args?: SelectSubset<T, ManagerCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -6229,7 +6521,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Managers and only return the `id`
      * const managerWithIdOnly = await prisma.manager.createManyAndReturn({
      *   select: { id: true },
@@ -6239,7 +6531,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends ManagerCreateManyAndReturnArgs>(args?: SelectSubset<T, ManagerCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -6253,7 +6545,7 @@ export namespace Prisma {
      *     // ... filter to delete one Manager
      *   }
      * })
-     * 
+     *
      */
     delete<T extends ManagerDeleteArgs>(args: SelectSubset<T, ManagerDeleteArgs<ExtArgs>>): Prisma__ManagerClient<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -6270,7 +6562,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends ManagerUpdateArgs>(args: SelectSubset<T, ManagerUpdateArgs<ExtArgs>>): Prisma__ManagerClient<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -6284,7 +6576,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends ManagerDeleteManyArgs>(args?: SelectSubset<T, ManagerDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -6303,7 +6595,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends ManagerUpdateManyArgs>(args: SelectSubset<T, ManagerUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -6320,7 +6612,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Managers and only return the `id`
      * const managerWithIdOnly = await prisma.manager.updateManyAndReturn({
      *   select: { id: true },
@@ -6333,7 +6625,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends ManagerUpdateManyAndReturnArgs>(args: SelectSubset<T, ManagerUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -6422,7 +6714,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends ManagerGroupByArgs,
@@ -6498,6 +6790,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     managedProperties<T extends Manager$managedPropertiesArgs<ExtArgs> = {}>(args?: Subset<T, Manager$managedPropertiesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PropertyPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     chats<T extends Manager$chatsArgs<ExtArgs> = {}>(args?: Subset<T, Manager$chatsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    signingProfile<T extends Manager$signingProfileArgs<ExtArgs> = {}>(args?: Subset<T, Manager$signingProfileArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -6531,7 +6824,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Manager", 'Int'>
     readonly userId: FieldRef<"Manager", 'String'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -6600,31 +6893,31 @@ export namespace Prisma {
     where?: ManagerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Managers to fetch.
      */
     orderBy?: ManagerOrderByWithRelationInput | ManagerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Managers.
      */
     cursor?: ManagerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Managers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Managers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Managers.
      */
     distinct?: ManagerScalarFieldEnum | ManagerScalarFieldEnum[]
@@ -6652,31 +6945,31 @@ export namespace Prisma {
     where?: ManagerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Managers to fetch.
      */
     orderBy?: ManagerOrderByWithRelationInput | ManagerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Managers.
      */
     cursor?: ManagerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Managers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Managers.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Managers.
      */
     distinct?: ManagerScalarFieldEnum | ManagerScalarFieldEnum[]
@@ -6704,25 +6997,25 @@ export namespace Prisma {
     where?: ManagerWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Managers to fetch.
      */
     orderBy?: ManagerOrderByWithRelationInput | ManagerOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Managers.
      */
     cursor?: ManagerWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Managers from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Managers.
      */
     skip?: number
@@ -6974,6 +7267,25 @@ export namespace Prisma {
   }
 
   /**
+   * Manager.signingProfile
+   */
+  export type Manager$signingProfileArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    where?: ManagerSigningProfileWhereInput
+  }
+
+  /**
    * Manager without action
    */
   export type ManagerDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -6989,6 +7301,1155 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: ManagerInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model ManagerSigningProfile
+   */
+
+  export type AggregateManagerSigningProfile = {
+    _count: ManagerSigningProfileCountAggregateOutputType | null
+    _min: ManagerSigningProfileMinAggregateOutputType | null
+    _max: ManagerSigningProfileMaxAggregateOutputType | null
+  }
+
+  export type ManagerSigningProfileMinAggregateOutputType = {
+    managerUserId: string | null
+    legalName: string | null
+    title: string | null
+    agreementNotes: string | null
+    signatureCiphertext: string | null
+    signatureSalt: string | null
+    signatureIv: string | null
+    signatureUpdatedAt: Date | null
+    acceptedPrivacyAt: Date | null
+    acceptedSharingAt: Date | null
+    acceptedPolicyVersion: string | null
+    updatedAt: Date | null
+  }
+
+  export type ManagerSigningProfileMaxAggregateOutputType = {
+    managerUserId: string | null
+    legalName: string | null
+    title: string | null
+    agreementNotes: string | null
+    signatureCiphertext: string | null
+    signatureSalt: string | null
+    signatureIv: string | null
+    signatureUpdatedAt: Date | null
+    acceptedPrivacyAt: Date | null
+    acceptedSharingAt: Date | null
+    acceptedPolicyVersion: string | null
+    updatedAt: Date | null
+  }
+
+  export type ManagerSigningProfileCountAggregateOutputType = {
+    managerUserId: number
+    legalName: number
+    title: number
+    agreementNotes: number
+    signatureCiphertext: number
+    signatureSalt: number
+    signatureIv: number
+    signatureUpdatedAt: number
+    acceptedPrivacyAt: number
+    acceptedSharingAt: number
+    acceptedPolicyVersion: number
+    updatedAt: number
+    _all: number
+  }
+
+
+  export type ManagerSigningProfileMinAggregateInputType = {
+    managerUserId?: true
+    legalName?: true
+    title?: true
+    agreementNotes?: true
+    signatureCiphertext?: true
+    signatureSalt?: true
+    signatureIv?: true
+    signatureUpdatedAt?: true
+    acceptedPrivacyAt?: true
+    acceptedSharingAt?: true
+    acceptedPolicyVersion?: true
+    updatedAt?: true
+  }
+
+  export type ManagerSigningProfileMaxAggregateInputType = {
+    managerUserId?: true
+    legalName?: true
+    title?: true
+    agreementNotes?: true
+    signatureCiphertext?: true
+    signatureSalt?: true
+    signatureIv?: true
+    signatureUpdatedAt?: true
+    acceptedPrivacyAt?: true
+    acceptedSharingAt?: true
+    acceptedPolicyVersion?: true
+    updatedAt?: true
+  }
+
+  export type ManagerSigningProfileCountAggregateInputType = {
+    managerUserId?: true
+    legalName?: true
+    title?: true
+    agreementNotes?: true
+    signatureCiphertext?: true
+    signatureSalt?: true
+    signatureIv?: true
+    signatureUpdatedAt?: true
+    acceptedPrivacyAt?: true
+    acceptedSharingAt?: true
+    acceptedPolicyVersion?: true
+    updatedAt?: true
+    _all?: true
+  }
+
+  export type ManagerSigningProfileAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ManagerSigningProfile to aggregate.
+     */
+    where?: ManagerSigningProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ManagerSigningProfiles to fetch.
+     */
+    orderBy?: ManagerSigningProfileOrderByWithRelationInput | ManagerSigningProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: ManagerSigningProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ManagerSigningProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ManagerSigningProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned ManagerSigningProfiles
+    **/
+    _count?: true | ManagerSigningProfileCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: ManagerSigningProfileMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: ManagerSigningProfileMaxAggregateInputType
+  }
+
+  export type GetManagerSigningProfileAggregateType<T extends ManagerSigningProfileAggregateArgs> = {
+        [P in keyof T & keyof AggregateManagerSigningProfile]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateManagerSigningProfile[P]>
+      : GetScalarType<T[P], AggregateManagerSigningProfile[P]>
+  }
+
+
+
+
+  export type ManagerSigningProfileGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: ManagerSigningProfileWhereInput
+    orderBy?: ManagerSigningProfileOrderByWithAggregationInput | ManagerSigningProfileOrderByWithAggregationInput[]
+    by: ManagerSigningProfileScalarFieldEnum[] | ManagerSigningProfileScalarFieldEnum
+    having?: ManagerSigningProfileScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: ManagerSigningProfileCountAggregateInputType | true
+    _min?: ManagerSigningProfileMinAggregateInputType
+    _max?: ManagerSigningProfileMaxAggregateInputType
+  }
+
+  export type ManagerSigningProfileGroupByOutputType = {
+    managerUserId: string
+    legalName: string
+    title: string
+    agreementNotes: string
+    signatureCiphertext: string | null
+    signatureSalt: string | null
+    signatureIv: string | null
+    signatureUpdatedAt: Date | null
+    acceptedPrivacyAt: Date | null
+    acceptedSharingAt: Date | null
+    acceptedPolicyVersion: string | null
+    updatedAt: Date
+    _count: ManagerSigningProfileCountAggregateOutputType | null
+    _min: ManagerSigningProfileMinAggregateOutputType | null
+    _max: ManagerSigningProfileMaxAggregateOutputType | null
+  }
+
+  type GetManagerSigningProfileGroupByPayload<T extends ManagerSigningProfileGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<ManagerSigningProfileGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof ManagerSigningProfileGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], ManagerSigningProfileGroupByOutputType[P]>
+            : GetScalarType<T[P], ManagerSigningProfileGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type ManagerSigningProfileSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    managerUserId?: boolean
+    legalName?: boolean
+    title?: boolean
+    agreementNotes?: boolean
+    signatureCiphertext?: boolean
+    signatureSalt?: boolean
+    signatureIv?: boolean
+    signatureUpdatedAt?: boolean
+    acceptedPrivacyAt?: boolean
+    acceptedSharingAt?: boolean
+    acceptedPolicyVersion?: boolean
+    updatedAt?: boolean
+    manager?: boolean | ManagerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["managerSigningProfile"]>
+
+  export type ManagerSigningProfileSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    managerUserId?: boolean
+    legalName?: boolean
+    title?: boolean
+    agreementNotes?: boolean
+    signatureCiphertext?: boolean
+    signatureSalt?: boolean
+    signatureIv?: boolean
+    signatureUpdatedAt?: boolean
+    acceptedPrivacyAt?: boolean
+    acceptedSharingAt?: boolean
+    acceptedPolicyVersion?: boolean
+    updatedAt?: boolean
+    manager?: boolean | ManagerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["managerSigningProfile"]>
+
+  export type ManagerSigningProfileSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    managerUserId?: boolean
+    legalName?: boolean
+    title?: boolean
+    agreementNotes?: boolean
+    signatureCiphertext?: boolean
+    signatureSalt?: boolean
+    signatureIv?: boolean
+    signatureUpdatedAt?: boolean
+    acceptedPrivacyAt?: boolean
+    acceptedSharingAt?: boolean
+    acceptedPolicyVersion?: boolean
+    updatedAt?: boolean
+    manager?: boolean | ManagerDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["managerSigningProfile"]>
+
+  export type ManagerSigningProfileSelectScalar = {
+    managerUserId?: boolean
+    legalName?: boolean
+    title?: boolean
+    agreementNotes?: boolean
+    signatureCiphertext?: boolean
+    signatureSalt?: boolean
+    signatureIv?: boolean
+    signatureUpdatedAt?: boolean
+    acceptedPrivacyAt?: boolean
+    acceptedSharingAt?: boolean
+    acceptedPolicyVersion?: boolean
+    updatedAt?: boolean
+  }
+
+  export type ManagerSigningProfileOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"managerUserId" | "legalName" | "title" | "agreementNotes" | "signatureCiphertext" | "signatureSalt" | "signatureIv" | "signatureUpdatedAt" | "acceptedPrivacyAt" | "acceptedSharingAt" | "acceptedPolicyVersion" | "updatedAt", ExtArgs["result"]["managerSigningProfile"]>
+  export type ManagerSigningProfileInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    manager?: boolean | ManagerDefaultArgs<ExtArgs>
+  }
+  export type ManagerSigningProfileIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    manager?: boolean | ManagerDefaultArgs<ExtArgs>
+  }
+  export type ManagerSigningProfileIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    manager?: boolean | ManagerDefaultArgs<ExtArgs>
+  }
+
+  export type $ManagerSigningProfilePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "ManagerSigningProfile"
+    objects: {
+      manager: Prisma.$ManagerPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      managerUserId: string
+      legalName: string
+      title: string
+      agreementNotes: string
+      signatureCiphertext: string | null
+      signatureSalt: string | null
+      signatureIv: string | null
+      signatureUpdatedAt: Date | null
+      acceptedPrivacyAt: Date | null
+      acceptedSharingAt: Date | null
+      acceptedPolicyVersion: string | null
+      updatedAt: Date
+    }, ExtArgs["result"]["managerSigningProfile"]>
+    composites: {}
+  }
+
+  type ManagerSigningProfileGetPayload<S extends boolean | null | undefined | ManagerSigningProfileDefaultArgs> = $Result.GetResult<Prisma.$ManagerSigningProfilePayload, S>
+
+  type ManagerSigningProfileCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<ManagerSigningProfileFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: ManagerSigningProfileCountAggregateInputType | true
+    }
+
+  export interface ManagerSigningProfileDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['ManagerSigningProfile'], meta: { name: 'ManagerSigningProfile' } }
+    /**
+     * Find zero or one ManagerSigningProfile that matches the filter.
+     * @param {ManagerSigningProfileFindUniqueArgs} args - Arguments to find a ManagerSigningProfile
+     * @example
+     * // Get one ManagerSigningProfile
+     * const managerSigningProfile = await prisma.managerSigningProfile.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends ManagerSigningProfileFindUniqueArgs>(args: SelectSubset<T, ManagerSigningProfileFindUniqueArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one ManagerSigningProfile that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {ManagerSigningProfileFindUniqueOrThrowArgs} args - Arguments to find a ManagerSigningProfile
+     * @example
+     * // Get one ManagerSigningProfile
+     * const managerSigningProfile = await prisma.managerSigningProfile.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends ManagerSigningProfileFindUniqueOrThrowArgs>(args: SelectSubset<T, ManagerSigningProfileFindUniqueOrThrowArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ManagerSigningProfile that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ManagerSigningProfileFindFirstArgs} args - Arguments to find a ManagerSigningProfile
+     * @example
+     * // Get one ManagerSigningProfile
+     * const managerSigningProfile = await prisma.managerSigningProfile.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends ManagerSigningProfileFindFirstArgs>(args?: SelectSubset<T, ManagerSigningProfileFindFirstArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first ManagerSigningProfile that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ManagerSigningProfileFindFirstOrThrowArgs} args - Arguments to find a ManagerSigningProfile
+     * @example
+     * // Get one ManagerSigningProfile
+     * const managerSigningProfile = await prisma.managerSigningProfile.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends ManagerSigningProfileFindFirstOrThrowArgs>(args?: SelectSubset<T, ManagerSigningProfileFindFirstOrThrowArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more ManagerSigningProfiles that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ManagerSigningProfileFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all ManagerSigningProfiles
+     * const managerSigningProfiles = await prisma.managerSigningProfile.findMany()
+     *
+     * // Get first 10 ManagerSigningProfiles
+     * const managerSigningProfiles = await prisma.managerSigningProfile.findMany({ take: 10 })
+     *
+     * // Only select the `managerUserId`
+     * const managerSigningProfileWithManagerUserIdOnly = await prisma.managerSigningProfile.findMany({ select: { managerUserId: true } })
+     *
+     */
+    findMany<T extends ManagerSigningProfileFindManyArgs>(args?: SelectSubset<T, ManagerSigningProfileFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a ManagerSigningProfile.
+     * @param {ManagerSigningProfileCreateArgs} args - Arguments to create a ManagerSigningProfile.
+     * @example
+     * // Create one ManagerSigningProfile
+     * const ManagerSigningProfile = await prisma.managerSigningProfile.create({
+     *   data: {
+     *     // ... data to create a ManagerSigningProfile
+     *   }
+     * })
+     *
+     */
+    create<T extends ManagerSigningProfileCreateArgs>(args: SelectSubset<T, ManagerSigningProfileCreateArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many ManagerSigningProfiles.
+     * @param {ManagerSigningProfileCreateManyArgs} args - Arguments to create many ManagerSigningProfiles.
+     * @example
+     * // Create many ManagerSigningProfiles
+     * const managerSigningProfile = await prisma.managerSigningProfile.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends ManagerSigningProfileCreateManyArgs>(args?: SelectSubset<T, ManagerSigningProfileCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many ManagerSigningProfiles and returns the data saved in the database.
+     * @param {ManagerSigningProfileCreateManyAndReturnArgs} args - Arguments to create many ManagerSigningProfiles.
+     * @example
+     * // Create many ManagerSigningProfiles
+     * const managerSigningProfile = await prisma.managerSigningProfile.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many ManagerSigningProfiles and only return the `managerUserId`
+     * const managerSigningProfileWithManagerUserIdOnly = await prisma.managerSigningProfile.createManyAndReturn({
+     *   select: { managerUserId: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends ManagerSigningProfileCreateManyAndReturnArgs>(args?: SelectSubset<T, ManagerSigningProfileCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a ManagerSigningProfile.
+     * @param {ManagerSigningProfileDeleteArgs} args - Arguments to delete one ManagerSigningProfile.
+     * @example
+     * // Delete one ManagerSigningProfile
+     * const ManagerSigningProfile = await prisma.managerSigningProfile.delete({
+     *   where: {
+     *     // ... filter to delete one ManagerSigningProfile
+     *   }
+     * })
+     *
+     */
+    delete<T extends ManagerSigningProfileDeleteArgs>(args: SelectSubset<T, ManagerSigningProfileDeleteArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one ManagerSigningProfile.
+     * @param {ManagerSigningProfileUpdateArgs} args - Arguments to update one ManagerSigningProfile.
+     * @example
+     * // Update one ManagerSigningProfile
+     * const managerSigningProfile = await prisma.managerSigningProfile.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends ManagerSigningProfileUpdateArgs>(args: SelectSubset<T, ManagerSigningProfileUpdateArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more ManagerSigningProfiles.
+     * @param {ManagerSigningProfileDeleteManyArgs} args - Arguments to filter ManagerSigningProfiles to delete.
+     * @example
+     * // Delete a few ManagerSigningProfiles
+     * const { count } = await prisma.managerSigningProfile.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends ManagerSigningProfileDeleteManyArgs>(args?: SelectSubset<T, ManagerSigningProfileDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ManagerSigningProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ManagerSigningProfileUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many ManagerSigningProfiles
+     * const managerSigningProfile = await prisma.managerSigningProfile.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends ManagerSigningProfileUpdateManyArgs>(args: SelectSubset<T, ManagerSigningProfileUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more ManagerSigningProfiles and returns the data updated in the database.
+     * @param {ManagerSigningProfileUpdateManyAndReturnArgs} args - Arguments to update many ManagerSigningProfiles.
+     * @example
+     * // Update many ManagerSigningProfiles
+     * const managerSigningProfile = await prisma.managerSigningProfile.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more ManagerSigningProfiles and only return the `managerUserId`
+     * const managerSigningProfileWithManagerUserIdOnly = await prisma.managerSigningProfile.updateManyAndReturn({
+     *   select: { managerUserId: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends ManagerSigningProfileUpdateManyAndReturnArgs>(args: SelectSubset<T, ManagerSigningProfileUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one ManagerSigningProfile.
+     * @param {ManagerSigningProfileUpsertArgs} args - Arguments to update or create a ManagerSigningProfile.
+     * @example
+     * // Update or create a ManagerSigningProfile
+     * const managerSigningProfile = await prisma.managerSigningProfile.upsert({
+     *   create: {
+     *     // ... data to create a ManagerSigningProfile
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the ManagerSigningProfile we want to update
+     *   }
+     * })
+     */
+    upsert<T extends ManagerSigningProfileUpsertArgs>(args: SelectSubset<T, ManagerSigningProfileUpsertArgs<ExtArgs>>): Prisma__ManagerSigningProfileClient<$Result.GetResult<Prisma.$ManagerSigningProfilePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of ManagerSigningProfiles.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ManagerSigningProfileCountArgs} args - Arguments to filter ManagerSigningProfiles to count.
+     * @example
+     * // Count the number of ManagerSigningProfiles
+     * const count = await prisma.managerSigningProfile.count({
+     *   where: {
+     *     // ... the filter for the ManagerSigningProfiles we want to count
+     *   }
+     * })
+    **/
+    count<T extends ManagerSigningProfileCountArgs>(
+      args?: Subset<T, ManagerSigningProfileCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], ManagerSigningProfileCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a ManagerSigningProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ManagerSigningProfileAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends ManagerSigningProfileAggregateArgs>(args: Subset<T, ManagerSigningProfileAggregateArgs>): Prisma.PrismaPromise<GetManagerSigningProfileAggregateType<T>>
+
+    /**
+     * Group by ManagerSigningProfile.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {ManagerSigningProfileGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends ManagerSigningProfileGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: ManagerSigningProfileGroupByArgs['orderBy'] }
+        : { orderBy?: ManagerSigningProfileGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, ManagerSigningProfileGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetManagerSigningProfileGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the ManagerSigningProfile model
+   */
+  readonly fields: ManagerSigningProfileFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for ManagerSigningProfile.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__ManagerSigningProfileClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    manager<T extends ManagerDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ManagerDefaultArgs<ExtArgs>>): Prisma__ManagerClient<$Result.GetResult<Prisma.$ManagerPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the ManagerSigningProfile model
+   */
+  interface ManagerSigningProfileFieldRefs {
+    readonly managerUserId: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly legalName: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly title: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly agreementNotes: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly signatureCiphertext: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly signatureSalt: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly signatureIv: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly signatureUpdatedAt: FieldRef<"ManagerSigningProfile", 'DateTime'>
+    readonly acceptedPrivacyAt: FieldRef<"ManagerSigningProfile", 'DateTime'>
+    readonly acceptedSharingAt: FieldRef<"ManagerSigningProfile", 'DateTime'>
+    readonly acceptedPolicyVersion: FieldRef<"ManagerSigningProfile", 'String'>
+    readonly updatedAt: FieldRef<"ManagerSigningProfile", 'DateTime'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * ManagerSigningProfile findUnique
+   */
+  export type ManagerSigningProfileFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ManagerSigningProfile to fetch.
+     */
+    where: ManagerSigningProfileWhereUniqueInput
+  }
+
+  /**
+   * ManagerSigningProfile findUniqueOrThrow
+   */
+  export type ManagerSigningProfileFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ManagerSigningProfile to fetch.
+     */
+    where: ManagerSigningProfileWhereUniqueInput
+  }
+
+  /**
+   * ManagerSigningProfile findFirst
+   */
+  export type ManagerSigningProfileFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ManagerSigningProfile to fetch.
+     */
+    where?: ManagerSigningProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ManagerSigningProfiles to fetch.
+     */
+    orderBy?: ManagerSigningProfileOrderByWithRelationInput | ManagerSigningProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ManagerSigningProfiles.
+     */
+    cursor?: ManagerSigningProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ManagerSigningProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ManagerSigningProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ManagerSigningProfiles.
+     */
+    distinct?: ManagerSigningProfileScalarFieldEnum | ManagerSigningProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ManagerSigningProfile findFirstOrThrow
+   */
+  export type ManagerSigningProfileFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ManagerSigningProfile to fetch.
+     */
+    where?: ManagerSigningProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ManagerSigningProfiles to fetch.
+     */
+    orderBy?: ManagerSigningProfileOrderByWithRelationInput | ManagerSigningProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for ManagerSigningProfiles.
+     */
+    cursor?: ManagerSigningProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ManagerSigningProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ManagerSigningProfiles.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of ManagerSigningProfiles.
+     */
+    distinct?: ManagerSigningProfileScalarFieldEnum | ManagerSigningProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ManagerSigningProfile findMany
+   */
+  export type ManagerSigningProfileFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * Filter, which ManagerSigningProfiles to fetch.
+     */
+    where?: ManagerSigningProfileWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of ManagerSigningProfiles to fetch.
+     */
+    orderBy?: ManagerSigningProfileOrderByWithRelationInput | ManagerSigningProfileOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing ManagerSigningProfiles.
+     */
+    cursor?: ManagerSigningProfileWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` ManagerSigningProfiles from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` ManagerSigningProfiles.
+     */
+    skip?: number
+    distinct?: ManagerSigningProfileScalarFieldEnum | ManagerSigningProfileScalarFieldEnum[]
+  }
+
+  /**
+   * ManagerSigningProfile create
+   */
+  export type ManagerSigningProfileCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to create a ManagerSigningProfile.
+     */
+    data: XOR<ManagerSigningProfileCreateInput, ManagerSigningProfileUncheckedCreateInput>
+  }
+
+  /**
+   * ManagerSigningProfile createMany
+   */
+  export type ManagerSigningProfileCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many ManagerSigningProfiles.
+     */
+    data: ManagerSigningProfileCreateManyInput | ManagerSigningProfileCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * ManagerSigningProfile createManyAndReturn
+   */
+  export type ManagerSigningProfileCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * The data used to create many ManagerSigningProfiles.
+     */
+    data: ManagerSigningProfileCreateManyInput | ManagerSigningProfileCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ManagerSigningProfile update
+   */
+  export type ManagerSigningProfileUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * The data needed to update a ManagerSigningProfile.
+     */
+    data: XOR<ManagerSigningProfileUpdateInput, ManagerSigningProfileUncheckedUpdateInput>
+    /**
+     * Choose, which ManagerSigningProfile to update.
+     */
+    where: ManagerSigningProfileWhereUniqueInput
+  }
+
+  /**
+   * ManagerSigningProfile updateMany
+   */
+  export type ManagerSigningProfileUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update ManagerSigningProfiles.
+     */
+    data: XOR<ManagerSigningProfileUpdateManyMutationInput, ManagerSigningProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which ManagerSigningProfiles to update
+     */
+    where?: ManagerSigningProfileWhereInput
+    /**
+     * Limit how many ManagerSigningProfiles to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * ManagerSigningProfile updateManyAndReturn
+   */
+  export type ManagerSigningProfileUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * The data used to update ManagerSigningProfiles.
+     */
+    data: XOR<ManagerSigningProfileUpdateManyMutationInput, ManagerSigningProfileUncheckedUpdateManyInput>
+    /**
+     * Filter which ManagerSigningProfiles to update
+     */
+    where?: ManagerSigningProfileWhereInput
+    /**
+     * Limit how many ManagerSigningProfiles to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * ManagerSigningProfile upsert
+   */
+  export type ManagerSigningProfileUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * The filter to search for the ManagerSigningProfile to update in case it exists.
+     */
+    where: ManagerSigningProfileWhereUniqueInput
+    /**
+     * In case the ManagerSigningProfile found by the `where` argument doesn't exist, create a new ManagerSigningProfile with this data.
+     */
+    create: XOR<ManagerSigningProfileCreateInput, ManagerSigningProfileUncheckedCreateInput>
+    /**
+     * In case the ManagerSigningProfile was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<ManagerSigningProfileUpdateInput, ManagerSigningProfileUncheckedUpdateInput>
+  }
+
+  /**
+   * ManagerSigningProfile delete
+   */
+  export type ManagerSigningProfileDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
+    /**
+     * Filter which ManagerSigningProfile to delete.
+     */
+    where: ManagerSigningProfileWhereUniqueInput
+  }
+
+  /**
+   * ManagerSigningProfile deleteMany
+   */
+  export type ManagerSigningProfileDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which ManagerSigningProfiles to delete
+     */
+    where?: ManagerSigningProfileWhereInput
+    /**
+     * Limit how many ManagerSigningProfiles to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * ManagerSigningProfile without action
+   */
+  export type ManagerSigningProfileDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the ManagerSigningProfile
+     */
+    select?: ManagerSigningProfileSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the ManagerSigningProfile
+     */
+    omit?: ManagerSigningProfileOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: ManagerSigningProfileInclude<ExtArgs> | null
   }
 
 
@@ -7060,55 +8521,55 @@ export namespace Prisma {
     where?: TenantWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Tenants to fetch.
      */
     orderBy?: TenantOrderByWithRelationInput | TenantOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: TenantWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Tenants from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Tenants.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Tenants
     **/
     _count?: true | TenantCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: TenantAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: TenantSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: TenantMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: TenantMaxAggregateInputType
@@ -7301,13 +8762,13 @@ export namespace Prisma {
      * @example
      * // Get all Tenants
      * const tenants = await prisma.tenant.findMany()
-     * 
+     *
      * // Get first 10 Tenants
      * const tenants = await prisma.tenant.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const tenantWithIdOnly = await prisma.tenant.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends TenantFindManyArgs>(args?: SelectSubset<T, TenantFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -7321,7 +8782,7 @@ export namespace Prisma {
      *     // ... data to create a Tenant
      *   }
      * })
-     * 
+     *
      */
     create<T extends TenantCreateArgs>(args: SelectSubset<T, TenantCreateArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -7335,7 +8796,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends TenantCreateManyArgs>(args?: SelectSubset<T, TenantCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -7349,7 +8810,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Tenants and only return the `id`
      * const tenantWithIdOnly = await prisma.tenant.createManyAndReturn({
      *   select: { id: true },
@@ -7359,7 +8820,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends TenantCreateManyAndReturnArgs>(args?: SelectSubset<T, TenantCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -7373,7 +8834,7 @@ export namespace Prisma {
      *     // ... filter to delete one Tenant
      *   }
      * })
-     * 
+     *
      */
     delete<T extends TenantDeleteArgs>(args: SelectSubset<T, TenantDeleteArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -7390,7 +8851,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends TenantUpdateArgs>(args: SelectSubset<T, TenantUpdateArgs<ExtArgs>>): Prisma__TenantClient<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -7404,7 +8865,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends TenantDeleteManyArgs>(args?: SelectSubset<T, TenantDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -7423,7 +8884,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends TenantUpdateManyArgs>(args: SelectSubset<T, TenantUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -7440,7 +8901,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Tenants and only return the `id`
      * const tenantWithIdOnly = await prisma.tenant.updateManyAndReturn({
      *   select: { id: true },
@@ -7453,7 +8914,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends TenantUpdateManyAndReturnArgs>(args: SelectSubset<T, TenantUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$TenantPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -7542,7 +9003,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends TenantGroupByArgs,
@@ -7654,7 +9115,7 @@ export namespace Prisma {
     readonly id: FieldRef<"Tenant", 'Int'>
     readonly userId: FieldRef<"Tenant", 'String'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -7723,31 +9184,31 @@ export namespace Prisma {
     where?: TenantWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Tenants to fetch.
      */
     orderBy?: TenantOrderByWithRelationInput | TenantOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Tenants.
      */
     cursor?: TenantWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Tenants from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Tenants.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Tenants.
      */
     distinct?: TenantScalarFieldEnum | TenantScalarFieldEnum[]
@@ -7775,31 +9236,31 @@ export namespace Prisma {
     where?: TenantWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Tenants to fetch.
      */
     orderBy?: TenantOrderByWithRelationInput | TenantOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Tenants.
      */
     cursor?: TenantWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Tenants from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Tenants.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Tenants.
      */
     distinct?: TenantScalarFieldEnum | TenantScalarFieldEnum[]
@@ -7827,25 +9288,25 @@ export namespace Prisma {
     where?: TenantWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Tenants to fetch.
      */
     orderBy?: TenantOrderByWithRelationInput | TenantOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Tenants.
      */
     cursor?: TenantWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Tenants from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Tenants.
      */
     skip?: number
@@ -8210,6 +9671,8 @@ export namespace Prisma {
   export type LocationMinAggregateOutputType = {
     id: number | null
     address: string | null
+    subdistrict: string | null
+    district: string | null
     city: string | null
     state: string | null
     country: string | null
@@ -8219,6 +9682,8 @@ export namespace Prisma {
   export type LocationMaxAggregateOutputType = {
     id: number | null
     address: string | null
+    subdistrict: string | null
+    district: string | null
     city: string | null
     state: string | null
     country: string | null
@@ -8228,6 +9693,8 @@ export namespace Prisma {
   export type LocationCountAggregateOutputType = {
     id: number
     address: number
+    subdistrict: number
+    district: number
     city: number
     state: number
     country: number
@@ -8247,6 +9714,8 @@ export namespace Prisma {
   export type LocationMinAggregateInputType = {
     id?: true
     address?: true
+    subdistrict?: true
+    district?: true
     city?: true
     state?: true
     country?: true
@@ -8256,6 +9725,8 @@ export namespace Prisma {
   export type LocationMaxAggregateInputType = {
     id?: true
     address?: true
+    subdistrict?: true
+    district?: true
     city?: true
     state?: true
     country?: true
@@ -8265,6 +9736,8 @@ export namespace Prisma {
   export type LocationCountAggregateInputType = {
     id?: true
     address?: true
+    subdistrict?: true
+    district?: true
     city?: true
     state?: true
     country?: true
@@ -8279,55 +9752,55 @@ export namespace Prisma {
     where?: LocationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Locations to fetch.
      */
     orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: LocationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Locations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Locations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Locations
     **/
     _count?: true | LocationCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: LocationAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: LocationSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: LocationMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: LocationMaxAggregateInputType
@@ -8361,6 +9834,8 @@ export namespace Prisma {
   export type LocationGroupByOutputType = {
     id: number
     address: string
+    subdistrict: string | null
+    district: string | null
     city: string
     state: string
     country: string
@@ -8389,6 +9864,8 @@ export namespace Prisma {
   export type LocationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     address?: boolean
+    subdistrict?: boolean
+    district?: boolean
     city?: boolean
     state?: boolean
     country?: boolean
@@ -8401,6 +9878,8 @@ export namespace Prisma {
   export type LocationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     address?: boolean
+    subdistrict?: boolean
+    district?: boolean
     city?: boolean
     state?: boolean
     country?: boolean
@@ -8410,13 +9889,15 @@ export namespace Prisma {
   export type LocationSelectScalar = {
     id?: boolean
     address?: boolean
+    subdistrict?: boolean
+    district?: boolean
     city?: boolean
     state?: boolean
     country?: boolean
     postalCode?: boolean
   }
 
-  export type LocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "address" | "city" | "state" | "country" | "postalCode", ExtArgs["result"]["location"]>
+  export type LocationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "address" | "subdistrict" | "district" | "city" | "state" | "country" | "postalCode", ExtArgs["result"]["location"]>
   export type LocationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     properties?: boolean | Location$propertiesArgs<ExtArgs>
     _count?: boolean | LocationCountOutputTypeDefaultArgs<ExtArgs>
@@ -8431,6 +9912,8 @@ export namespace Prisma {
     scalars: $Extensions.GetPayloadResult<{
       id: number
       address: string
+      subdistrict: string | null
+      district: string | null
       city: string
       state: string
       country: string
@@ -8514,13 +9997,13 @@ export namespace Prisma {
      * @example
      * // Get all Locations
      * const locations = await prisma.location.findMany()
-     * 
+     *
      * // Get first 10 Locations
      * const locations = await prisma.location.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const locationWithIdOnly = await prisma.location.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends LocationFindManyArgs>(args?: SelectSubset<T, LocationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -8534,7 +10017,7 @@ export namespace Prisma {
      *     // ... filter to delete one Location
      *   }
      * })
-     * 
+     *
      */
     delete<T extends LocationDeleteArgs>(args: SelectSubset<T, LocationDeleteArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -8551,7 +10034,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends LocationUpdateArgs>(args: SelectSubset<T, LocationUpdateArgs<ExtArgs>>): Prisma__LocationClient<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -8565,7 +10048,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends LocationDeleteManyArgs>(args?: SelectSubset<T, LocationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -8584,7 +10067,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends LocationUpdateManyArgs>(args: SelectSubset<T, LocationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -8601,7 +10084,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Locations and only return the `id`
      * const locationWithIdOnly = await prisma.location.updateManyAndReturn({
      *   select: { id: true },
@@ -8614,7 +10097,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends LocationUpdateManyAndReturnArgs>(args: SelectSubset<T, LocationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LocationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -8684,7 +10167,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends LocationGroupByArgs,
@@ -8790,12 +10273,14 @@ export namespace Prisma {
   interface LocationFieldRefs {
     readonly id: FieldRef<"Location", 'Int'>
     readonly address: FieldRef<"Location", 'String'>
+    readonly subdistrict: FieldRef<"Location", 'String'>
+    readonly district: FieldRef<"Location", 'String'>
     readonly city: FieldRef<"Location", 'String'>
     readonly state: FieldRef<"Location", 'String'>
     readonly country: FieldRef<"Location", 'String'>
     readonly postalCode: FieldRef<"Location", 'String'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -8864,31 +10349,31 @@ export namespace Prisma {
     where?: LocationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Locations to fetch.
      */
     orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Locations.
      */
     cursor?: LocationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Locations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Locations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Locations.
      */
     distinct?: LocationScalarFieldEnum | LocationScalarFieldEnum[]
@@ -8916,31 +10401,31 @@ export namespace Prisma {
     where?: LocationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Locations to fetch.
      */
     orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Locations.
      */
     cursor?: LocationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Locations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Locations.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Locations.
      */
     distinct?: LocationScalarFieldEnum | LocationScalarFieldEnum[]
@@ -8968,25 +10453,25 @@ export namespace Prisma {
     where?: LocationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Locations to fetch.
      */
     orderBy?: LocationOrderByWithRelationInput | LocationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Locations.
      */
     cursor?: LocationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Locations from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Locations.
      */
     skip?: number
@@ -9158,12 +10643,18 @@ export namespace Prisma {
     id: number | null
     propertyId: number | null
     leaseId: number | null
+    originalMonthlyRent: number | null
+    originalDeposit: number | null
+    agreedMonthlyRent: number | null
   }
 
   export type ApplicationSumAggregateOutputType = {
     id: number | null
     propertyId: number | null
     leaseId: number | null
+    originalMonthlyRent: number | null
+    originalDeposit: number | null
+    agreedMonthlyRent: number | null
   }
 
   export type ApplicationMinAggregateOutputType = {
@@ -9177,6 +10668,23 @@ export namespace Prisma {
     phoneNumber: string | null
     message: string | null
     leaseId: number | null
+    originalMonthlyRent: number | null
+    originalDeposit: number | null
+    agreedMonthlyRent: number | null
+    settlementMethod: $Enums.SettlementMethod | null
+    tenantConfirmedAt: Date | null
+    managerConfirmedAt: Date | null
+    transferReference: string | null
+    paidAt: Date | null
+    approvedAt: Date | null
+    paymentDueAt: Date | null
+    cancellationRequestedAt: Date | null
+    cancellationExecuteAt: Date | null
+    cancellationReason: string | null
+    denialReason: string | null
+    paymentDisputedAt: Date | null
+    paymentDisputeResolvedAt: Date | null
+    paymentDisputeReason: string | null
   }
 
   export type ApplicationMaxAggregateOutputType = {
@@ -9190,6 +10698,23 @@ export namespace Prisma {
     phoneNumber: string | null
     message: string | null
     leaseId: number | null
+    originalMonthlyRent: number | null
+    originalDeposit: number | null
+    agreedMonthlyRent: number | null
+    settlementMethod: $Enums.SettlementMethod | null
+    tenantConfirmedAt: Date | null
+    managerConfirmedAt: Date | null
+    transferReference: string | null
+    paidAt: Date | null
+    approvedAt: Date | null
+    paymentDueAt: Date | null
+    cancellationRequestedAt: Date | null
+    cancellationExecuteAt: Date | null
+    cancellationReason: string | null
+    denialReason: string | null
+    paymentDisputedAt: Date | null
+    paymentDisputeResolvedAt: Date | null
+    paymentDisputeReason: string | null
   }
 
   export type ApplicationCountAggregateOutputType = {
@@ -9203,6 +10728,23 @@ export namespace Prisma {
     phoneNumber: number
     message: number
     leaseId: number
+    originalMonthlyRent: number
+    originalDeposit: number
+    agreedMonthlyRent: number
+    settlementMethod: number
+    tenantConfirmedAt: number
+    managerConfirmedAt: number
+    transferReference: number
+    paidAt: number
+    approvedAt: number
+    paymentDueAt: number
+    cancellationRequestedAt: number
+    cancellationExecuteAt: number
+    cancellationReason: number
+    denialReason: number
+    paymentDisputedAt: number
+    paymentDisputeResolvedAt: number
+    paymentDisputeReason: number
     _all: number
   }
 
@@ -9211,12 +10753,18 @@ export namespace Prisma {
     id?: true
     propertyId?: true
     leaseId?: true
+    originalMonthlyRent?: true
+    originalDeposit?: true
+    agreedMonthlyRent?: true
   }
 
   export type ApplicationSumAggregateInputType = {
     id?: true
     propertyId?: true
     leaseId?: true
+    originalMonthlyRent?: true
+    originalDeposit?: true
+    agreedMonthlyRent?: true
   }
 
   export type ApplicationMinAggregateInputType = {
@@ -9230,6 +10778,23 @@ export namespace Prisma {
     phoneNumber?: true
     message?: true
     leaseId?: true
+    originalMonthlyRent?: true
+    originalDeposit?: true
+    agreedMonthlyRent?: true
+    settlementMethod?: true
+    tenantConfirmedAt?: true
+    managerConfirmedAt?: true
+    transferReference?: true
+    paidAt?: true
+    approvedAt?: true
+    paymentDueAt?: true
+    cancellationRequestedAt?: true
+    cancellationExecuteAt?: true
+    cancellationReason?: true
+    denialReason?: true
+    paymentDisputedAt?: true
+    paymentDisputeResolvedAt?: true
+    paymentDisputeReason?: true
   }
 
   export type ApplicationMaxAggregateInputType = {
@@ -9243,6 +10808,23 @@ export namespace Prisma {
     phoneNumber?: true
     message?: true
     leaseId?: true
+    originalMonthlyRent?: true
+    originalDeposit?: true
+    agreedMonthlyRent?: true
+    settlementMethod?: true
+    tenantConfirmedAt?: true
+    managerConfirmedAt?: true
+    transferReference?: true
+    paidAt?: true
+    approvedAt?: true
+    paymentDueAt?: true
+    cancellationRequestedAt?: true
+    cancellationExecuteAt?: true
+    cancellationReason?: true
+    denialReason?: true
+    paymentDisputedAt?: true
+    paymentDisputeResolvedAt?: true
+    paymentDisputeReason?: true
   }
 
   export type ApplicationCountAggregateInputType = {
@@ -9256,6 +10838,23 @@ export namespace Prisma {
     phoneNumber?: true
     message?: true
     leaseId?: true
+    originalMonthlyRent?: true
+    originalDeposit?: true
+    agreedMonthlyRent?: true
+    settlementMethod?: true
+    tenantConfirmedAt?: true
+    managerConfirmedAt?: true
+    transferReference?: true
+    paidAt?: true
+    approvedAt?: true
+    paymentDueAt?: true
+    cancellationRequestedAt?: true
+    cancellationExecuteAt?: true
+    cancellationReason?: true
+    denialReason?: true
+    paymentDisputedAt?: true
+    paymentDisputeResolvedAt?: true
+    paymentDisputeReason?: true
     _all?: true
   }
 
@@ -9266,55 +10865,55 @@ export namespace Prisma {
     where?: ApplicationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Applications to fetch.
      */
     orderBy?: ApplicationOrderByWithRelationInput | ApplicationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: ApplicationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Applications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Applications.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Applications
     **/
     _count?: true | ApplicationCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: ApplicationAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: ApplicationSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: ApplicationMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: ApplicationMaxAggregateInputType
@@ -9356,6 +10955,23 @@ export namespace Prisma {
     phoneNumber: string
     message: string | null
     leaseId: number | null
+    originalMonthlyRent: number | null
+    originalDeposit: number | null
+    agreedMonthlyRent: number | null
+    settlementMethod: $Enums.SettlementMethod | null
+    tenantConfirmedAt: Date | null
+    managerConfirmedAt: Date | null
+    transferReference: string | null
+    paidAt: Date | null
+    approvedAt: Date | null
+    paymentDueAt: Date | null
+    cancellationRequestedAt: Date | null
+    cancellationExecuteAt: Date | null
+    cancellationReason: string | null
+    denialReason: string | null
+    paymentDisputedAt: Date | null
+    paymentDisputeResolvedAt: Date | null
+    paymentDisputeReason: string | null
     _count: ApplicationCountAggregateOutputType | null
     _avg: ApplicationAvgAggregateOutputType | null
     _sum: ApplicationSumAggregateOutputType | null
@@ -9388,6 +11004,23 @@ export namespace Prisma {
     phoneNumber?: boolean
     message?: boolean
     leaseId?: boolean
+    originalMonthlyRent?: boolean
+    originalDeposit?: boolean
+    agreedMonthlyRent?: boolean
+    settlementMethod?: boolean
+    tenantConfirmedAt?: boolean
+    managerConfirmedAt?: boolean
+    transferReference?: boolean
+    paidAt?: boolean
+    approvedAt?: boolean
+    paymentDueAt?: boolean
+    cancellationRequestedAt?: boolean
+    cancellationExecuteAt?: boolean
+    cancellationReason?: boolean
+    denialReason?: boolean
+    paymentDisputedAt?: boolean
+    paymentDisputeResolvedAt?: boolean
+    paymentDisputeReason?: boolean
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     lease?: boolean | Application$leaseArgs<ExtArgs>
@@ -9404,6 +11037,23 @@ export namespace Prisma {
     phoneNumber?: boolean
     message?: boolean
     leaseId?: boolean
+    originalMonthlyRent?: boolean
+    originalDeposit?: boolean
+    agreedMonthlyRent?: boolean
+    settlementMethod?: boolean
+    tenantConfirmedAt?: boolean
+    managerConfirmedAt?: boolean
+    transferReference?: boolean
+    paidAt?: boolean
+    approvedAt?: boolean
+    paymentDueAt?: boolean
+    cancellationRequestedAt?: boolean
+    cancellationExecuteAt?: boolean
+    cancellationReason?: boolean
+    denialReason?: boolean
+    paymentDisputedAt?: boolean
+    paymentDisputeResolvedAt?: boolean
+    paymentDisputeReason?: boolean
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     lease?: boolean | Application$leaseArgs<ExtArgs>
@@ -9420,6 +11070,23 @@ export namespace Prisma {
     phoneNumber?: boolean
     message?: boolean
     leaseId?: boolean
+    originalMonthlyRent?: boolean
+    originalDeposit?: boolean
+    agreedMonthlyRent?: boolean
+    settlementMethod?: boolean
+    tenantConfirmedAt?: boolean
+    managerConfirmedAt?: boolean
+    transferReference?: boolean
+    paidAt?: boolean
+    approvedAt?: boolean
+    paymentDueAt?: boolean
+    cancellationRequestedAt?: boolean
+    cancellationExecuteAt?: boolean
+    cancellationReason?: boolean
+    denialReason?: boolean
+    paymentDisputedAt?: boolean
+    paymentDisputeResolvedAt?: boolean
+    paymentDisputeReason?: boolean
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     lease?: boolean | Application$leaseArgs<ExtArgs>
@@ -9436,9 +11103,26 @@ export namespace Prisma {
     phoneNumber?: boolean
     message?: boolean
     leaseId?: boolean
+    originalMonthlyRent?: boolean
+    originalDeposit?: boolean
+    agreedMonthlyRent?: boolean
+    settlementMethod?: boolean
+    tenantConfirmedAt?: boolean
+    managerConfirmedAt?: boolean
+    transferReference?: boolean
+    paidAt?: boolean
+    approvedAt?: boolean
+    paymentDueAt?: boolean
+    cancellationRequestedAt?: boolean
+    cancellationExecuteAt?: boolean
+    cancellationReason?: boolean
+    denialReason?: boolean
+    paymentDisputedAt?: boolean
+    paymentDisputeResolvedAt?: boolean
+    paymentDisputeReason?: boolean
   }
 
-  export type ApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "applicationDate" | "status" | "propertyId" | "tenantUserId" | "name" | "email" | "phoneNumber" | "message" | "leaseId", ExtArgs["result"]["application"]>
+  export type ApplicationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "applicationDate" | "status" | "propertyId" | "tenantUserId" | "name" | "email" | "phoneNumber" | "message" | "leaseId" | "originalMonthlyRent" | "originalDeposit" | "agreedMonthlyRent" | "settlementMethod" | "tenantConfirmedAt" | "managerConfirmedAt" | "transferReference" | "paidAt" | "approvedAt" | "paymentDueAt" | "cancellationRequestedAt" | "cancellationExecuteAt" | "cancellationReason" | "denialReason" | "paymentDisputedAt" | "paymentDisputeResolvedAt" | "paymentDisputeReason", ExtArgs["result"]["application"]>
   export type ApplicationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -9473,6 +11157,23 @@ export namespace Prisma {
       phoneNumber: string
       message: string | null
       leaseId: number | null
+      originalMonthlyRent: number | null
+      originalDeposit: number | null
+      agreedMonthlyRent: number | null
+      settlementMethod: $Enums.SettlementMethod | null
+      tenantConfirmedAt: Date | null
+      managerConfirmedAt: Date | null
+      transferReference: string | null
+      paidAt: Date | null
+      approvedAt: Date | null
+      paymentDueAt: Date | null
+      cancellationRequestedAt: Date | null
+      cancellationExecuteAt: Date | null
+      cancellationReason: string | null
+      denialReason: string | null
+      paymentDisputedAt: Date | null
+      paymentDisputeResolvedAt: Date | null
+      paymentDisputeReason: string | null
     }, ExtArgs["result"]["application"]>
     composites: {}
   }
@@ -9552,13 +11253,13 @@ export namespace Prisma {
      * @example
      * // Get all Applications
      * const applications = await prisma.application.findMany()
-     * 
+     *
      * // Get first 10 Applications
      * const applications = await prisma.application.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const applicationWithIdOnly = await prisma.application.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends ApplicationFindManyArgs>(args?: SelectSubset<T, ApplicationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -9572,7 +11273,7 @@ export namespace Prisma {
      *     // ... data to create a Application
      *   }
      * })
-     * 
+     *
      */
     create<T extends ApplicationCreateArgs>(args: SelectSubset<T, ApplicationCreateArgs<ExtArgs>>): Prisma__ApplicationClient<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -9586,7 +11287,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends ApplicationCreateManyArgs>(args?: SelectSubset<T, ApplicationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -9600,7 +11301,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Applications and only return the `id`
      * const applicationWithIdOnly = await prisma.application.createManyAndReturn({
      *   select: { id: true },
@@ -9610,7 +11311,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends ApplicationCreateManyAndReturnArgs>(args?: SelectSubset<T, ApplicationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -9624,7 +11325,7 @@ export namespace Prisma {
      *     // ... filter to delete one Application
      *   }
      * })
-     * 
+     *
      */
     delete<T extends ApplicationDeleteArgs>(args: SelectSubset<T, ApplicationDeleteArgs<ExtArgs>>): Prisma__ApplicationClient<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -9641,7 +11342,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends ApplicationUpdateArgs>(args: SelectSubset<T, ApplicationUpdateArgs<ExtArgs>>): Prisma__ApplicationClient<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -9655,7 +11356,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends ApplicationDeleteManyArgs>(args?: SelectSubset<T, ApplicationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -9674,7 +11375,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends ApplicationUpdateManyArgs>(args: SelectSubset<T, ApplicationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -9691,7 +11392,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Applications and only return the `id`
      * const applicationWithIdOnly = await prisma.application.updateManyAndReturn({
      *   select: { id: true },
@@ -9704,7 +11405,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends ApplicationUpdateManyAndReturnArgs>(args: SelectSubset<T, ApplicationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ApplicationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -9793,7 +11494,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends ApplicationGroupByArgs,
@@ -9909,8 +11610,25 @@ export namespace Prisma {
     readonly phoneNumber: FieldRef<"Application", 'String'>
     readonly message: FieldRef<"Application", 'String'>
     readonly leaseId: FieldRef<"Application", 'Int'>
+    readonly originalMonthlyRent: FieldRef<"Application", 'Float'>
+    readonly originalDeposit: FieldRef<"Application", 'Float'>
+    readonly agreedMonthlyRent: FieldRef<"Application", 'Float'>
+    readonly settlementMethod: FieldRef<"Application", 'SettlementMethod'>
+    readonly tenantConfirmedAt: FieldRef<"Application", 'DateTime'>
+    readonly managerConfirmedAt: FieldRef<"Application", 'DateTime'>
+    readonly transferReference: FieldRef<"Application", 'String'>
+    readonly paidAt: FieldRef<"Application", 'DateTime'>
+    readonly approvedAt: FieldRef<"Application", 'DateTime'>
+    readonly paymentDueAt: FieldRef<"Application", 'DateTime'>
+    readonly cancellationRequestedAt: FieldRef<"Application", 'DateTime'>
+    readonly cancellationExecuteAt: FieldRef<"Application", 'DateTime'>
+    readonly cancellationReason: FieldRef<"Application", 'String'>
+    readonly denialReason: FieldRef<"Application", 'String'>
+    readonly paymentDisputedAt: FieldRef<"Application", 'DateTime'>
+    readonly paymentDisputeResolvedAt: FieldRef<"Application", 'DateTime'>
+    readonly paymentDisputeReason: FieldRef<"Application", 'String'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -9979,31 +11697,31 @@ export namespace Prisma {
     where?: ApplicationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Applications to fetch.
      */
     orderBy?: ApplicationOrderByWithRelationInput | ApplicationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Applications.
      */
     cursor?: ApplicationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Applications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Applications.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Applications.
      */
     distinct?: ApplicationScalarFieldEnum | ApplicationScalarFieldEnum[]
@@ -10031,31 +11749,31 @@ export namespace Prisma {
     where?: ApplicationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Applications to fetch.
      */
     orderBy?: ApplicationOrderByWithRelationInput | ApplicationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Applications.
      */
     cursor?: ApplicationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Applications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Applications.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Applications.
      */
     distinct?: ApplicationScalarFieldEnum | ApplicationScalarFieldEnum[]
@@ -10083,25 +11801,25 @@ export namespace Prisma {
     where?: ApplicationWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Applications to fetch.
      */
     orderBy?: ApplicationOrderByWithRelationInput | ApplicationOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Applications.
      */
     cursor?: ApplicationWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Applications from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Applications.
      */
     skip?: number
@@ -10359,6 +12077,7 @@ export namespace Prisma {
     rent: number | null
     deposit: number | null
     propertyId: number | null
+    renewalMonths: number | null
   }
 
   export type LeaseSumAggregateOutputType = {
@@ -10366,6 +12085,7 @@ export namespace Prisma {
     rent: number | null
     deposit: number | null
     propertyId: number | null
+    renewalMonths: number | null
   }
 
   export type LeaseMinAggregateOutputType = {
@@ -10376,6 +12096,10 @@ export namespace Prisma {
     deposit: number | null
     propertyId: number | null
     tenantUserId: string | null
+    renewalStatus: $Enums.RenewalStatus | null
+    renewalRequestedAt: Date | null
+    renewalReviewedAt: Date | null
+    renewalMonths: number | null
   }
 
   export type LeaseMaxAggregateOutputType = {
@@ -10386,6 +12110,10 @@ export namespace Prisma {
     deposit: number | null
     propertyId: number | null
     tenantUserId: string | null
+    renewalStatus: $Enums.RenewalStatus | null
+    renewalRequestedAt: Date | null
+    renewalReviewedAt: Date | null
+    renewalMonths: number | null
   }
 
   export type LeaseCountAggregateOutputType = {
@@ -10396,6 +12124,10 @@ export namespace Prisma {
     deposit: number
     propertyId: number
     tenantUserId: number
+    renewalStatus: number
+    renewalRequestedAt: number
+    renewalReviewedAt: number
+    renewalMonths: number
     _all: number
   }
 
@@ -10405,6 +12137,7 @@ export namespace Prisma {
     rent?: true
     deposit?: true
     propertyId?: true
+    renewalMonths?: true
   }
 
   export type LeaseSumAggregateInputType = {
@@ -10412,6 +12145,7 @@ export namespace Prisma {
     rent?: true
     deposit?: true
     propertyId?: true
+    renewalMonths?: true
   }
 
   export type LeaseMinAggregateInputType = {
@@ -10422,6 +12156,10 @@ export namespace Prisma {
     deposit?: true
     propertyId?: true
     tenantUserId?: true
+    renewalStatus?: true
+    renewalRequestedAt?: true
+    renewalReviewedAt?: true
+    renewalMonths?: true
   }
 
   export type LeaseMaxAggregateInputType = {
@@ -10432,6 +12170,10 @@ export namespace Prisma {
     deposit?: true
     propertyId?: true
     tenantUserId?: true
+    renewalStatus?: true
+    renewalRequestedAt?: true
+    renewalReviewedAt?: true
+    renewalMonths?: true
   }
 
   export type LeaseCountAggregateInputType = {
@@ -10442,6 +12184,10 @@ export namespace Prisma {
     deposit?: true
     propertyId?: true
     tenantUserId?: true
+    renewalStatus?: true
+    renewalRequestedAt?: true
+    renewalReviewedAt?: true
+    renewalMonths?: true
     _all?: true
   }
 
@@ -10452,55 +12198,55 @@ export namespace Prisma {
     where?: LeaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Leases to fetch.
      */
     orderBy?: LeaseOrderByWithRelationInput | LeaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: LeaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Leases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Leases.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Leases
     **/
     _count?: true | LeaseCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: LeaseAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: LeaseSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: LeaseMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: LeaseMaxAggregateInputType
@@ -10539,6 +12285,10 @@ export namespace Prisma {
     deposit: number
     propertyId: number
     tenantUserId: string
+    renewalStatus: $Enums.RenewalStatus | null
+    renewalRequestedAt: Date | null
+    renewalReviewedAt: Date | null
+    renewalMonths: number | null
     _count: LeaseCountAggregateOutputType | null
     _avg: LeaseAvgAggregateOutputType | null
     _sum: LeaseSumAggregateOutputType | null
@@ -10568,6 +12318,10 @@ export namespace Prisma {
     deposit?: boolean
     propertyId?: boolean
     tenantUserId?: boolean
+    renewalStatus?: boolean
+    renewalRequestedAt?: boolean
+    renewalReviewedAt?: boolean
+    renewalMonths?: boolean
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
     application?: boolean | Lease$applicationArgs<ExtArgs>
@@ -10583,6 +12337,10 @@ export namespace Prisma {
     deposit?: boolean
     propertyId?: boolean
     tenantUserId?: boolean
+    renewalStatus?: boolean
+    renewalRequestedAt?: boolean
+    renewalReviewedAt?: boolean
+    renewalMonths?: boolean
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lease"]>
@@ -10595,6 +12353,10 @@ export namespace Prisma {
     deposit?: boolean
     propertyId?: boolean
     tenantUserId?: boolean
+    renewalStatus?: boolean
+    renewalRequestedAt?: boolean
+    renewalReviewedAt?: boolean
+    renewalMonths?: boolean
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["lease"]>
@@ -10607,9 +12369,13 @@ export namespace Prisma {
     deposit?: boolean
     propertyId?: boolean
     tenantUserId?: boolean
+    renewalStatus?: boolean
+    renewalRequestedAt?: boolean
+    renewalReviewedAt?: boolean
+    renewalMonths?: boolean
   }
 
-  export type LeaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "startDate" | "endDate" | "rent" | "deposit" | "propertyId" | "tenantUserId", ExtArgs["result"]["lease"]>
+  export type LeaseOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "startDate" | "endDate" | "rent" | "deposit" | "propertyId" | "tenantUserId" | "renewalStatus" | "renewalRequestedAt" | "renewalReviewedAt" | "renewalMonths", ExtArgs["result"]["lease"]>
   export type LeaseInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     property?: boolean | PropertyDefaultArgs<ExtArgs>
     tenant?: boolean | TenantDefaultArgs<ExtArgs>
@@ -10642,6 +12408,10 @@ export namespace Prisma {
       deposit: number
       propertyId: number
       tenantUserId: string
+      renewalStatus: $Enums.RenewalStatus | null
+      renewalRequestedAt: Date | null
+      renewalReviewedAt: Date | null
+      renewalMonths: number | null
     }, ExtArgs["result"]["lease"]>
     composites: {}
   }
@@ -10721,13 +12491,13 @@ export namespace Prisma {
      * @example
      * // Get all Leases
      * const leases = await prisma.lease.findMany()
-     * 
+     *
      * // Get first 10 Leases
      * const leases = await prisma.lease.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const leaseWithIdOnly = await prisma.lease.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends LeaseFindManyArgs>(args?: SelectSubset<T, LeaseFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeasePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -10741,7 +12511,7 @@ export namespace Prisma {
      *     // ... data to create a Lease
      *   }
      * })
-     * 
+     *
      */
     create<T extends LeaseCreateArgs>(args: SelectSubset<T, LeaseCreateArgs<ExtArgs>>): Prisma__LeaseClient<$Result.GetResult<Prisma.$LeasePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -10755,7 +12525,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends LeaseCreateManyArgs>(args?: SelectSubset<T, LeaseCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -10769,7 +12539,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Leases and only return the `id`
      * const leaseWithIdOnly = await prisma.lease.createManyAndReturn({
      *   select: { id: true },
@@ -10779,7 +12549,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends LeaseCreateManyAndReturnArgs>(args?: SelectSubset<T, LeaseCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeasePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -10793,7 +12563,7 @@ export namespace Prisma {
      *     // ... filter to delete one Lease
      *   }
      * })
-     * 
+     *
      */
     delete<T extends LeaseDeleteArgs>(args: SelectSubset<T, LeaseDeleteArgs<ExtArgs>>): Prisma__LeaseClient<$Result.GetResult<Prisma.$LeasePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -10810,7 +12580,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends LeaseUpdateArgs>(args: SelectSubset<T, LeaseUpdateArgs<ExtArgs>>): Prisma__LeaseClient<$Result.GetResult<Prisma.$LeasePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -10824,7 +12594,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends LeaseDeleteManyArgs>(args?: SelectSubset<T, LeaseDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -10843,7 +12613,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends LeaseUpdateManyArgs>(args: SelectSubset<T, LeaseUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -10860,7 +12630,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Leases and only return the `id`
      * const leaseWithIdOnly = await prisma.lease.updateManyAndReturn({
      *   select: { id: true },
@@ -10873,7 +12643,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends LeaseUpdateManyAndReturnArgs>(args: SelectSubset<T, LeaseUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$LeasePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -10962,7 +12732,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends LeaseGroupByArgs,
@@ -11076,8 +12846,12 @@ export namespace Prisma {
     readonly deposit: FieldRef<"Lease", 'Float'>
     readonly propertyId: FieldRef<"Lease", 'Int'>
     readonly tenantUserId: FieldRef<"Lease", 'String'>
+    readonly renewalStatus: FieldRef<"Lease", 'RenewalStatus'>
+    readonly renewalRequestedAt: FieldRef<"Lease", 'DateTime'>
+    readonly renewalReviewedAt: FieldRef<"Lease", 'DateTime'>
+    readonly renewalMonths: FieldRef<"Lease", 'Int'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -11146,31 +12920,31 @@ export namespace Prisma {
     where?: LeaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Leases to fetch.
      */
     orderBy?: LeaseOrderByWithRelationInput | LeaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Leases.
      */
     cursor?: LeaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Leases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Leases.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Leases.
      */
     distinct?: LeaseScalarFieldEnum | LeaseScalarFieldEnum[]
@@ -11198,31 +12972,31 @@ export namespace Prisma {
     where?: LeaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Leases to fetch.
      */
     orderBy?: LeaseOrderByWithRelationInput | LeaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Leases.
      */
     cursor?: LeaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Leases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Leases.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Leases.
      */
     distinct?: LeaseScalarFieldEnum | LeaseScalarFieldEnum[]
@@ -11250,25 +13024,25 @@ export namespace Prisma {
     where?: LeaseWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Leases to fetch.
      */
     orderBy?: LeaseOrderByWithRelationInput | LeaseOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Leases.
      */
     cursor?: LeaseWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Leases from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Leases.
      */
     skip?: number
@@ -11643,55 +13417,55 @@ export namespace Prisma {
     where?: PaymentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Payments to fetch.
      */
     orderBy?: PaymentOrderByWithRelationInput | PaymentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: PaymentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Payments from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Payments.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Payments
     **/
     _count?: true | PaymentCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: PaymentAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: PaymentSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: PaymentMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: PaymentMaxAggregateInputType
@@ -11897,13 +13671,13 @@ export namespace Prisma {
      * @example
      * // Get all Payments
      * const payments = await prisma.payment.findMany()
-     * 
+     *
      * // Get first 10 Payments
      * const payments = await prisma.payment.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const paymentWithIdOnly = await prisma.payment.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends PaymentFindManyArgs>(args?: SelectSubset<T, PaymentFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -11917,7 +13691,7 @@ export namespace Prisma {
      *     // ... data to create a Payment
      *   }
      * })
-     * 
+     *
      */
     create<T extends PaymentCreateArgs>(args: SelectSubset<T, PaymentCreateArgs<ExtArgs>>): Prisma__PaymentClient<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -11931,7 +13705,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends PaymentCreateManyArgs>(args?: SelectSubset<T, PaymentCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -11945,7 +13719,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Payments and only return the `id`
      * const paymentWithIdOnly = await prisma.payment.createManyAndReturn({
      *   select: { id: true },
@@ -11955,7 +13729,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends PaymentCreateManyAndReturnArgs>(args?: SelectSubset<T, PaymentCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -11969,7 +13743,7 @@ export namespace Prisma {
      *     // ... filter to delete one Payment
      *   }
      * })
-     * 
+     *
      */
     delete<T extends PaymentDeleteArgs>(args: SelectSubset<T, PaymentDeleteArgs<ExtArgs>>): Prisma__PaymentClient<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -11986,7 +13760,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends PaymentUpdateArgs>(args: SelectSubset<T, PaymentUpdateArgs<ExtArgs>>): Prisma__PaymentClient<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -12000,7 +13774,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends PaymentDeleteManyArgs>(args?: SelectSubset<T, PaymentDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -12019,7 +13793,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends PaymentUpdateManyArgs>(args: SelectSubset<T, PaymentUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -12036,7 +13810,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Payments and only return the `id`
      * const paymentWithIdOnly = await prisma.payment.updateManyAndReturn({
      *   select: { id: true },
@@ -12049,7 +13823,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends PaymentUpdateManyAndReturnArgs>(args: SelectSubset<T, PaymentUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PaymentPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -12138,7 +13912,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends PaymentGroupByArgs,
@@ -12250,7 +14024,7 @@ export namespace Prisma {
     readonly paymentStatus: FieldRef<"Payment", 'PaymentStatus'>
     readonly leaseId: FieldRef<"Payment", 'Int'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -12319,31 +14093,31 @@ export namespace Prisma {
     where?: PaymentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Payments to fetch.
      */
     orderBy?: PaymentOrderByWithRelationInput | PaymentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Payments.
      */
     cursor?: PaymentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Payments from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Payments.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Payments.
      */
     distinct?: PaymentScalarFieldEnum | PaymentScalarFieldEnum[]
@@ -12371,31 +14145,31 @@ export namespace Prisma {
     where?: PaymentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Payments to fetch.
      */
     orderBy?: PaymentOrderByWithRelationInput | PaymentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Payments.
      */
     cursor?: PaymentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Payments from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Payments.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Payments.
      */
     distinct?: PaymentScalarFieldEnum | PaymentScalarFieldEnum[]
@@ -12423,25 +14197,25 @@ export namespace Prisma {
     where?: PaymentWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Payments to fetch.
      */
     orderBy?: PaymentOrderByWithRelationInput | PaymentOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Payments.
      */
     cursor?: PaymentWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Payments from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Payments.
      */
     skip?: number
@@ -12765,55 +14539,55 @@ export namespace Prisma {
     where?: ChatWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Chats to fetch.
      */
     orderBy?: ChatOrderByWithRelationInput | ChatOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: ChatWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Chats from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Chats.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Chats
     **/
     _count?: true | ChatCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: ChatAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: ChatSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: ChatMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: ChatMaxAggregateInputType
@@ -13038,13 +14812,13 @@ export namespace Prisma {
      * @example
      * // Get all Chats
      * const chats = await prisma.chat.findMany()
-     * 
+     *
      * // Get first 10 Chats
      * const chats = await prisma.chat.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const chatWithIdOnly = await prisma.chat.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends ChatFindManyArgs>(args?: SelectSubset<T, ChatFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -13058,7 +14832,7 @@ export namespace Prisma {
      *     // ... data to create a Chat
      *   }
      * })
-     * 
+     *
      */
     create<T extends ChatCreateArgs>(args: SelectSubset<T, ChatCreateArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -13072,7 +14846,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends ChatCreateManyArgs>(args?: SelectSubset<T, ChatCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -13086,7 +14860,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Chats and only return the `id`
      * const chatWithIdOnly = await prisma.chat.createManyAndReturn({
      *   select: { id: true },
@@ -13096,7 +14870,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends ChatCreateManyAndReturnArgs>(args?: SelectSubset<T, ChatCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -13110,7 +14884,7 @@ export namespace Prisma {
      *     // ... filter to delete one Chat
      *   }
      * })
-     * 
+     *
      */
     delete<T extends ChatDeleteArgs>(args: SelectSubset<T, ChatDeleteArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -13127,7 +14901,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends ChatUpdateArgs>(args: SelectSubset<T, ChatUpdateArgs<ExtArgs>>): Prisma__ChatClient<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -13141,7 +14915,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends ChatDeleteManyArgs>(args?: SelectSubset<T, ChatDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -13160,7 +14934,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends ChatUpdateManyArgs>(args: SelectSubset<T, ChatUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -13177,7 +14951,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Chats and only return the `id`
      * const chatWithIdOnly = await prisma.chat.updateManyAndReturn({
      *   select: { id: true },
@@ -13190,7 +14964,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends ChatUpdateManyAndReturnArgs>(args: SelectSubset<T, ChatUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ChatPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -13279,7 +15053,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends ChatGroupByArgs,
@@ -13394,7 +15168,7 @@ export namespace Prisma {
     readonly managerLastReadAt: FieldRef<"Chat", 'DateTime'>
     readonly lastMessageId: FieldRef<"Chat", 'Int'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -13463,31 +15237,31 @@ export namespace Prisma {
     where?: ChatWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Chats to fetch.
      */
     orderBy?: ChatOrderByWithRelationInput | ChatOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Chats.
      */
     cursor?: ChatWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Chats from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Chats.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Chats.
      */
     distinct?: ChatScalarFieldEnum | ChatScalarFieldEnum[]
@@ -13515,31 +15289,31 @@ export namespace Prisma {
     where?: ChatWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Chats to fetch.
      */
     orderBy?: ChatOrderByWithRelationInput | ChatOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Chats.
      */
     cursor?: ChatWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Chats from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Chats.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Chats.
      */
     distinct?: ChatScalarFieldEnum | ChatScalarFieldEnum[]
@@ -13567,25 +15341,25 @@ export namespace Prisma {
     where?: ChatWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Chats to fetch.
      */
     orderBy?: ChatOrderByWithRelationInput | ChatOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Chats.
      */
     cursor?: ChatWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Chats from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Chats.
      */
     skip?: number
@@ -13940,55 +15714,55 @@ export namespace Prisma {
     where?: MessageWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Messages to fetch.
      */
     orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the start position
      */
     cursor?: MessageWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Messages from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Messages.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Count returned Messages
     **/
     _count?: true | MessageCountAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to average
     **/
     _avg?: MessageAvgAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to sum
     **/
     _sum?: MessageSumAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the minimum value
     **/
     _min?: MessageMinAggregateInputType
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
+     *
      * Select which fields to find the maximum value
     **/
     _max?: MessageMaxAggregateInputType
@@ -14192,13 +15966,13 @@ export namespace Prisma {
      * @example
      * // Get all Messages
      * const messages = await prisma.message.findMany()
-     * 
+     *
      * // Get first 10 Messages
      * const messages = await prisma.message.findMany({ take: 10 })
-     * 
+     *
      * // Only select the `id`
      * const messageWithIdOnly = await prisma.message.findMany({ select: { id: true } })
-     * 
+     *
      */
     findMany<T extends MessageFindManyArgs>(args?: SelectSubset<T, MessageFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
 
@@ -14212,7 +15986,7 @@ export namespace Prisma {
      *     // ... data to create a Message
      *   }
      * })
-     * 
+     *
      */
     create<T extends MessageCreateArgs>(args: SelectSubset<T, MessageCreateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -14226,7 +16000,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     *     
+     *
      */
     createMany<T extends MessageCreateManyArgs>(args?: SelectSubset<T, MessageCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -14240,7 +16014,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Create many Messages and only return the `id`
      * const messageWithIdOnly = await prisma.message.createManyAndReturn({
      *   select: { id: true },
@@ -14250,7 +16024,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     createManyAndReturn<T extends MessageCreateManyAndReturnArgs>(args?: SelectSubset<T, MessageCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
 
@@ -14264,7 +16038,7 @@ export namespace Prisma {
      *     // ... filter to delete one Message
      *   }
      * })
-     * 
+     *
      */
     delete<T extends MessageDeleteArgs>(args: SelectSubset<T, MessageDeleteArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -14281,7 +16055,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     update<T extends MessageUpdateArgs>(args: SelectSubset<T, MessageUpdateArgs<ExtArgs>>): Prisma__MessageClient<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
 
@@ -14295,7 +16069,7 @@ export namespace Prisma {
      *     // ... provide filter here
      *   }
      * })
-     * 
+     *
      */
     deleteMany<T extends MessageDeleteManyArgs>(args?: SelectSubset<T, MessageDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -14314,7 +16088,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   }
      * })
-     * 
+     *
      */
     updateMany<T extends MessageUpdateManyArgs>(args: SelectSubset<T, MessageUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
 
@@ -14331,7 +16105,7 @@ export namespace Prisma {
      *     // ... provide data here
      *   ]
      * })
-     * 
+     *
      * // Update zero or more Messages and only return the `id`
      * const messageWithIdOnly = await prisma.message.updateManyAndReturn({
      *   select: { id: true },
@@ -14344,7 +16118,7 @@ export namespace Prisma {
      * })
      * Note, that providing `undefined` is treated as the value not being there.
      * Read more here: https://pris.ly/d/null-undefined
-     * 
+     *
      */
     updateManyAndReturn<T extends MessageUpdateManyAndReturnArgs>(args: SelectSubset<T, MessageUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$MessagePayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
 
@@ -14433,7 +16207,7 @@ export namespace Prisma {
      *     _all: true
      *   },
      * })
-     * 
+     *
     **/
     groupBy<
       T extends MessageGroupByArgs,
@@ -14545,7 +16319,7 @@ export namespace Prisma {
     readonly content: FieldRef<"Message", 'String'>
     readonly createdAt: FieldRef<"Message", 'DateTime'>
   }
-    
+
 
   // Custom InputTypes
   /**
@@ -14614,31 +16388,31 @@ export namespace Prisma {
     where?: MessageWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Messages to fetch.
      */
     orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Messages.
      */
     cursor?: MessageWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Messages from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Messages.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Messages.
      */
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
@@ -14666,31 +16440,31 @@ export namespace Prisma {
     where?: MessageWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Messages to fetch.
      */
     orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for searching for Messages.
      */
     cursor?: MessageWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Messages from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Messages.
      */
     skip?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
+     *
      * Filter by unique combinations of Messages.
      */
     distinct?: MessageScalarFieldEnum | MessageScalarFieldEnum[]
@@ -14718,25 +16492,25 @@ export namespace Prisma {
     where?: MessageWhereInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
+     *
      * Determine the order of Messages to fetch.
      */
     orderBy?: MessageOrderByWithRelationInput | MessageOrderByWithRelationInput[]
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
+     *
      * Sets the position for listing Messages.
      */
     cursor?: MessageWhereUniqueInput
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Take `±n` Messages from the position of the cursor.
      */
     take?: number
     /**
      * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
+     *
      * Skip the first `n` Messages.
      */
     skip?: number
@@ -14978,6 +16752,1184 @@ export namespace Prisma {
 
 
   /**
+   * Model Notification
+   */
+
+  export type AggregateNotification = {
+    _count: NotificationCountAggregateOutputType | null
+    _avg: NotificationAvgAggregateOutputType | null
+    _sum: NotificationSumAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  export type NotificationAvgAggregateOutputType = {
+    id: number | null
+    resourceId: number | null
+    emailAttempts: number | null
+  }
+
+  export type NotificationSumAggregateOutputType = {
+    id: number | null
+    resourceId: number | null
+    emailAttempts: number | null
+  }
+
+  export type NotificationMinAggregateOutputType = {
+    id: number | null
+    userId: string | null
+    kind: string | null
+    title: string | null
+    body: string | null
+    resourceId: number | null
+    readAt: Date | null
+    createdAt: Date | null
+    emailSentAt: Date | null
+    emailAttempts: number | null
+    dedupeKey: string | null
+  }
+
+  export type NotificationMaxAggregateOutputType = {
+    id: number | null
+    userId: string | null
+    kind: string | null
+    title: string | null
+    body: string | null
+    resourceId: number | null
+    readAt: Date | null
+    createdAt: Date | null
+    emailSentAt: Date | null
+    emailAttempts: number | null
+    dedupeKey: string | null
+  }
+
+  export type NotificationCountAggregateOutputType = {
+    id: number
+    userId: number
+    kind: number
+    title: number
+    body: number
+    resourceId: number
+    readAt: number
+    createdAt: number
+    emailSentAt: number
+    emailAttempts: number
+    dedupeKey: number
+    _all: number
+  }
+
+
+  export type NotificationAvgAggregateInputType = {
+    id?: true
+    resourceId?: true
+    emailAttempts?: true
+  }
+
+  export type NotificationSumAggregateInputType = {
+    id?: true
+    resourceId?: true
+    emailAttempts?: true
+  }
+
+  export type NotificationMinAggregateInputType = {
+    id?: true
+    userId?: true
+    kind?: true
+    title?: true
+    body?: true
+    resourceId?: true
+    readAt?: true
+    createdAt?: true
+    emailSentAt?: true
+    emailAttempts?: true
+    dedupeKey?: true
+  }
+
+  export type NotificationMaxAggregateInputType = {
+    id?: true
+    userId?: true
+    kind?: true
+    title?: true
+    body?: true
+    resourceId?: true
+    readAt?: true
+    createdAt?: true
+    emailSentAt?: true
+    emailAttempts?: true
+    dedupeKey?: true
+  }
+
+  export type NotificationCountAggregateInputType = {
+    id?: true
+    userId?: true
+    kind?: true
+    title?: true
+    body?: true
+    resourceId?: true
+    readAt?: true
+    createdAt?: true
+    emailSentAt?: true
+    emailAttempts?: true
+    dedupeKey?: true
+    _all?: true
+  }
+
+  export type NotificationAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notification to aggregate.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the start position
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Count returned Notifications
+    **/
+    _count?: true | NotificationCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to average
+    **/
+    _avg?: NotificationAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to sum
+    **/
+    _sum?: NotificationSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the minimum value
+    **/
+    _min?: NotificationMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     *
+     * Select which fields to find the maximum value
+    **/
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type GetNotificationAggregateType<T extends NotificationAggregateArgs> = {
+        [P in keyof T & keyof AggregateNotification]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateNotification[P]>
+      : GetScalarType<T[P], AggregateNotification[P]>
+  }
+
+
+
+
+  export type NotificationGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: NotificationWhereInput
+    orderBy?: NotificationOrderByWithAggregationInput | NotificationOrderByWithAggregationInput[]
+    by: NotificationScalarFieldEnum[] | NotificationScalarFieldEnum
+    having?: NotificationScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: NotificationCountAggregateInputType | true
+    _avg?: NotificationAvgAggregateInputType
+    _sum?: NotificationSumAggregateInputType
+    _min?: NotificationMinAggregateInputType
+    _max?: NotificationMaxAggregateInputType
+  }
+
+  export type NotificationGroupByOutputType = {
+    id: number
+    userId: string
+    kind: string
+    title: string
+    body: string
+    resourceId: number | null
+    readAt: Date | null
+    createdAt: Date
+    emailSentAt: Date | null
+    emailAttempts: number
+    dedupeKey: string | null
+    _count: NotificationCountAggregateOutputType | null
+    _avg: NotificationAvgAggregateOutputType | null
+    _sum: NotificationSumAggregateOutputType | null
+    _min: NotificationMinAggregateOutputType | null
+    _max: NotificationMaxAggregateOutputType | null
+  }
+
+  type GetNotificationGroupByPayload<T extends NotificationGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<NotificationGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof NotificationGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+            : GetScalarType<T[P], NotificationGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type NotificationSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    kind?: boolean
+    title?: boolean
+    body?: boolean
+    resourceId?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    emailSentAt?: boolean
+    emailAttempts?: boolean
+    dedupeKey?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    kind?: boolean
+    title?: boolean
+    body?: boolean
+    resourceId?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    emailSentAt?: boolean
+    emailAttempts?: boolean
+    dedupeKey?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    userId?: boolean
+    kind?: boolean
+    title?: boolean
+    body?: boolean
+    resourceId?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    emailSentAt?: boolean
+    emailAttempts?: boolean
+    dedupeKey?: boolean
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["notification"]>
+
+  export type NotificationSelectScalar = {
+    id?: boolean
+    userId?: boolean
+    kind?: boolean
+    title?: boolean
+    body?: boolean
+    resourceId?: boolean
+    readAt?: boolean
+    createdAt?: boolean
+    emailSentAt?: boolean
+    emailAttempts?: boolean
+    dedupeKey?: boolean
+  }
+
+  export type NotificationOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "kind" | "title" | "body" | "resourceId" | "readAt" | "createdAt" | "emailSentAt" | "emailAttempts" | "dedupeKey", ExtArgs["result"]["notification"]>
+  export type NotificationInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationIncludeCreateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+  export type NotificationIncludeUpdateManyAndReturn<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    user?: boolean | UserDefaultArgs<ExtArgs>
+  }
+
+  export type $NotificationPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Notification"
+    objects: {
+      user: Prisma.$UserPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: number
+      userId: string
+      kind: string
+      title: string
+      body: string
+      resourceId: number | null
+      readAt: Date | null
+      createdAt: Date
+      emailSentAt: Date | null
+      emailAttempts: number
+      dedupeKey: string | null
+    }, ExtArgs["result"]["notification"]>
+    composites: {}
+  }
+
+  type NotificationGetPayload<S extends boolean | null | undefined | NotificationDefaultArgs> = $Result.GetResult<Prisma.$NotificationPayload, S>
+
+  type NotificationCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<NotificationFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: NotificationCountAggregateInputType | true
+    }
+
+  export interface NotificationDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Notification'], meta: { name: 'Notification' } }
+    /**
+     * Find zero or one Notification that matches the filter.
+     * @param {NotificationFindUniqueArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends NotificationFindUniqueArgs>(args: SelectSubset<T, NotificationFindUniqueArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Notification that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {NotificationFindUniqueOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends NotificationFindUniqueOrThrowArgs>(args: SelectSubset<T, NotificationFindUniqueOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends NotificationFindFirstArgs>(args?: SelectSubset<T, NotificationFindFirstArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Notification that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindFirstOrThrowArgs} args - Arguments to find a Notification
+     * @example
+     * // Get one Notification
+     * const notification = await prisma.notification.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends NotificationFindFirstOrThrowArgs>(args?: SelectSubset<T, NotificationFindFirstOrThrowArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Notifications that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Notifications
+     * const notifications = await prisma.notification.findMany()
+     *
+     * // Get first 10 Notifications
+     * const notifications = await prisma.notification.findMany({ take: 10 })
+     *
+     * // Only select the `id`
+     * const notificationWithIdOnly = await prisma.notification.findMany({ select: { id: true } })
+     *
+     */
+    findMany<T extends NotificationFindManyArgs>(args?: SelectSubset<T, NotificationFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Notification.
+     * @param {NotificationCreateArgs} args - Arguments to create a Notification.
+     * @example
+     * // Create one Notification
+     * const Notification = await prisma.notification.create({
+     *   data: {
+     *     // ... data to create a Notification
+     *   }
+     * })
+     *
+     */
+    create<T extends NotificationCreateArgs>(args: SelectSubset<T, NotificationCreateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Notifications.
+     * @param {NotificationCreateManyArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     */
+    createMany<T extends NotificationCreateManyArgs>(args?: SelectSubset<T, NotificationCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create many Notifications and returns the data saved in the database.
+     * @param {NotificationCreateManyAndReturnArgs} args - Arguments to create many Notifications.
+     * @example
+     * // Create many Notifications
+     * const notification = await prisma.notification.createManyAndReturn({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Create many Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.createManyAndReturn({
+     *   select: { id: true },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    createManyAndReturn<T extends NotificationCreateManyAndReturnArgs>(args?: SelectSubset<T, NotificationCreateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "createManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Delete a Notification.
+     * @param {NotificationDeleteArgs} args - Arguments to delete one Notification.
+     * @example
+     * // Delete one Notification
+     * const Notification = await prisma.notification.delete({
+     *   where: {
+     *     // ... filter to delete one Notification
+     *   }
+     * })
+     *
+     */
+    delete<T extends NotificationDeleteArgs>(args: SelectSubset<T, NotificationDeleteArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Notification.
+     * @param {NotificationUpdateArgs} args - Arguments to update one Notification.
+     * @example
+     * // Update one Notification
+     * const notification = await prisma.notification.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    update<T extends NotificationUpdateArgs>(args: SelectSubset<T, NotificationUpdateArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Notifications.
+     * @param {NotificationDeleteManyArgs} args - Arguments to filter Notifications to delete.
+     * @example
+     * // Delete a few Notifications
+     * const { count } = await prisma.notification.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     *
+     */
+    deleteMany<T extends NotificationDeleteManyArgs>(args?: SelectSubset<T, NotificationDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     *
+     */
+    updateMany<T extends NotificationUpdateManyArgs>(args: SelectSubset<T, NotificationUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Notifications and returns the data updated in the database.
+     * @param {NotificationUpdateManyAndReturnArgs} args - Arguments to update many Notifications.
+     * @example
+     * // Update many Notifications
+     * const notification = await prisma.notification.updateManyAndReturn({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *
+     * // Update zero or more Notifications and only return the `id`
+     * const notificationWithIdOnly = await prisma.notification.updateManyAndReturn({
+     *   select: { id: true },
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     *
+     */
+    updateManyAndReturn<T extends NotificationUpdateManyAndReturnArgs>(args: SelectSubset<T, NotificationUpdateManyAndReturnArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "updateManyAndReturn", GlobalOmitOptions>>
+
+    /**
+     * Create or update one Notification.
+     * @param {NotificationUpsertArgs} args - Arguments to update or create a Notification.
+     * @example
+     * // Update or create a Notification
+     * const notification = await prisma.notification.upsert({
+     *   create: {
+     *     // ... data to create a Notification
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Notification we want to update
+     *   }
+     * })
+     */
+    upsert<T extends NotificationUpsertArgs>(args: SelectSubset<T, NotificationUpsertArgs<ExtArgs>>): Prisma__NotificationClient<$Result.GetResult<Prisma.$NotificationPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Notifications.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationCountArgs} args - Arguments to filter Notifications to count.
+     * @example
+     * // Count the number of Notifications
+     * const count = await prisma.notification.count({
+     *   where: {
+     *     // ... the filter for the Notifications we want to count
+     *   }
+     * })
+    **/
+    count<T extends NotificationCountArgs>(
+      args?: Subset<T, NotificationCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], NotificationCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends NotificationAggregateArgs>(args: Subset<T, NotificationAggregateArgs>): Prisma.PrismaPromise<GetNotificationAggregateType<T>>
+
+    /**
+     * Group by Notification.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {NotificationGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     *
+    **/
+    groupBy<
+      T extends NotificationGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: NotificationGroupByArgs['orderBy'] }
+        : { orderBy?: NotificationGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, NotificationGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetNotificationGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Notification model
+   */
+  readonly fields: NotificationFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Notification.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__NotificationClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    user<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Notification model
+   */
+  interface NotificationFieldRefs {
+    readonly id: FieldRef<"Notification", 'Int'>
+    readonly userId: FieldRef<"Notification", 'String'>
+    readonly kind: FieldRef<"Notification", 'String'>
+    readonly title: FieldRef<"Notification", 'String'>
+    readonly body: FieldRef<"Notification", 'String'>
+    readonly resourceId: FieldRef<"Notification", 'Int'>
+    readonly readAt: FieldRef<"Notification", 'DateTime'>
+    readonly createdAt: FieldRef<"Notification", 'DateTime'>
+    readonly emailSentAt: FieldRef<"Notification", 'DateTime'>
+    readonly emailAttempts: FieldRef<"Notification", 'Int'>
+    readonly dedupeKey: FieldRef<"Notification", 'String'>
+  }
+
+
+  // Custom InputTypes
+  /**
+   * Notification findUnique
+   */
+  export type NotificationFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findUniqueOrThrow
+   */
+  export type NotificationFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification findFirst
+   */
+  export type NotificationFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findFirstOrThrow
+   */
+  export type NotificationFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notification to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for searching for Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     *
+     * Filter by unique combinations of Notifications.
+     */
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification findMany
+   */
+  export type NotificationFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter, which Notifications to fetch.
+     */
+    where?: NotificationWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     *
+     * Determine the order of Notifications to fetch.
+     */
+    orderBy?: NotificationOrderByWithRelationInput | NotificationOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     *
+     * Sets the position for listing Notifications.
+     */
+    cursor?: NotificationWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Take `±n` Notifications from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     *
+     * Skip the first `n` Notifications.
+     */
+    skip?: number
+    distinct?: NotificationScalarFieldEnum | NotificationScalarFieldEnum[]
+  }
+
+  /**
+   * Notification create
+   */
+  export type NotificationCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Notification.
+     */
+    data: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+  }
+
+  /**
+   * Notification createMany
+   */
+  export type NotificationCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Notification createManyAndReturn
+   */
+  export type NotificationCreateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectCreateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to create many Notifications.
+     */
+    data: NotificationCreateManyInput | NotificationCreateManyInput[]
+    skipDuplicates?: boolean
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeCreateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification update
+   */
+  export type NotificationUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Notification.
+     */
+    data: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+    /**
+     * Choose, which Notification to update.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification updateMany
+   */
+  export type NotificationUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification updateManyAndReturn
+   */
+  export type NotificationUpdateManyAndReturnArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelectUpdateManyAndReturn<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * The data used to update Notifications.
+     */
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyInput>
+    /**
+     * Filter which Notifications to update
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to update.
+     */
+    limit?: number
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationIncludeUpdateManyAndReturn<ExtArgs> | null
+  }
+
+  /**
+   * Notification upsert
+   */
+  export type NotificationUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Notification to update in case it exists.
+     */
+    where: NotificationWhereUniqueInput
+    /**
+     * In case the Notification found by the `where` argument doesn't exist, create a new Notification with this data.
+     */
+    create: XOR<NotificationCreateInput, NotificationUncheckedCreateInput>
+    /**
+     * In case the Notification was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<NotificationUpdateInput, NotificationUncheckedUpdateInput>
+  }
+
+  /**
+   * Notification delete
+   */
+  export type NotificationDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+    /**
+     * Filter which Notification to delete.
+     */
+    where: NotificationWhereUniqueInput
+  }
+
+  /**
+   * Notification deleteMany
+   */
+  export type NotificationDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Notifications to delete
+     */
+    where?: NotificationWhereInput
+    /**
+     * Limit how many Notifications to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Notification without action
+   */
+  export type NotificationDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Notification
+     */
+    select?: NotificationSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Notification
+     */
+    omit?: NotificationOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: NotificationInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -15038,7 +17990,10 @@ export namespace Prisma {
     averageRating: 'averageRating',
     numberOfReviews: 'numberOfReviews',
     locationId: 'locationId',
-    managerUserId: 'managerUserId'
+    managerUserId: 'managerUserId',
+    listingStatus: 'listingStatus',
+    closedAt: 'closedAt',
+    archivedAt: 'archivedAt'
   };
 
   export type PropertyScalarFieldEnum = (typeof PropertyScalarFieldEnum)[keyof typeof PropertyScalarFieldEnum]
@@ -15052,6 +18007,24 @@ export namespace Prisma {
   export type ManagerScalarFieldEnum = (typeof ManagerScalarFieldEnum)[keyof typeof ManagerScalarFieldEnum]
 
 
+  export const ManagerSigningProfileScalarFieldEnum: {
+    managerUserId: 'managerUserId',
+    legalName: 'legalName',
+    title: 'title',
+    agreementNotes: 'agreementNotes',
+    signatureCiphertext: 'signatureCiphertext',
+    signatureSalt: 'signatureSalt',
+    signatureIv: 'signatureIv',
+    signatureUpdatedAt: 'signatureUpdatedAt',
+    acceptedPrivacyAt: 'acceptedPrivacyAt',
+    acceptedSharingAt: 'acceptedSharingAt',
+    acceptedPolicyVersion: 'acceptedPolicyVersion',
+    updatedAt: 'updatedAt'
+  };
+
+  export type ManagerSigningProfileScalarFieldEnum = (typeof ManagerSigningProfileScalarFieldEnum)[keyof typeof ManagerSigningProfileScalarFieldEnum]
+
+
   export const TenantScalarFieldEnum: {
     id: 'id',
     userId: 'userId'
@@ -15063,6 +18036,8 @@ export namespace Prisma {
   export const LocationScalarFieldEnum: {
     id: 'id',
     address: 'address',
+    subdistrict: 'subdistrict',
+    district: 'district',
     city: 'city',
     state: 'state',
     country: 'country',
@@ -15082,7 +18057,24 @@ export namespace Prisma {
     email: 'email',
     phoneNumber: 'phoneNumber',
     message: 'message',
-    leaseId: 'leaseId'
+    leaseId: 'leaseId',
+    originalMonthlyRent: 'originalMonthlyRent',
+    originalDeposit: 'originalDeposit',
+    agreedMonthlyRent: 'agreedMonthlyRent',
+    settlementMethod: 'settlementMethod',
+    tenantConfirmedAt: 'tenantConfirmedAt',
+    managerConfirmedAt: 'managerConfirmedAt',
+    transferReference: 'transferReference',
+    paidAt: 'paidAt',
+    approvedAt: 'approvedAt',
+    paymentDueAt: 'paymentDueAt',
+    cancellationRequestedAt: 'cancellationRequestedAt',
+    cancellationExecuteAt: 'cancellationExecuteAt',
+    cancellationReason: 'cancellationReason',
+    denialReason: 'denialReason',
+    paymentDisputedAt: 'paymentDisputedAt',
+    paymentDisputeResolvedAt: 'paymentDisputeResolvedAt',
+    paymentDisputeReason: 'paymentDisputeReason'
   };
 
   export type ApplicationScalarFieldEnum = (typeof ApplicationScalarFieldEnum)[keyof typeof ApplicationScalarFieldEnum]
@@ -15095,7 +18087,11 @@ export namespace Prisma {
     rent: 'rent',
     deposit: 'deposit',
     propertyId: 'propertyId',
-    tenantUserId: 'tenantUserId'
+    tenantUserId: 'tenantUserId',
+    renewalStatus: 'renewalStatus',
+    renewalRequestedAt: 'renewalRequestedAt',
+    renewalReviewedAt: 'renewalReviewedAt',
+    renewalMonths: 'renewalMonths'
   };
 
   export type LeaseScalarFieldEnum = (typeof LeaseScalarFieldEnum)[keyof typeof LeaseScalarFieldEnum]
@@ -15138,6 +18134,23 @@ export namespace Prisma {
   export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
+  export const NotificationScalarFieldEnum: {
+    id: 'id',
+    userId: 'userId',
+    kind: 'kind',
+    title: 'title',
+    body: 'body',
+    resourceId: 'resourceId',
+    readAt: 'readAt',
+    createdAt: 'createdAt',
+    emailSentAt: 'emailSentAt',
+    emailAttempts: 'emailAttempts',
+    dedupeKey: 'dedupeKey'
+  };
+
+  export type NotificationScalarFieldEnum = (typeof NotificationScalarFieldEnum)[keyof typeof NotificationScalarFieldEnum]
+
+
   export const SortOrder: {
     asc: 'asc',
     desc: 'desc'
@@ -15171,161 +18184,203 @@ export namespace Prisma {
    * Reference to a field of type 'String'
    */
   export type StringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String'>
-    
+
 
 
   /**
    * Reference to a field of type 'String[]'
    */
   export type ListStringFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'String[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'UserRole'
    */
   export type EnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole'>
-    
+
 
 
   /**
    * Reference to a field of type 'UserRole[]'
    */
   export type ListEnumUserRoleFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'UserRole[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'DateTime'
    */
   export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
-    
+
 
 
   /**
    * Reference to a field of type 'DateTime[]'
    */
   export type ListDateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'ProviderType'
    */
   export type EnumProviderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderType'>
-    
+
 
 
   /**
    * Reference to a field of type 'ProviderType[]'
    */
   export type ListEnumProviderTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ProviderType[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Int'
    */
   export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
-    
+
 
 
   /**
    * Reference to a field of type 'Int[]'
    */
   export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Float'
    */
   export type FloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float'>
-    
+
 
 
   /**
    * Reference to a field of type 'Float[]'
    */
   export type ListFloatFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Float[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Amenity[]'
    */
   export type ListEnumAmenityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Amenity[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Amenity'
    */
   export type EnumAmenityFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Amenity'>
-    
+
 
 
   /**
    * Reference to a field of type 'Highlight[]'
    */
   export type ListEnumHighlightFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Highlight[]'>
-    
+
 
 
   /**
    * Reference to a field of type 'Highlight'
    */
   export type EnumHighlightFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Highlight'>
-    
+
 
 
   /**
    * Reference to a field of type 'Boolean'
    */
   export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
-    
+
 
 
   /**
    * Reference to a field of type 'PropertyType'
    */
   export type EnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType'>
-    
+
 
 
   /**
    * Reference to a field of type 'PropertyType[]'
    */
   export type ListEnumPropertyTypeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyType[]'>
-    
+
+
+
+  /**
+   * Reference to a field of type 'PropertyListingStatus'
+   */
+  export type EnumPropertyListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyListingStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'PropertyListingStatus[]'
+   */
+  export type ListEnumPropertyListingStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PropertyListingStatus[]'>
+
 
 
   /**
    * Reference to a field of type 'ApplicationStatus'
    */
   export type EnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationStatus'>
-    
+
 
 
   /**
    * Reference to a field of type 'ApplicationStatus[]'
    */
   export type ListEnumApplicationStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'ApplicationStatus[]'>
-    
+
+
+
+  /**
+   * Reference to a field of type 'SettlementMethod'
+   */
+  export type EnumSettlementMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SettlementMethod'>
+
+
+
+  /**
+   * Reference to a field of type 'SettlementMethod[]'
+   */
+  export type ListEnumSettlementMethodFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'SettlementMethod[]'>
+
+
+
+  /**
+   * Reference to a field of type 'RenewalStatus'
+   */
+  export type EnumRenewalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RenewalStatus'>
+
+
+
+  /**
+   * Reference to a field of type 'RenewalStatus[]'
+   */
+  export type ListEnumRenewalStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'RenewalStatus[]'>
+
 
 
   /**
    * Reference to a field of type 'PaymentStatus'
    */
   export type EnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus'>
-    
+
 
 
   /**
    * Reference to a field of type 'PaymentStatus[]'
    */
   export type ListEnumPaymentStatusFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'PaymentStatus[]'>
-    
+
   /**
    * Deep Input Types
    */
@@ -15345,6 +18400,7 @@ export namespace Prisma {
     manager?: XOR<ManagerNullableScalarRelationFilter, ManagerWhereInput> | null
     tenant?: XOR<TenantNullableScalarRelationFilter, TenantWhereInput> | null
     messages?: MessageListRelationFilter
+    notifications?: NotificationListRelationFilter
   }
 
   export type UserOrderByWithRelationInput = {
@@ -15358,6 +18414,7 @@ export namespace Prisma {
     manager?: ManagerOrderByWithRelationInput
     tenant?: TenantOrderByWithRelationInput
     messages?: MessageOrderByRelationAggregateInput
+    notifications?: NotificationOrderByRelationAggregateInput
   }
 
   export type UserWhereUniqueInput = Prisma.AtLeast<{
@@ -15374,6 +18431,7 @@ export namespace Prisma {
     manager?: XOR<ManagerNullableScalarRelationFilter, ManagerWhereInput> | null
     tenant?: XOR<TenantNullableScalarRelationFilter, TenantWhereInput> | null
     messages?: MessageListRelationFilter
+    notifications?: NotificationListRelationFilter
   }, "id" | "email">
 
   export type UserOrderByWithAggregationInput = {
@@ -15500,6 +18558,9 @@ export namespace Prisma {
     numberOfReviews?: IntNullableFilter<"Property"> | number | null
     locationId?: IntFilter<"Property"> | number
     managerUserId?: StringFilter<"Property"> | string
+    listingStatus?: EnumPropertyListingStatusFilter<"Property"> | $Enums.PropertyListingStatus
+    closedAt?: DateTimeNullableFilter<"Property"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"Property"> | Date | string | null
     location?: XOR<LocationScalarRelationFilter, LocationWhereInput>
     manager?: XOR<ManagerScalarRelationFilter, ManagerWhereInput>
     leases?: LeaseListRelationFilter
@@ -15529,6 +18590,9 @@ export namespace Prisma {
     numberOfReviews?: SortOrderInput | SortOrder
     locationId?: SortOrder
     managerUserId?: SortOrder
+    listingStatus?: SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
     location?: LocationOrderByWithRelationInput
     manager?: ManagerOrderByWithRelationInput
     leases?: LeaseOrderByRelationAggregateInput
@@ -15561,6 +18625,9 @@ export namespace Prisma {
     numberOfReviews?: IntNullableFilter<"Property"> | number | null
     locationId?: IntFilter<"Property"> | number
     managerUserId?: StringFilter<"Property"> | string
+    listingStatus?: EnumPropertyListingStatusFilter<"Property"> | $Enums.PropertyListingStatus
+    closedAt?: DateTimeNullableFilter<"Property"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"Property"> | Date | string | null
     location?: XOR<LocationScalarRelationFilter, LocationWhereInput>
     manager?: XOR<ManagerScalarRelationFilter, ManagerWhereInput>
     leases?: LeaseListRelationFilter
@@ -15590,6 +18657,9 @@ export namespace Prisma {
     numberOfReviews?: SortOrderInput | SortOrder
     locationId?: SortOrder
     managerUserId?: SortOrder
+    listingStatus?: SortOrder
+    closedAt?: SortOrderInput | SortOrder
+    archivedAt?: SortOrderInput | SortOrder
     _count?: PropertyCountOrderByAggregateInput
     _avg?: PropertyAvgOrderByAggregateInput
     _max?: PropertyMaxOrderByAggregateInput
@@ -15621,6 +18691,9 @@ export namespace Prisma {
     numberOfReviews?: IntNullableWithAggregatesFilter<"Property"> | number | null
     locationId?: IntWithAggregatesFilter<"Property"> | number
     managerUserId?: StringWithAggregatesFilter<"Property"> | string
+    listingStatus?: EnumPropertyListingStatusWithAggregatesFilter<"Property"> | $Enums.PropertyListingStatus
+    closedAt?: DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
+    archivedAt?: DateTimeNullableWithAggregatesFilter<"Property"> | Date | string | null
   }
 
   export type ManagerWhereInput = {
@@ -15631,6 +18704,7 @@ export namespace Prisma {
     userId?: StringFilter<"Manager"> | string
     managedProperties?: PropertyListRelationFilter
     chats?: ChatListRelationFilter
+    signingProfile?: XOR<ManagerSigningProfileNullableScalarRelationFilter, ManagerSigningProfileWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }
 
@@ -15639,6 +18713,7 @@ export namespace Prisma {
     userId?: SortOrder
     managedProperties?: PropertyOrderByRelationAggregateInput
     chats?: ChatOrderByRelationAggregateInput
+    signingProfile?: ManagerSigningProfileOrderByWithRelationInput
     user?: UserOrderByWithRelationInput
   }
 
@@ -15650,6 +18725,7 @@ export namespace Prisma {
     NOT?: ManagerWhereInput | ManagerWhereInput[]
     managedProperties?: PropertyListRelationFilter
     chats?: ChatListRelationFilter
+    signingProfile?: XOR<ManagerSigningProfileNullableScalarRelationFilter, ManagerSigningProfileWhereInput> | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
   }, "id" | "userId">
 
@@ -15669,6 +18745,96 @@ export namespace Prisma {
     NOT?: ManagerScalarWhereWithAggregatesInput | ManagerScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Manager"> | number
     userId?: StringWithAggregatesFilter<"Manager"> | string
+  }
+
+  export type ManagerSigningProfileWhereInput = {
+    AND?: ManagerSigningProfileWhereInput | ManagerSigningProfileWhereInput[]
+    OR?: ManagerSigningProfileWhereInput[]
+    NOT?: ManagerSigningProfileWhereInput | ManagerSigningProfileWhereInput[]
+    managerUserId?: StringFilter<"ManagerSigningProfile"> | string
+    legalName?: StringFilter<"ManagerSigningProfile"> | string
+    title?: StringFilter<"ManagerSigningProfile"> | string
+    agreementNotes?: StringFilter<"ManagerSigningProfile"> | string
+    signatureCiphertext?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    signatureSalt?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    signatureIv?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    signatureUpdatedAt?: DateTimeNullableFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedPrivacyAt?: DateTimeNullableFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedSharingAt?: DateTimeNullableFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedPolicyVersion?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    updatedAt?: DateTimeFilter<"ManagerSigningProfile"> | Date | string
+    manager?: XOR<ManagerScalarRelationFilter, ManagerWhereInput>
+  }
+
+  export type ManagerSigningProfileOrderByWithRelationInput = {
+    managerUserId?: SortOrder
+    legalName?: SortOrder
+    title?: SortOrder
+    agreementNotes?: SortOrder
+    signatureCiphertext?: SortOrderInput | SortOrder
+    signatureSalt?: SortOrderInput | SortOrder
+    signatureIv?: SortOrderInput | SortOrder
+    signatureUpdatedAt?: SortOrderInput | SortOrder
+    acceptedPrivacyAt?: SortOrderInput | SortOrder
+    acceptedSharingAt?: SortOrderInput | SortOrder
+    acceptedPolicyVersion?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    manager?: ManagerOrderByWithRelationInput
+  }
+
+  export type ManagerSigningProfileWhereUniqueInput = Prisma.AtLeast<{
+    managerUserId?: string
+    AND?: ManagerSigningProfileWhereInput | ManagerSigningProfileWhereInput[]
+    OR?: ManagerSigningProfileWhereInput[]
+    NOT?: ManagerSigningProfileWhereInput | ManagerSigningProfileWhereInput[]
+    legalName?: StringFilter<"ManagerSigningProfile"> | string
+    title?: StringFilter<"ManagerSigningProfile"> | string
+    agreementNotes?: StringFilter<"ManagerSigningProfile"> | string
+    signatureCiphertext?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    signatureSalt?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    signatureIv?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    signatureUpdatedAt?: DateTimeNullableFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedPrivacyAt?: DateTimeNullableFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedSharingAt?: DateTimeNullableFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedPolicyVersion?: StringNullableFilter<"ManagerSigningProfile"> | string | null
+    updatedAt?: DateTimeFilter<"ManagerSigningProfile"> | Date | string
+    manager?: XOR<ManagerScalarRelationFilter, ManagerWhereInput>
+  }, "managerUserId">
+
+  export type ManagerSigningProfileOrderByWithAggregationInput = {
+    managerUserId?: SortOrder
+    legalName?: SortOrder
+    title?: SortOrder
+    agreementNotes?: SortOrder
+    signatureCiphertext?: SortOrderInput | SortOrder
+    signatureSalt?: SortOrderInput | SortOrder
+    signatureIv?: SortOrderInput | SortOrder
+    signatureUpdatedAt?: SortOrderInput | SortOrder
+    acceptedPrivacyAt?: SortOrderInput | SortOrder
+    acceptedSharingAt?: SortOrderInput | SortOrder
+    acceptedPolicyVersion?: SortOrderInput | SortOrder
+    updatedAt?: SortOrder
+    _count?: ManagerSigningProfileCountOrderByAggregateInput
+    _max?: ManagerSigningProfileMaxOrderByAggregateInput
+    _min?: ManagerSigningProfileMinOrderByAggregateInput
+  }
+
+  export type ManagerSigningProfileScalarWhereWithAggregatesInput = {
+    AND?: ManagerSigningProfileScalarWhereWithAggregatesInput | ManagerSigningProfileScalarWhereWithAggregatesInput[]
+    OR?: ManagerSigningProfileScalarWhereWithAggregatesInput[]
+    NOT?: ManagerSigningProfileScalarWhereWithAggregatesInput | ManagerSigningProfileScalarWhereWithAggregatesInput[]
+    managerUserId?: StringWithAggregatesFilter<"ManagerSigningProfile"> | string
+    legalName?: StringWithAggregatesFilter<"ManagerSigningProfile"> | string
+    title?: StringWithAggregatesFilter<"ManagerSigningProfile"> | string
+    agreementNotes?: StringWithAggregatesFilter<"ManagerSigningProfile"> | string
+    signatureCiphertext?: StringNullableWithAggregatesFilter<"ManagerSigningProfile"> | string | null
+    signatureSalt?: StringNullableWithAggregatesFilter<"ManagerSigningProfile"> | string | null
+    signatureIv?: StringNullableWithAggregatesFilter<"ManagerSigningProfile"> | string | null
+    signatureUpdatedAt?: DateTimeNullableWithAggregatesFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedPrivacyAt?: DateTimeNullableWithAggregatesFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedSharingAt?: DateTimeNullableWithAggregatesFilter<"ManagerSigningProfile"> | Date | string | null
+    acceptedPolicyVersion?: StringNullableWithAggregatesFilter<"ManagerSigningProfile"> | string | null
+    updatedAt?: DateTimeWithAggregatesFilter<"ManagerSigningProfile"> | Date | string
   }
 
   export type TenantWhereInput = {
@@ -15734,6 +18900,8 @@ export namespace Prisma {
     NOT?: LocationWhereInput | LocationWhereInput[]
     id?: IntFilter<"Location"> | number
     address?: StringFilter<"Location"> | string
+    subdistrict?: StringNullableFilter<"Location"> | string | null
+    district?: StringNullableFilter<"Location"> | string | null
     city?: StringFilter<"Location"> | string
     state?: StringFilter<"Location"> | string
     country?: StringFilter<"Location"> | string
@@ -15744,6 +18912,8 @@ export namespace Prisma {
   export type LocationOrderByWithRelationInput = {
     id?: SortOrder
     address?: SortOrder
+    subdistrict?: SortOrderInput | SortOrder
+    district?: SortOrderInput | SortOrder
     city?: SortOrder
     state?: SortOrder
     country?: SortOrder
@@ -15757,6 +18927,8 @@ export namespace Prisma {
     OR?: LocationWhereInput[]
     NOT?: LocationWhereInput | LocationWhereInput[]
     address?: StringFilter<"Location"> | string
+    subdistrict?: StringNullableFilter<"Location"> | string | null
+    district?: StringNullableFilter<"Location"> | string | null
     city?: StringFilter<"Location"> | string
     state?: StringFilter<"Location"> | string
     country?: StringFilter<"Location"> | string
@@ -15767,6 +18939,8 @@ export namespace Prisma {
   export type LocationOrderByWithAggregationInput = {
     id?: SortOrder
     address?: SortOrder
+    subdistrict?: SortOrderInput | SortOrder
+    district?: SortOrderInput | SortOrder
     city?: SortOrder
     state?: SortOrder
     country?: SortOrder
@@ -15784,6 +18958,8 @@ export namespace Prisma {
     NOT?: LocationScalarWhereWithAggregatesInput | LocationScalarWhereWithAggregatesInput[]
     id?: IntWithAggregatesFilter<"Location"> | number
     address?: StringWithAggregatesFilter<"Location"> | string
+    subdistrict?: StringNullableWithAggregatesFilter<"Location"> | string | null
+    district?: StringNullableWithAggregatesFilter<"Location"> | string | null
     city?: StringWithAggregatesFilter<"Location"> | string
     state?: StringWithAggregatesFilter<"Location"> | string
     country?: StringWithAggregatesFilter<"Location"> | string
@@ -15804,6 +18980,23 @@ export namespace Prisma {
     phoneNumber?: StringFilter<"Application"> | string
     message?: StringNullableFilter<"Application"> | string | null
     leaseId?: IntNullableFilter<"Application"> | number | null
+    originalMonthlyRent?: FloatNullableFilter<"Application"> | number | null
+    originalDeposit?: FloatNullableFilter<"Application"> | number | null
+    agreedMonthlyRent?: FloatNullableFilter<"Application"> | number | null
+    settlementMethod?: EnumSettlementMethodNullableFilter<"Application"> | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    managerConfirmedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    transferReference?: StringNullableFilter<"Application"> | string | null
+    paidAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    approvedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDueAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationRequestedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationExecuteAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationReason?: StringNullableFilter<"Application"> | string | null
+    denialReason?: StringNullableFilter<"Application"> | string | null
+    paymentDisputedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDisputeResolvedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDisputeReason?: StringNullableFilter<"Application"> | string | null
     property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
     lease?: XOR<LeaseNullableScalarRelationFilter, LeaseWhereInput> | null
@@ -15820,6 +19013,23 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     message?: SortOrderInput | SortOrder
     leaseId?: SortOrderInput | SortOrder
+    originalMonthlyRent?: SortOrderInput | SortOrder
+    originalDeposit?: SortOrderInput | SortOrder
+    agreedMonthlyRent?: SortOrderInput | SortOrder
+    settlementMethod?: SortOrderInput | SortOrder
+    tenantConfirmedAt?: SortOrderInput | SortOrder
+    managerConfirmedAt?: SortOrderInput | SortOrder
+    transferReference?: SortOrderInput | SortOrder
+    paidAt?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    paymentDueAt?: SortOrderInput | SortOrder
+    cancellationRequestedAt?: SortOrderInput | SortOrder
+    cancellationExecuteAt?: SortOrderInput | SortOrder
+    cancellationReason?: SortOrderInput | SortOrder
+    denialReason?: SortOrderInput | SortOrder
+    paymentDisputedAt?: SortOrderInput | SortOrder
+    paymentDisputeResolvedAt?: SortOrderInput | SortOrder
+    paymentDisputeReason?: SortOrderInput | SortOrder
     property?: PropertyOrderByWithRelationInput
     tenant?: TenantOrderByWithRelationInput
     lease?: LeaseOrderByWithRelationInput
@@ -15839,6 +19049,23 @@ export namespace Prisma {
     email?: StringFilter<"Application"> | string
     phoneNumber?: StringFilter<"Application"> | string
     message?: StringNullableFilter<"Application"> | string | null
+    originalMonthlyRent?: FloatNullableFilter<"Application"> | number | null
+    originalDeposit?: FloatNullableFilter<"Application"> | number | null
+    agreedMonthlyRent?: FloatNullableFilter<"Application"> | number | null
+    settlementMethod?: EnumSettlementMethodNullableFilter<"Application"> | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    managerConfirmedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    transferReference?: StringNullableFilter<"Application"> | string | null
+    paidAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    approvedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDueAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationRequestedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationExecuteAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationReason?: StringNullableFilter<"Application"> | string | null
+    denialReason?: StringNullableFilter<"Application"> | string | null
+    paymentDisputedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDisputeResolvedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDisputeReason?: StringNullableFilter<"Application"> | string | null
     property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
     lease?: XOR<LeaseNullableScalarRelationFilter, LeaseWhereInput> | null
@@ -15855,6 +19082,23 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     message?: SortOrderInput | SortOrder
     leaseId?: SortOrderInput | SortOrder
+    originalMonthlyRent?: SortOrderInput | SortOrder
+    originalDeposit?: SortOrderInput | SortOrder
+    agreedMonthlyRent?: SortOrderInput | SortOrder
+    settlementMethod?: SortOrderInput | SortOrder
+    tenantConfirmedAt?: SortOrderInput | SortOrder
+    managerConfirmedAt?: SortOrderInput | SortOrder
+    transferReference?: SortOrderInput | SortOrder
+    paidAt?: SortOrderInput | SortOrder
+    approvedAt?: SortOrderInput | SortOrder
+    paymentDueAt?: SortOrderInput | SortOrder
+    cancellationRequestedAt?: SortOrderInput | SortOrder
+    cancellationExecuteAt?: SortOrderInput | SortOrder
+    cancellationReason?: SortOrderInput | SortOrder
+    denialReason?: SortOrderInput | SortOrder
+    paymentDisputedAt?: SortOrderInput | SortOrder
+    paymentDisputeResolvedAt?: SortOrderInput | SortOrder
+    paymentDisputeReason?: SortOrderInput | SortOrder
     _count?: ApplicationCountOrderByAggregateInput
     _avg?: ApplicationAvgOrderByAggregateInput
     _max?: ApplicationMaxOrderByAggregateInput
@@ -15876,6 +19120,23 @@ export namespace Prisma {
     phoneNumber?: StringWithAggregatesFilter<"Application"> | string
     message?: StringNullableWithAggregatesFilter<"Application"> | string | null
     leaseId?: IntNullableWithAggregatesFilter<"Application"> | number | null
+    originalMonthlyRent?: FloatNullableWithAggregatesFilter<"Application"> | number | null
+    originalDeposit?: FloatNullableWithAggregatesFilter<"Application"> | number | null
+    agreedMonthlyRent?: FloatNullableWithAggregatesFilter<"Application"> | number | null
+    settlementMethod?: EnumSettlementMethodNullableWithAggregatesFilter<"Application"> | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    managerConfirmedAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    transferReference?: StringNullableWithAggregatesFilter<"Application"> | string | null
+    paidAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    approvedAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    paymentDueAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    cancellationRequestedAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    cancellationExecuteAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    cancellationReason?: StringNullableWithAggregatesFilter<"Application"> | string | null
+    denialReason?: StringNullableWithAggregatesFilter<"Application"> | string | null
+    paymentDisputedAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    paymentDisputeResolvedAt?: DateTimeNullableWithAggregatesFilter<"Application"> | Date | string | null
+    paymentDisputeReason?: StringNullableWithAggregatesFilter<"Application"> | string | null
   }
 
   export type LeaseWhereInput = {
@@ -15889,6 +19150,10 @@ export namespace Prisma {
     deposit?: FloatFilter<"Lease"> | number
     propertyId?: IntFilter<"Lease"> | number
     tenantUserId?: StringFilter<"Lease"> | string
+    renewalStatus?: EnumRenewalStatusNullableFilter<"Lease"> | $Enums.RenewalStatus | null
+    renewalRequestedAt?: DateTimeNullableFilter<"Lease"> | Date | string | null
+    renewalReviewedAt?: DateTimeNullableFilter<"Lease"> | Date | string | null
+    renewalMonths?: IntNullableFilter<"Lease"> | number | null
     property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
     application?: XOR<ApplicationNullableScalarRelationFilter, ApplicationWhereInput> | null
@@ -15903,6 +19168,10 @@ export namespace Prisma {
     deposit?: SortOrder
     propertyId?: SortOrder
     tenantUserId?: SortOrder
+    renewalStatus?: SortOrderInput | SortOrder
+    renewalRequestedAt?: SortOrderInput | SortOrder
+    renewalReviewedAt?: SortOrderInput | SortOrder
+    renewalMonths?: SortOrderInput | SortOrder
     property?: PropertyOrderByWithRelationInput
     tenant?: TenantOrderByWithRelationInput
     application?: ApplicationOrderByWithRelationInput
@@ -15920,6 +19189,10 @@ export namespace Prisma {
     deposit?: FloatFilter<"Lease"> | number
     propertyId?: IntFilter<"Lease"> | number
     tenantUserId?: StringFilter<"Lease"> | string
+    renewalStatus?: EnumRenewalStatusNullableFilter<"Lease"> | $Enums.RenewalStatus | null
+    renewalRequestedAt?: DateTimeNullableFilter<"Lease"> | Date | string | null
+    renewalReviewedAt?: DateTimeNullableFilter<"Lease"> | Date | string | null
+    renewalMonths?: IntNullableFilter<"Lease"> | number | null
     property?: XOR<PropertyScalarRelationFilter, PropertyWhereInput>
     tenant?: XOR<TenantScalarRelationFilter, TenantWhereInput>
     application?: XOR<ApplicationNullableScalarRelationFilter, ApplicationWhereInput> | null
@@ -15934,6 +19207,10 @@ export namespace Prisma {
     deposit?: SortOrder
     propertyId?: SortOrder
     tenantUserId?: SortOrder
+    renewalStatus?: SortOrderInput | SortOrder
+    renewalRequestedAt?: SortOrderInput | SortOrder
+    renewalReviewedAt?: SortOrderInput | SortOrder
+    renewalMonths?: SortOrderInput | SortOrder
     _count?: LeaseCountOrderByAggregateInput
     _avg?: LeaseAvgOrderByAggregateInput
     _max?: LeaseMaxOrderByAggregateInput
@@ -15952,6 +19229,10 @@ export namespace Prisma {
     deposit?: FloatWithAggregatesFilter<"Lease"> | number
     propertyId?: IntWithAggregatesFilter<"Lease"> | number
     tenantUserId?: StringWithAggregatesFilter<"Lease"> | string
+    renewalStatus?: EnumRenewalStatusNullableWithAggregatesFilter<"Lease"> | $Enums.RenewalStatus | null
+    renewalRequestedAt?: DateTimeNullableWithAggregatesFilter<"Lease"> | Date | string | null
+    renewalReviewedAt?: DateTimeNullableWithAggregatesFilter<"Lease"> | Date | string | null
+    renewalMonths?: IntNullableWithAggregatesFilter<"Lease"> | number | null
   }
 
   export type PaymentWhereInput = {
@@ -16160,6 +19441,93 @@ export namespace Prisma {
     createdAt?: DateTimeWithAggregatesFilter<"Message"> | Date | string
   }
 
+  export type NotificationWhereInput = {
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    id?: IntFilter<"Notification"> | number
+    userId?: StringFilter<"Notification"> | string
+    kind?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    resourceId?: IntNullableFilter<"Notification"> | number | null
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    emailSentAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    emailAttempts?: IntFilter<"Notification"> | number
+    dedupeKey?: StringNullableFilter<"Notification"> | string | null
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }
+
+  export type NotificationOrderByWithRelationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    kind?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    resourceId?: SortOrderInput | SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    emailSentAt?: SortOrderInput | SortOrder
+    emailAttempts?: SortOrder
+    dedupeKey?: SortOrderInput | SortOrder
+    user?: UserOrderByWithRelationInput
+  }
+
+  export type NotificationWhereUniqueInput = Prisma.AtLeast<{
+    id?: number
+    dedupeKey?: string
+    AND?: NotificationWhereInput | NotificationWhereInput[]
+    OR?: NotificationWhereInput[]
+    NOT?: NotificationWhereInput | NotificationWhereInput[]
+    userId?: StringFilter<"Notification"> | string
+    kind?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    resourceId?: IntNullableFilter<"Notification"> | number | null
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    emailSentAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    emailAttempts?: IntFilter<"Notification"> | number
+    user?: XOR<UserScalarRelationFilter, UserWhereInput>
+  }, "id" | "dedupeKey">
+
+  export type NotificationOrderByWithAggregationInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    kind?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    resourceId?: SortOrderInput | SortOrder
+    readAt?: SortOrderInput | SortOrder
+    createdAt?: SortOrder
+    emailSentAt?: SortOrderInput | SortOrder
+    emailAttempts?: SortOrder
+    dedupeKey?: SortOrderInput | SortOrder
+    _count?: NotificationCountOrderByAggregateInput
+    _avg?: NotificationAvgOrderByAggregateInput
+    _max?: NotificationMaxOrderByAggregateInput
+    _min?: NotificationMinOrderByAggregateInput
+    _sum?: NotificationSumOrderByAggregateInput
+  }
+
+  export type NotificationScalarWhereWithAggregatesInput = {
+    AND?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    OR?: NotificationScalarWhereWithAggregatesInput[]
+    NOT?: NotificationScalarWhereWithAggregatesInput | NotificationScalarWhereWithAggregatesInput[]
+    id?: IntWithAggregatesFilter<"Notification"> | number
+    userId?: StringWithAggregatesFilter<"Notification"> | string
+    kind?: StringWithAggregatesFilter<"Notification"> | string
+    title?: StringWithAggregatesFilter<"Notification"> | string
+    body?: StringWithAggregatesFilter<"Notification"> | string
+    resourceId?: IntNullableWithAggregatesFilter<"Notification"> | number | null
+    readAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeWithAggregatesFilter<"Notification"> | Date | string
+    emailSentAt?: DateTimeNullableWithAggregatesFilter<"Notification"> | Date | string | null
+    emailAttempts?: IntWithAggregatesFilter<"Notification"> | number
+    dedupeKey?: StringNullableWithAggregatesFilter<"Notification"> | string | null
+  }
+
   export type UserCreateInput = {
     id?: string
     name: string
@@ -16171,6 +19539,7 @@ export namespace Prisma {
     manager?: ManagerCreateNestedOneWithoutUserInput
     tenant?: TenantCreateNestedOneWithoutUserInput
     messages?: MessageCreateNestedManyWithoutSenderInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateInput = {
@@ -16184,6 +19553,7 @@ export namespace Prisma {
     manager?: ManagerUncheckedCreateNestedOneWithoutUserInput
     tenant?: TenantUncheckedCreateNestedOneWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserUpdateInput = {
@@ -16197,6 +19567,7 @@ export namespace Prisma {
     manager?: ManagerUpdateOneWithoutUserNestedInput
     tenant?: TenantUpdateOneWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateInput = {
@@ -16210,6 +19581,7 @@ export namespace Prisma {
     manager?: ManagerUncheckedUpdateOneWithoutUserNestedInput
     tenant?: TenantUncheckedUpdateOneWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type UserCreateManyInput = {
@@ -16340,6 +19712,9 @@ export namespace Prisma {
     postedDate?: Date | string
     averageRating?: number | null
     numberOfReviews?: number | null
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     location: LocationCreateNestedOneWithoutPropertiesInput
     manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
     leases?: LeaseCreateNestedManyWithoutPropertyInput
@@ -16369,6 +19744,9 @@ export namespace Prisma {
     numberOfReviews?: number | null
     locationId: number
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
@@ -16393,6 +19771,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
     manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
@@ -16422,6 +19803,9 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
@@ -16449,6 +19833,9 @@ export namespace Prisma {
     numberOfReviews?: number | null
     locationId: number
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type PropertyUpdateManyMutationInput = {
@@ -16469,6 +19856,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PropertyUncheckedUpdateManyInput = {
@@ -16492,11 +19882,15 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ManagerCreateInput = {
     managedProperties?: PropertyCreateNestedManyWithoutManagerInput
     chats?: ChatCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileCreateNestedOneWithoutManagerInput
     user: UserCreateNestedOneWithoutManagerInput
   }
 
@@ -16505,11 +19899,13 @@ export namespace Prisma {
     userId: string
     managedProperties?: PropertyUncheckedCreateNestedManyWithoutManagerInput
     chats?: ChatUncheckedCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileUncheckedCreateNestedOneWithoutManagerInput
   }
 
   export type ManagerUpdateInput = {
     managedProperties?: PropertyUpdateManyWithoutManagerNestedInput
     chats?: ChatUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUpdateOneWithoutManagerNestedInput
     user?: UserUpdateOneRequiredWithoutManagerNestedInput
   }
 
@@ -16518,6 +19914,7 @@ export namespace Prisma {
     userId?: StringFieldUpdateOperationsInput | string
     managedProperties?: PropertyUncheckedUpdateManyWithoutManagerNestedInput
     chats?: ChatUncheckedUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUncheckedUpdateOneWithoutManagerNestedInput
   }
 
   export type ManagerCreateManyInput = {
@@ -16532,6 +19929,110 @@ export namespace Prisma {
   export type ManagerUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
+  }
+
+  export type ManagerSigningProfileCreateInput = {
+    legalName: string
+    title?: string
+    agreementNotes?: string
+    signatureCiphertext?: string | null
+    signatureSalt?: string | null
+    signatureIv?: string | null
+    signatureUpdatedAt?: Date | string | null
+    acceptedPrivacyAt?: Date | string | null
+    acceptedSharingAt?: Date | string | null
+    acceptedPolicyVersion?: string | null
+    updatedAt?: Date | string
+    manager: ManagerCreateNestedOneWithoutSigningProfileInput
+  }
+
+  export type ManagerSigningProfileUncheckedCreateInput = {
+    managerUserId: string
+    legalName: string
+    title?: string
+    agreementNotes?: string
+    signatureCiphertext?: string | null
+    signatureSalt?: string | null
+    signatureIv?: string | null
+    signatureUpdatedAt?: Date | string | null
+    acceptedPrivacyAt?: Date | string | null
+    acceptedSharingAt?: Date | string | null
+    acceptedPolicyVersion?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ManagerSigningProfileUpdateInput = {
+    legalName?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    agreementNotes?: StringFieldUpdateOperationsInput | string
+    signatureCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureSalt?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureIv?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPrivacyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedSharingAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPolicyVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    manager?: ManagerUpdateOneRequiredWithoutSigningProfileNestedInput
+  }
+
+  export type ManagerSigningProfileUncheckedUpdateInput = {
+    managerUserId?: StringFieldUpdateOperationsInput | string
+    legalName?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    agreementNotes?: StringFieldUpdateOperationsInput | string
+    signatureCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureSalt?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureIv?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPrivacyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedSharingAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPolicyVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ManagerSigningProfileCreateManyInput = {
+    managerUserId: string
+    legalName: string
+    title?: string
+    agreementNotes?: string
+    signatureCiphertext?: string | null
+    signatureSalt?: string | null
+    signatureIv?: string | null
+    signatureUpdatedAt?: Date | string | null
+    acceptedPrivacyAt?: Date | string | null
+    acceptedSharingAt?: Date | string | null
+    acceptedPolicyVersion?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ManagerSigningProfileUpdateManyMutationInput = {
+    legalName?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    agreementNotes?: StringFieldUpdateOperationsInput | string
+    signatureCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureSalt?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureIv?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPrivacyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedSharingAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPolicyVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ManagerSigningProfileUncheckedUpdateManyInput = {
+    managerUserId?: StringFieldUpdateOperationsInput | string
+    legalName?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    agreementNotes?: StringFieldUpdateOperationsInput | string
+    signatureCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureSalt?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureIv?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPrivacyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedSharingAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPolicyVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type TenantCreateInput = {
@@ -16588,6 +20089,8 @@ export namespace Prisma {
 
   export type LocationUpdateInput = {
     address?: StringFieldUpdateOperationsInput | string
+    subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
@@ -16598,6 +20101,8 @@ export namespace Prisma {
   export type LocationUncheckedUpdateInput = {
     id?: IntFieldUpdateOperationsInput | number
     address?: StringFieldUpdateOperationsInput | string
+    subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
@@ -16607,6 +20112,8 @@ export namespace Prisma {
 
   export type LocationUpdateManyMutationInput = {
     address?: StringFieldUpdateOperationsInput | string
+    subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
@@ -16616,6 +20123,8 @@ export namespace Prisma {
   export type LocationUncheckedUpdateManyInput = {
     id?: IntFieldUpdateOperationsInput | number
     address?: StringFieldUpdateOperationsInput | string
+    subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
@@ -16629,6 +20138,23 @@ export namespace Prisma {
     email: string
     phoneNumber: string
     message?: string | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
     property: PropertyCreateNestedOneWithoutApplicationsInput
     tenant: TenantCreateNestedOneWithoutApplicationsInput
     lease?: LeaseCreateNestedOneWithoutApplicationInput
@@ -16645,6 +20171,23 @@ export namespace Prisma {
     phoneNumber: string
     message?: string | null
     leaseId?: number | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
   }
 
   export type ApplicationUpdateInput = {
@@ -16654,6 +20197,23 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
     property?: PropertyUpdateOneRequiredWithoutApplicationsNestedInput
     tenant?: TenantUpdateOneRequiredWithoutApplicationsNestedInput
     lease?: LeaseUpdateOneWithoutApplicationNestedInput
@@ -16670,6 +20230,23 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     leaseId?: NullableIntFieldUpdateOperationsInput | number | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ApplicationCreateManyInput = {
@@ -16683,6 +20260,23 @@ export namespace Prisma {
     phoneNumber: string
     message?: string | null
     leaseId?: number | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
   }
 
   export type ApplicationUpdateManyMutationInput = {
@@ -16692,6 +20286,23 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ApplicationUncheckedUpdateManyInput = {
@@ -16705,6 +20316,23 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     leaseId?: NullableIntFieldUpdateOperationsInput | number | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeaseCreateInput = {
@@ -16712,6 +20340,10 @@ export namespace Prisma {
     endDate: Date | string
     rent: number
     deposit: number
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     property: PropertyCreateNestedOneWithoutLeasesInput
     tenant: TenantCreateNestedOneWithoutLeasesInput
     application?: ApplicationCreateNestedOneWithoutLeaseInput
@@ -16726,6 +20358,10 @@ export namespace Prisma {
     deposit: number
     propertyId: number
     tenantUserId: string
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     application?: ApplicationUncheckedCreateNestedOneWithoutLeaseInput
     payments?: PaymentUncheckedCreateNestedManyWithoutLeaseInput
   }
@@ -16735,6 +20371,10 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     property?: PropertyUpdateOneRequiredWithoutLeasesNestedInput
     tenant?: TenantUpdateOneRequiredWithoutLeasesNestedInput
     application?: ApplicationUpdateOneWithoutLeaseNestedInput
@@ -16749,6 +20389,10 @@ export namespace Prisma {
     deposit?: FloatFieldUpdateOperationsInput | number
     propertyId?: IntFieldUpdateOperationsInput | number
     tenantUserId?: StringFieldUpdateOperationsInput | string
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     application?: ApplicationUncheckedUpdateOneWithoutLeaseNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutLeaseNestedInput
   }
@@ -16761,6 +20405,10 @@ export namespace Prisma {
     deposit: number
     propertyId: number
     tenantUserId: string
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
   }
 
   export type LeaseUpdateManyMutationInput = {
@@ -16768,6 +20416,10 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type LeaseUncheckedUpdateManyInput = {
@@ -16778,6 +20430,10 @@ export namespace Prisma {
     deposit?: FloatFieldUpdateOperationsInput | number
     propertyId?: IntFieldUpdateOperationsInput | number
     tenantUserId?: StringFieldUpdateOperationsInput | string
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type PaymentCreateInput = {
@@ -16969,6 +20625,100 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationCreateInput = {
+    kind: string
+    title: string
+    body: string
+    resourceId?: number | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    emailSentAt?: Date | string | null
+    emailAttempts?: number
+    dedupeKey?: string | null
+    user: UserCreateNestedOneWithoutNotificationsInput
+  }
+
+  export type NotificationUncheckedCreateInput = {
+    id?: number
+    userId: string
+    kind: string
+    title: string
+    body: string
+    resourceId?: number | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    emailSentAt?: Date | string | null
+    emailAttempts?: number
+    dedupeKey?: string | null
+  }
+
+  export type NotificationUpdateInput = {
+    kind?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailAttempts?: IntFieldUpdateOperationsInput | number
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+    user?: UserUpdateOneRequiredWithoutNotificationsNestedInput
+  }
+
+  export type NotificationUncheckedUpdateInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailAttempts?: IntFieldUpdateOperationsInput | number
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type NotificationCreateManyInput = {
+    id?: number
+    userId: string
+    kind: string
+    title: string
+    body: string
+    resourceId?: number | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    emailSentAt?: Date | string | null
+    emailAttempts?: number
+    dedupeKey?: string | null
+  }
+
+  export type NotificationUpdateManyMutationInput = {
+    kind?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailAttempts?: IntFieldUpdateOperationsInput | number
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type NotificationUncheckedUpdateManyInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    kind?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailAttempts?: IntFieldUpdateOperationsInput | number
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type StringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -17039,6 +20789,12 @@ export namespace Prisma {
     none?: MessageWhereInput
   }
 
+  export type NotificationListRelationFilter = {
+    every?: NotificationWhereInput
+    some?: NotificationWhereInput
+    none?: NotificationWhereInput
+  }
+
   export type SortOrderInput = {
     sort: SortOrder
     nulls?: NullsOrder
@@ -17049,6 +20805,10 @@ export namespace Prisma {
   }
 
   export type MessageOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type NotificationOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -17307,6 +21067,13 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
+  export type EnumPropertyListingStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PropertyListingStatus | EnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPropertyListingStatusFilter<$PrismaModel> | $Enums.PropertyListingStatus
+  }
+
   export type LocationScalarRelationFilter = {
     is?: LocationWhereInput
     isNot?: LocationWhereInput
@@ -17368,6 +21135,9 @@ export namespace Prisma {
     numberOfReviews?: SortOrder
     locationId?: SortOrder
     managerUserId?: SortOrder
+    listingStatus?: SortOrder
+    closedAt?: SortOrder
+    archivedAt?: SortOrder
   }
 
   export type PropertyAvgOrderByAggregateInput = {
@@ -17401,6 +21171,9 @@ export namespace Prisma {
     numberOfReviews?: SortOrder
     locationId?: SortOrder
     managerUserId?: SortOrder
+    listingStatus?: SortOrder
+    closedAt?: SortOrder
+    archivedAt?: SortOrder
   }
 
   export type PropertyMinOrderByAggregateInput = {
@@ -17421,6 +21194,9 @@ export namespace Prisma {
     numberOfReviews?: SortOrder
     locationId?: SortOrder
     managerUserId?: SortOrder
+    listingStatus?: SortOrder
+    closedAt?: SortOrder
+    archivedAt?: SortOrder
   }
 
   export type PropertySumOrderByAggregateInput = {
@@ -17518,6 +21294,16 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type EnumPropertyListingStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PropertyListingStatus | EnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPropertyListingStatusWithAggregatesFilter<$PrismaModel> | $Enums.PropertyListingStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPropertyListingStatusFilter<$PrismaModel>
+    _max?: NestedEnumPropertyListingStatusFilter<$PrismaModel>
+  }
+
   export type PropertyListRelationFilter = {
     every?: PropertyWhereInput
     some?: PropertyWhereInput
@@ -17528,6 +21314,11 @@ export namespace Prisma {
     every?: ChatWhereInput
     some?: ChatWhereInput
     none?: ChatWhereInput
+  }
+
+  export type ManagerSigningProfileNullableScalarRelationFilter = {
+    is?: ManagerSigningProfileWhereInput | null
+    isNot?: ManagerSigningProfileWhereInput | null
   }
 
   export type PropertyOrderByRelationAggregateInput = {
@@ -17561,6 +21352,51 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type ManagerSigningProfileCountOrderByAggregateInput = {
+    managerUserId?: SortOrder
+    legalName?: SortOrder
+    title?: SortOrder
+    agreementNotes?: SortOrder
+    signatureCiphertext?: SortOrder
+    signatureSalt?: SortOrder
+    signatureIv?: SortOrder
+    signatureUpdatedAt?: SortOrder
+    acceptedPrivacyAt?: SortOrder
+    acceptedSharingAt?: SortOrder
+    acceptedPolicyVersion?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ManagerSigningProfileMaxOrderByAggregateInput = {
+    managerUserId?: SortOrder
+    legalName?: SortOrder
+    title?: SortOrder
+    agreementNotes?: SortOrder
+    signatureCiphertext?: SortOrder
+    signatureSalt?: SortOrder
+    signatureIv?: SortOrder
+    signatureUpdatedAt?: SortOrder
+    acceptedPrivacyAt?: SortOrder
+    acceptedSharingAt?: SortOrder
+    acceptedPolicyVersion?: SortOrder
+    updatedAt?: SortOrder
+  }
+
+  export type ManagerSigningProfileMinOrderByAggregateInput = {
+    managerUserId?: SortOrder
+    legalName?: SortOrder
+    title?: SortOrder
+    agreementNotes?: SortOrder
+    signatureCiphertext?: SortOrder
+    signatureSalt?: SortOrder
+    signatureIv?: SortOrder
+    signatureUpdatedAt?: SortOrder
+    acceptedPrivacyAt?: SortOrder
+    acceptedSharingAt?: SortOrder
+    acceptedPolicyVersion?: SortOrder
+    updatedAt?: SortOrder
+  }
+
   export type TenantCountOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
@@ -17587,6 +21423,8 @@ export namespace Prisma {
   export type LocationCountOrderByAggregateInput = {
     id?: SortOrder
     address?: SortOrder
+    subdistrict?: SortOrder
+    district?: SortOrder
     city?: SortOrder
     state?: SortOrder
     country?: SortOrder
@@ -17600,6 +21438,8 @@ export namespace Prisma {
   export type LocationMaxOrderByAggregateInput = {
     id?: SortOrder
     address?: SortOrder
+    subdistrict?: SortOrder
+    district?: SortOrder
     city?: SortOrder
     state?: SortOrder
     country?: SortOrder
@@ -17609,6 +21449,8 @@ export namespace Prisma {
   export type LocationMinOrderByAggregateInput = {
     id?: SortOrder
     address?: SortOrder
+    subdistrict?: SortOrder
+    district?: SortOrder
     city?: SortOrder
     state?: SortOrder
     country?: SortOrder
@@ -17624,6 +21466,13 @@ export namespace Prisma {
     in?: $Enums.ApplicationStatus[] | ListEnumApplicationStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.ApplicationStatus[] | ListEnumApplicationStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumApplicationStatusFilter<$PrismaModel> | $Enums.ApplicationStatus
+  }
+
+  export type EnumSettlementMethodNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettlementMethod | EnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    in?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumSettlementMethodNullableFilter<$PrismaModel> | $Enums.SettlementMethod | null
   }
 
   export type PropertyScalarRelationFilter = {
@@ -17652,12 +21501,32 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     message?: SortOrder
     leaseId?: SortOrder
+    originalMonthlyRent?: SortOrder
+    originalDeposit?: SortOrder
+    agreedMonthlyRent?: SortOrder
+    settlementMethod?: SortOrder
+    tenantConfirmedAt?: SortOrder
+    managerConfirmedAt?: SortOrder
+    transferReference?: SortOrder
+    paidAt?: SortOrder
+    approvedAt?: SortOrder
+    paymentDueAt?: SortOrder
+    cancellationRequestedAt?: SortOrder
+    cancellationExecuteAt?: SortOrder
+    cancellationReason?: SortOrder
+    denialReason?: SortOrder
+    paymentDisputedAt?: SortOrder
+    paymentDisputeResolvedAt?: SortOrder
+    paymentDisputeReason?: SortOrder
   }
 
   export type ApplicationAvgOrderByAggregateInput = {
     id?: SortOrder
     propertyId?: SortOrder
     leaseId?: SortOrder
+    originalMonthlyRent?: SortOrder
+    originalDeposit?: SortOrder
+    agreedMonthlyRent?: SortOrder
   }
 
   export type ApplicationMaxOrderByAggregateInput = {
@@ -17671,6 +21540,23 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     message?: SortOrder
     leaseId?: SortOrder
+    originalMonthlyRent?: SortOrder
+    originalDeposit?: SortOrder
+    agreedMonthlyRent?: SortOrder
+    settlementMethod?: SortOrder
+    tenantConfirmedAt?: SortOrder
+    managerConfirmedAt?: SortOrder
+    transferReference?: SortOrder
+    paidAt?: SortOrder
+    approvedAt?: SortOrder
+    paymentDueAt?: SortOrder
+    cancellationRequestedAt?: SortOrder
+    cancellationExecuteAt?: SortOrder
+    cancellationReason?: SortOrder
+    denialReason?: SortOrder
+    paymentDisputedAt?: SortOrder
+    paymentDisputeResolvedAt?: SortOrder
+    paymentDisputeReason?: SortOrder
   }
 
   export type ApplicationMinOrderByAggregateInput = {
@@ -17684,12 +21570,32 @@ export namespace Prisma {
     phoneNumber?: SortOrder
     message?: SortOrder
     leaseId?: SortOrder
+    originalMonthlyRent?: SortOrder
+    originalDeposit?: SortOrder
+    agreedMonthlyRent?: SortOrder
+    settlementMethod?: SortOrder
+    tenantConfirmedAt?: SortOrder
+    managerConfirmedAt?: SortOrder
+    transferReference?: SortOrder
+    paidAt?: SortOrder
+    approvedAt?: SortOrder
+    paymentDueAt?: SortOrder
+    cancellationRequestedAt?: SortOrder
+    cancellationExecuteAt?: SortOrder
+    cancellationReason?: SortOrder
+    denialReason?: SortOrder
+    paymentDisputedAt?: SortOrder
+    paymentDisputeResolvedAt?: SortOrder
+    paymentDisputeReason?: SortOrder
   }
 
   export type ApplicationSumOrderByAggregateInput = {
     id?: SortOrder
     propertyId?: SortOrder
     leaseId?: SortOrder
+    originalMonthlyRent?: SortOrder
+    originalDeposit?: SortOrder
+    agreedMonthlyRent?: SortOrder
   }
 
   export type EnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -17700,6 +21606,23 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApplicationStatusFilter<$PrismaModel>
     _max?: NestedEnumApplicationStatusFilter<$PrismaModel>
+  }
+
+  export type EnumSettlementMethodNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettlementMethod | EnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    in?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumSettlementMethodNullableWithAggregatesFilter<$PrismaModel> | $Enums.SettlementMethod | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumSettlementMethodNullableFilter<$PrismaModel>
+    _max?: NestedEnumSettlementMethodNullableFilter<$PrismaModel>
+  }
+
+  export type EnumRenewalStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.RenewalStatus | EnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRenewalStatusNullableFilter<$PrismaModel> | $Enums.RenewalStatus | null
   }
 
   export type ApplicationNullableScalarRelationFilter = {
@@ -17725,6 +21648,10 @@ export namespace Prisma {
     deposit?: SortOrder
     propertyId?: SortOrder
     tenantUserId?: SortOrder
+    renewalStatus?: SortOrder
+    renewalRequestedAt?: SortOrder
+    renewalReviewedAt?: SortOrder
+    renewalMonths?: SortOrder
   }
 
   export type LeaseAvgOrderByAggregateInput = {
@@ -17732,6 +21659,7 @@ export namespace Prisma {
     rent?: SortOrder
     deposit?: SortOrder
     propertyId?: SortOrder
+    renewalMonths?: SortOrder
   }
 
   export type LeaseMaxOrderByAggregateInput = {
@@ -17742,6 +21670,10 @@ export namespace Prisma {
     deposit?: SortOrder
     propertyId?: SortOrder
     tenantUserId?: SortOrder
+    renewalStatus?: SortOrder
+    renewalRequestedAt?: SortOrder
+    renewalReviewedAt?: SortOrder
+    renewalMonths?: SortOrder
   }
 
   export type LeaseMinOrderByAggregateInput = {
@@ -17752,6 +21684,10 @@ export namespace Prisma {
     deposit?: SortOrder
     propertyId?: SortOrder
     tenantUserId?: SortOrder
+    renewalStatus?: SortOrder
+    renewalRequestedAt?: SortOrder
+    renewalReviewedAt?: SortOrder
+    renewalMonths?: SortOrder
   }
 
   export type LeaseSumOrderByAggregateInput = {
@@ -17759,6 +21695,17 @@ export namespace Prisma {
     rent?: SortOrder
     deposit?: SortOrder
     propertyId?: SortOrder
+    renewalMonths?: SortOrder
+  }
+
+  export type EnumRenewalStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RenewalStatus | EnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRenewalStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.RenewalStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRenewalStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumRenewalStatusNullableFilter<$PrismaModel>
   }
 
   export type EnumPaymentStatusFilter<$PrismaModel = never> = {
@@ -17916,6 +21863,60 @@ export namespace Prisma {
     chatId?: SortOrder
   }
 
+  export type NotificationCountOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    kind?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    resourceId?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+    emailSentAt?: SortOrder
+    emailAttempts?: SortOrder
+    dedupeKey?: SortOrder
+  }
+
+  export type NotificationAvgOrderByAggregateInput = {
+    id?: SortOrder
+    resourceId?: SortOrder
+    emailAttempts?: SortOrder
+  }
+
+  export type NotificationMaxOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    kind?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    resourceId?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+    emailSentAt?: SortOrder
+    emailAttempts?: SortOrder
+    dedupeKey?: SortOrder
+  }
+
+  export type NotificationMinOrderByAggregateInput = {
+    id?: SortOrder
+    userId?: SortOrder
+    kind?: SortOrder
+    title?: SortOrder
+    body?: SortOrder
+    resourceId?: SortOrder
+    readAt?: SortOrder
+    createdAt?: SortOrder
+    emailSentAt?: SortOrder
+    emailAttempts?: SortOrder
+    dedupeKey?: SortOrder
+  }
+
+  export type NotificationSumOrderByAggregateInput = {
+    id?: SortOrder
+    resourceId?: SortOrder
+    emailAttempts?: SortOrder
+  }
+
   export type AccountCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -17942,6 +21943,13 @@ export namespace Prisma {
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
   }
 
+  export type NotificationCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+  }
+
   export type AccountUncheckedCreateNestedManyWithoutUserInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -17966,6 +21974,13 @@ export namespace Prisma {
     connectOrCreate?: MessageCreateOrConnectWithoutSenderInput | MessageCreateOrConnectWithoutSenderInput[]
     createMany?: MessageCreateManySenderInputEnvelope
     connect?: MessageWhereUniqueInput | MessageWhereUniqueInput[]
+  }
+
+  export type NotificationUncheckedCreateNestedManyWithoutUserInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
   }
 
   export type StringFieldUpdateOperationsInput = {
@@ -18032,6 +22047,20 @@ export namespace Prisma {
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
   }
 
+  export type NotificationUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+  }
+
   export type AccountUncheckedUpdateManyWithoutUserNestedInput = {
     create?: XOR<AccountCreateWithoutUserInput, AccountUncheckedCreateWithoutUserInput> | AccountCreateWithoutUserInput[] | AccountUncheckedCreateWithoutUserInput[]
     connectOrCreate?: AccountCreateOrConnectWithoutUserInput | AccountCreateOrConnectWithoutUserInput[]
@@ -18078,6 +22107,20 @@ export namespace Prisma {
     update?: MessageUpdateWithWhereUniqueWithoutSenderInput | MessageUpdateWithWhereUniqueWithoutSenderInput[]
     updateMany?: MessageUpdateManyWithWhereWithoutSenderInput | MessageUpdateManyWithWhereWithoutSenderInput[]
     deleteMany?: MessageScalarWhereInput | MessageScalarWhereInput[]
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserNestedInput = {
+    create?: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput> | NotificationCreateWithoutUserInput[] | NotificationUncheckedCreateWithoutUserInput[]
+    connectOrCreate?: NotificationCreateOrConnectWithoutUserInput | NotificationCreateOrConnectWithoutUserInput[]
+    upsert?: NotificationUpsertWithWhereUniqueWithoutUserInput | NotificationUpsertWithWhereUniqueWithoutUserInput[]
+    createMany?: NotificationCreateManyUserInputEnvelope
+    set?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    disconnect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    delete?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    connect?: NotificationWhereUniqueInput | NotificationWhereUniqueInput[]
+    update?: NotificationUpdateWithWhereUniqueWithoutUserInput | NotificationUpdateWithWhereUniqueWithoutUserInput[]
+    updateMany?: NotificationUpdateManyWithWhereWithoutUserInput | NotificationUpdateManyWithWhereWithoutUserInput[]
+    deleteMany?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
   }
 
   export type UserCreateNestedOneWithoutAccountsInput = {
@@ -18231,6 +22274,10 @@ export namespace Prisma {
     divide?: number
   }
 
+  export type EnumPropertyListingStatusFieldUpdateOperationsInput = {
+    set?: $Enums.PropertyListingStatus
+  }
+
   export type LocationUpdateOneRequiredWithoutPropertiesNestedInput = {
     connect?: LocationWhereUniqueInput
     update?: XOR<XOR<LocationUpdateToOneWithWhereWithoutPropertiesInput, LocationUpdateWithoutPropertiesInput>, LocationUncheckedUpdateWithoutPropertiesInput>
@@ -18366,6 +22413,12 @@ export namespace Prisma {
     connect?: ChatWhereUniqueInput | ChatWhereUniqueInput[]
   }
 
+  export type ManagerSigningProfileCreateNestedOneWithoutManagerInput = {
+    create?: XOR<ManagerSigningProfileCreateWithoutManagerInput, ManagerSigningProfileUncheckedCreateWithoutManagerInput>
+    connectOrCreate?: ManagerSigningProfileCreateOrConnectWithoutManagerInput
+    connect?: ManagerSigningProfileWhereUniqueInput
+  }
+
   export type UserCreateNestedOneWithoutManagerInput = {
     create?: XOR<UserCreateWithoutManagerInput, UserUncheckedCreateWithoutManagerInput>
     connectOrCreate?: UserCreateOrConnectWithoutManagerInput
@@ -18384,6 +22437,12 @@ export namespace Prisma {
     connectOrCreate?: ChatCreateOrConnectWithoutManagerInput | ChatCreateOrConnectWithoutManagerInput[]
     createMany?: ChatCreateManyManagerInputEnvelope
     connect?: ChatWhereUniqueInput | ChatWhereUniqueInput[]
+  }
+
+  export type ManagerSigningProfileUncheckedCreateNestedOneWithoutManagerInput = {
+    create?: XOR<ManagerSigningProfileCreateWithoutManagerInput, ManagerSigningProfileUncheckedCreateWithoutManagerInput>
+    connectOrCreate?: ManagerSigningProfileCreateOrConnectWithoutManagerInput
+    connect?: ManagerSigningProfileWhereUniqueInput
   }
 
   export type PropertyUpdateManyWithoutManagerNestedInput = {
@@ -18412,6 +22471,16 @@ export namespace Prisma {
     update?: ChatUpdateWithWhereUniqueWithoutManagerInput | ChatUpdateWithWhereUniqueWithoutManagerInput[]
     updateMany?: ChatUpdateManyWithWhereWithoutManagerInput | ChatUpdateManyWithWhereWithoutManagerInput[]
     deleteMany?: ChatScalarWhereInput | ChatScalarWhereInput[]
+  }
+
+  export type ManagerSigningProfileUpdateOneWithoutManagerNestedInput = {
+    create?: XOR<ManagerSigningProfileCreateWithoutManagerInput, ManagerSigningProfileUncheckedCreateWithoutManagerInput>
+    connectOrCreate?: ManagerSigningProfileCreateOrConnectWithoutManagerInput
+    upsert?: ManagerSigningProfileUpsertWithoutManagerInput
+    disconnect?: ManagerSigningProfileWhereInput | boolean
+    delete?: ManagerSigningProfileWhereInput | boolean
+    connect?: ManagerSigningProfileWhereUniqueInput
+    update?: XOR<XOR<ManagerSigningProfileUpdateToOneWithWhereWithoutManagerInput, ManagerSigningProfileUpdateWithoutManagerInput>, ManagerSigningProfileUncheckedUpdateWithoutManagerInput>
   }
 
   export type UserUpdateOneRequiredWithoutManagerNestedInput = {
@@ -18448,6 +22517,30 @@ export namespace Prisma {
     update?: ChatUpdateWithWhereUniqueWithoutManagerInput | ChatUpdateWithWhereUniqueWithoutManagerInput[]
     updateMany?: ChatUpdateManyWithWhereWithoutManagerInput | ChatUpdateManyWithWhereWithoutManagerInput[]
     deleteMany?: ChatScalarWhereInput | ChatScalarWhereInput[]
+  }
+
+  export type ManagerSigningProfileUncheckedUpdateOneWithoutManagerNestedInput = {
+    create?: XOR<ManagerSigningProfileCreateWithoutManagerInput, ManagerSigningProfileUncheckedCreateWithoutManagerInput>
+    connectOrCreate?: ManagerSigningProfileCreateOrConnectWithoutManagerInput
+    upsert?: ManagerSigningProfileUpsertWithoutManagerInput
+    disconnect?: ManagerSigningProfileWhereInput | boolean
+    delete?: ManagerSigningProfileWhereInput | boolean
+    connect?: ManagerSigningProfileWhereUniqueInput
+    update?: XOR<XOR<ManagerSigningProfileUpdateToOneWithWhereWithoutManagerInput, ManagerSigningProfileUpdateWithoutManagerInput>, ManagerSigningProfileUncheckedUpdateWithoutManagerInput>
+  }
+
+  export type ManagerCreateNestedOneWithoutSigningProfileInput = {
+    create?: XOR<ManagerCreateWithoutSigningProfileInput, ManagerUncheckedCreateWithoutSigningProfileInput>
+    connectOrCreate?: ManagerCreateOrConnectWithoutSigningProfileInput
+    connect?: ManagerWhereUniqueInput
+  }
+
+  export type ManagerUpdateOneRequiredWithoutSigningProfileNestedInput = {
+    create?: XOR<ManagerCreateWithoutSigningProfileInput, ManagerUncheckedCreateWithoutSigningProfileInput>
+    connectOrCreate?: ManagerCreateOrConnectWithoutSigningProfileInput
+    upsert?: ManagerUpsertWithoutSigningProfileInput
+    connect?: ManagerWhereUniqueInput
+    update?: XOR<XOR<ManagerUpdateToOneWithWhereWithoutSigningProfileInput, ManagerUpdateWithoutSigningProfileInput>, ManagerUncheckedUpdateWithoutSigningProfileInput>
   }
 
   export type PropertyCreateNestedManyWithoutTenantsInput = {
@@ -18716,6 +22809,10 @@ export namespace Prisma {
     set?: $Enums.ApplicationStatus
   }
 
+  export type NullableEnumSettlementMethodFieldUpdateOperationsInput = {
+    set?: $Enums.SettlementMethod | null
+  }
+
   export type PropertyUpdateOneRequiredWithoutApplicationsNestedInput = {
     create?: XOR<PropertyCreateWithoutApplicationsInput, PropertyUncheckedCreateWithoutApplicationsInput>
     connectOrCreate?: PropertyCreateOrConnectWithoutApplicationsInput
@@ -18778,6 +22875,10 @@ export namespace Prisma {
     connectOrCreate?: PaymentCreateOrConnectWithoutLeaseInput | PaymentCreateOrConnectWithoutLeaseInput[]
     createMany?: PaymentCreateManyLeaseInputEnvelope
     connect?: PaymentWhereUniqueInput | PaymentWhereUniqueInput[]
+  }
+
+  export type NullableEnumRenewalStatusFieldUpdateOperationsInput = {
+    set?: $Enums.RenewalStatus | null
   }
 
   export type PropertyUpdateOneRequiredWithoutLeasesNestedInput = {
@@ -19008,6 +23109,20 @@ export namespace Prisma {
     update?: XOR<XOR<ChatUpdateToOneWithWhereWithoutLastMessageInput, ChatUpdateWithoutLastMessageInput>, ChatUncheckedUpdateWithoutLastMessageInput>
   }
 
+  export type UserCreateNestedOneWithoutNotificationsInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+  }
+
+  export type UserUpdateOneRequiredWithoutNotificationsNestedInput = {
+    create?: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    connectOrCreate?: UserCreateOrConnectWithoutNotificationsInput
+    upsert?: UserUpsertWithoutNotificationsInput
+    connect?: UserWhereUniqueInput
+    update?: XOR<XOR<UserUpdateToOneWithWhereWithoutNotificationsInput, UserUpdateWithoutNotificationsInput>, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
   export type NestedStringFilter<$PrismaModel = never> = {
     equals?: string | StringFieldRefInput<$PrismaModel>
     in?: string[] | ListStringFieldRefInput<$PrismaModel>
@@ -19210,6 +23325,13 @@ export namespace Prisma {
     not?: NestedFloatNullableFilter<$PrismaModel> | number | null
   }
 
+  export type NestedEnumPropertyListingStatusFilter<$PrismaModel = never> = {
+    equals?: $Enums.PropertyListingStatus | EnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPropertyListingStatusFilter<$PrismaModel> | $Enums.PropertyListingStatus
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[] | ListIntFieldRefInput<$PrismaModel>
@@ -19292,11 +23414,28 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type NestedEnumPropertyListingStatusWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.PropertyListingStatus | EnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    in?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    notIn?: $Enums.PropertyListingStatus[] | ListEnumPropertyListingStatusFieldRefInput<$PrismaModel>
+    not?: NestedEnumPropertyListingStatusWithAggregatesFilter<$PrismaModel> | $Enums.PropertyListingStatus
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedEnumPropertyListingStatusFilter<$PrismaModel>
+    _max?: NestedEnumPropertyListingStatusFilter<$PrismaModel>
+  }
+
   export type NestedEnumApplicationStatusFilter<$PrismaModel = never> = {
     equals?: $Enums.ApplicationStatus | EnumApplicationStatusFieldRefInput<$PrismaModel>
     in?: $Enums.ApplicationStatus[] | ListEnumApplicationStatusFieldRefInput<$PrismaModel>
     notIn?: $Enums.ApplicationStatus[] | ListEnumApplicationStatusFieldRefInput<$PrismaModel>
     not?: NestedEnumApplicationStatusFilter<$PrismaModel> | $Enums.ApplicationStatus
+  }
+
+  export type NestedEnumSettlementMethodNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettlementMethod | EnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    in?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumSettlementMethodNullableFilter<$PrismaModel> | $Enums.SettlementMethod | null
   }
 
   export type NestedEnumApplicationStatusWithAggregatesFilter<$PrismaModel = never> = {
@@ -19307,6 +23446,33 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedEnumApplicationStatusFilter<$PrismaModel>
     _max?: NestedEnumApplicationStatusFilter<$PrismaModel>
+  }
+
+  export type NestedEnumSettlementMethodNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.SettlementMethod | EnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    in?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.SettlementMethod[] | ListEnumSettlementMethodFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumSettlementMethodNullableWithAggregatesFilter<$PrismaModel> | $Enums.SettlementMethod | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumSettlementMethodNullableFilter<$PrismaModel>
+    _max?: NestedEnumSettlementMethodNullableFilter<$PrismaModel>
+  }
+
+  export type NestedEnumRenewalStatusNullableFilter<$PrismaModel = never> = {
+    equals?: $Enums.RenewalStatus | EnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRenewalStatusNullableFilter<$PrismaModel> | $Enums.RenewalStatus | null
+  }
+
+  export type NestedEnumRenewalStatusNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: $Enums.RenewalStatus | EnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    in?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    notIn?: $Enums.RenewalStatus[] | ListEnumRenewalStatusFieldRefInput<$PrismaModel> | null
+    not?: NestedEnumRenewalStatusNullableWithAggregatesFilter<$PrismaModel> | $Enums.RenewalStatus | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedEnumRenewalStatusNullableFilter<$PrismaModel>
+    _max?: NestedEnumRenewalStatusNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumPaymentStatusFilter<$PrismaModel = never> = {
@@ -19361,12 +23527,14 @@ export namespace Prisma {
   export type ManagerCreateWithoutUserInput = {
     managedProperties?: PropertyCreateNestedManyWithoutManagerInput
     chats?: ChatCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileCreateNestedOneWithoutManagerInput
   }
 
   export type ManagerUncheckedCreateWithoutUserInput = {
     id?: number
     managedProperties?: PropertyUncheckedCreateNestedManyWithoutManagerInput
     chats?: ChatUncheckedCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileUncheckedCreateNestedOneWithoutManagerInput
   }
 
   export type ManagerCreateOrConnectWithoutUserInput = {
@@ -19421,6 +23589,41 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type NotificationCreateWithoutUserInput = {
+    kind: string
+    title: string
+    body: string
+    resourceId?: number | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    emailSentAt?: Date | string | null
+    emailAttempts?: number
+    dedupeKey?: string | null
+  }
+
+  export type NotificationUncheckedCreateWithoutUserInput = {
+    id?: number
+    kind: string
+    title: string
+    body: string
+    resourceId?: number | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    emailSentAt?: Date | string | null
+    emailAttempts?: number
+    dedupeKey?: string | null
+  }
+
+  export type NotificationCreateOrConnectWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationCreateManyUserInputEnvelope = {
+    data: NotificationCreateManyUserInput | NotificationCreateManyUserInput[]
+    skipDuplicates?: boolean
+  }
+
   export type AccountUpsertWithWhereUniqueWithoutUserInput = {
     where: AccountWhereUniqueInput
     update: XOR<AccountUpdateWithoutUserInput, AccountUncheckedUpdateWithoutUserInput>
@@ -19466,12 +23669,14 @@ export namespace Prisma {
   export type ManagerUpdateWithoutUserInput = {
     managedProperties?: PropertyUpdateManyWithoutManagerNestedInput
     chats?: ChatUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUpdateOneWithoutManagerNestedInput
   }
 
   export type ManagerUncheckedUpdateWithoutUserInput = {
     id?: IntFieldUpdateOperationsInput | number
     managedProperties?: PropertyUncheckedUpdateManyWithoutManagerNestedInput
     chats?: ChatUncheckedUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUncheckedUpdateOneWithoutManagerNestedInput
   }
 
   export type TenantUpsertWithoutUserInput = {
@@ -19529,6 +23734,39 @@ export namespace Prisma {
     createdAt?: DateTimeFilter<"Message"> | Date | string
   }
 
+  export type NotificationUpsertWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    update: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+    create: XOR<NotificationCreateWithoutUserInput, NotificationUncheckedCreateWithoutUserInput>
+  }
+
+  export type NotificationUpdateWithWhereUniqueWithoutUserInput = {
+    where: NotificationWhereUniqueInput
+    data: XOR<NotificationUpdateWithoutUserInput, NotificationUncheckedUpdateWithoutUserInput>
+  }
+
+  export type NotificationUpdateManyWithWhereWithoutUserInput = {
+    where: NotificationScalarWhereInput
+    data: XOR<NotificationUpdateManyMutationInput, NotificationUncheckedUpdateManyWithoutUserInput>
+  }
+
+  export type NotificationScalarWhereInput = {
+    AND?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    OR?: NotificationScalarWhereInput[]
+    NOT?: NotificationScalarWhereInput | NotificationScalarWhereInput[]
+    id?: IntFilter<"Notification"> | number
+    userId?: StringFilter<"Notification"> | string
+    kind?: StringFilter<"Notification"> | string
+    title?: StringFilter<"Notification"> | string
+    body?: StringFilter<"Notification"> | string
+    resourceId?: IntNullableFilter<"Notification"> | number | null
+    readAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    createdAt?: DateTimeFilter<"Notification"> | Date | string
+    emailSentAt?: DateTimeNullableFilter<"Notification"> | Date | string | null
+    emailAttempts?: IntFilter<"Notification"> | number
+    dedupeKey?: StringNullableFilter<"Notification"> | string | null
+  }
+
   export type UserCreateWithoutAccountsInput = {
     id?: string
     name: string
@@ -19539,6 +23777,7 @@ export namespace Prisma {
     manager?: ManagerCreateNestedOneWithoutUserInput
     tenant?: TenantCreateNestedOneWithoutUserInput
     messages?: MessageCreateNestedManyWithoutSenderInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutAccountsInput = {
@@ -19551,6 +23790,7 @@ export namespace Prisma {
     manager?: ManagerUncheckedCreateNestedOneWithoutUserInput
     tenant?: TenantUncheckedCreateNestedOneWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutAccountsInput = {
@@ -19579,6 +23819,7 @@ export namespace Prisma {
     manager?: ManagerUpdateOneWithoutUserNestedInput
     tenant?: TenantUpdateOneWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutAccountsInput = {
@@ -19591,10 +23832,12 @@ export namespace Prisma {
     manager?: ManagerUncheckedUpdateOneWithoutUserNestedInput
     tenant?: TenantUncheckedUpdateOneWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ManagerCreateWithoutManagedPropertiesInput = {
     chats?: ChatCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileCreateNestedOneWithoutManagerInput
     user: UserCreateNestedOneWithoutManagerInput
   }
 
@@ -19602,6 +23845,7 @@ export namespace Prisma {
     id?: number
     userId: string
     chats?: ChatUncheckedCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileUncheckedCreateNestedOneWithoutManagerInput
   }
 
   export type ManagerCreateOrConnectWithoutManagedPropertiesInput = {
@@ -19614,6 +23858,10 @@ export namespace Prisma {
     endDate: Date | string
     rent: number
     deposit: number
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     tenant: TenantCreateNestedOneWithoutLeasesInput
     application?: ApplicationCreateNestedOneWithoutLeaseInput
     payments?: PaymentCreateNestedManyWithoutLeaseInput
@@ -19626,6 +23874,10 @@ export namespace Prisma {
     rent: number
     deposit: number
     tenantUserId: string
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     application?: ApplicationUncheckedCreateNestedOneWithoutLeaseInput
     payments?: PaymentUncheckedCreateNestedManyWithoutLeaseInput
   }
@@ -19647,6 +23899,23 @@ export namespace Prisma {
     email: string
     phoneNumber: string
     message?: string | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
     tenant: TenantCreateNestedOneWithoutApplicationsInput
     lease?: LeaseCreateNestedOneWithoutApplicationInput
   }
@@ -19661,6 +23930,23 @@ export namespace Prisma {
     phoneNumber: string
     message?: string | null
     leaseId?: number | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
   }
 
   export type ApplicationCreateOrConnectWithoutPropertyInput = {
@@ -19724,6 +24010,8 @@ export namespace Prisma {
 
   export type LocationUpdateWithoutPropertiesInput = {
     address?: StringFieldUpdateOperationsInput | string
+    subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
@@ -19733,6 +24021,8 @@ export namespace Prisma {
   export type LocationUncheckedUpdateWithoutPropertiesInput = {
     id?: IntFieldUpdateOperationsInput | number
     address?: StringFieldUpdateOperationsInput | string
+    subdistrict?: NullableStringFieldUpdateOperationsInput | string | null
+    district?: NullableStringFieldUpdateOperationsInput | string | null
     city?: StringFieldUpdateOperationsInput | string
     state?: StringFieldUpdateOperationsInput | string
     country?: StringFieldUpdateOperationsInput | string
@@ -19752,6 +24042,7 @@ export namespace Prisma {
 
   export type ManagerUpdateWithoutManagedPropertiesInput = {
     chats?: ChatUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUpdateOneWithoutManagerNestedInput
     user?: UserUpdateOneRequiredWithoutManagerNestedInput
   }
 
@@ -19759,6 +24050,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     chats?: ChatUncheckedUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUncheckedUpdateOneWithoutManagerNestedInput
   }
 
   export type LeaseUpsertWithWhereUniqueWithoutPropertyInput = {
@@ -19788,6 +24080,10 @@ export namespace Prisma {
     deposit?: FloatFilter<"Lease"> | number
     propertyId?: IntFilter<"Lease"> | number
     tenantUserId?: StringFilter<"Lease"> | string
+    renewalStatus?: EnumRenewalStatusNullableFilter<"Lease"> | $Enums.RenewalStatus | null
+    renewalRequestedAt?: DateTimeNullableFilter<"Lease"> | Date | string | null
+    renewalReviewedAt?: DateTimeNullableFilter<"Lease"> | Date | string | null
+    renewalMonths?: IntNullableFilter<"Lease"> | number | null
   }
 
   export type ApplicationUpsertWithWhereUniqueWithoutPropertyInput = {
@@ -19820,6 +24116,23 @@ export namespace Prisma {
     phoneNumber?: StringFilter<"Application"> | string
     message?: StringNullableFilter<"Application"> | string | null
     leaseId?: IntNullableFilter<"Application"> | number | null
+    originalMonthlyRent?: FloatNullableFilter<"Application"> | number | null
+    originalDeposit?: FloatNullableFilter<"Application"> | number | null
+    agreedMonthlyRent?: FloatNullableFilter<"Application"> | number | null
+    settlementMethod?: EnumSettlementMethodNullableFilter<"Application"> | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    managerConfirmedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    transferReference?: StringNullableFilter<"Application"> | string | null
+    paidAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    approvedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDueAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationRequestedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationExecuteAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    cancellationReason?: StringNullableFilter<"Application"> | string | null
+    denialReason?: StringNullableFilter<"Application"> | string | null
+    paymentDisputedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDisputeResolvedAt?: DateTimeNullableFilter<"Application"> | Date | string | null
+    paymentDisputeReason?: StringNullableFilter<"Application"> | string | null
   }
 
   export type TenantUpsertWithWhereUniqueWithoutFavoritesInput = {
@@ -19880,6 +24193,9 @@ export namespace Prisma {
     postedDate?: Date | string
     averageRating?: number | null
     numberOfReviews?: number | null
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     location: LocationCreateNestedOneWithoutPropertiesInput
     leases?: LeaseCreateNestedManyWithoutPropertyInput
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
@@ -19907,6 +24223,9 @@ export namespace Prisma {
     averageRating?: number | null
     numberOfReviews?: number | null
     locationId: number
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
@@ -19952,6 +24271,39 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type ManagerSigningProfileCreateWithoutManagerInput = {
+    legalName: string
+    title?: string
+    agreementNotes?: string
+    signatureCiphertext?: string | null
+    signatureSalt?: string | null
+    signatureIv?: string | null
+    signatureUpdatedAt?: Date | string | null
+    acceptedPrivacyAt?: Date | string | null
+    acceptedSharingAt?: Date | string | null
+    acceptedPolicyVersion?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ManagerSigningProfileUncheckedCreateWithoutManagerInput = {
+    legalName: string
+    title?: string
+    agreementNotes?: string
+    signatureCiphertext?: string | null
+    signatureSalt?: string | null
+    signatureIv?: string | null
+    signatureUpdatedAt?: Date | string | null
+    acceptedPrivacyAt?: Date | string | null
+    acceptedSharingAt?: Date | string | null
+    acceptedPolicyVersion?: string | null
+    updatedAt?: Date | string
+  }
+
+  export type ManagerSigningProfileCreateOrConnectWithoutManagerInput = {
+    where: ManagerSigningProfileWhereUniqueInput
+    create: XOR<ManagerSigningProfileCreateWithoutManagerInput, ManagerSigningProfileUncheckedCreateWithoutManagerInput>
+  }
+
   export type UserCreateWithoutManagerInput = {
     id?: string
     name: string
@@ -19962,6 +24314,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     tenant?: TenantCreateNestedOneWithoutUserInput
     messages?: MessageCreateNestedManyWithoutSenderInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutManagerInput = {
@@ -19974,6 +24327,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     tenant?: TenantUncheckedCreateNestedOneWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutManagerInput = {
@@ -20021,6 +24375,9 @@ export namespace Prisma {
     numberOfReviews?: IntNullableFilter<"Property"> | number | null
     locationId?: IntFilter<"Property"> | number
     managerUserId?: StringFilter<"Property"> | string
+    listingStatus?: EnumPropertyListingStatusFilter<"Property"> | $Enums.PropertyListingStatus
+    closedAt?: DateTimeNullableFilter<"Property"> | Date | string | null
+    archivedAt?: DateTimeNullableFilter<"Property"> | Date | string | null
   }
 
   export type ChatUpsertWithWhereUniqueWithoutManagerInput = {
@@ -20052,6 +24409,45 @@ export namespace Prisma {
     lastMessageId?: IntNullableFilter<"Chat"> | number | null
   }
 
+  export type ManagerSigningProfileUpsertWithoutManagerInput = {
+    update: XOR<ManagerSigningProfileUpdateWithoutManagerInput, ManagerSigningProfileUncheckedUpdateWithoutManagerInput>
+    create: XOR<ManagerSigningProfileCreateWithoutManagerInput, ManagerSigningProfileUncheckedCreateWithoutManagerInput>
+    where?: ManagerSigningProfileWhereInput
+  }
+
+  export type ManagerSigningProfileUpdateToOneWithWhereWithoutManagerInput = {
+    where?: ManagerSigningProfileWhereInput
+    data: XOR<ManagerSigningProfileUpdateWithoutManagerInput, ManagerSigningProfileUncheckedUpdateWithoutManagerInput>
+  }
+
+  export type ManagerSigningProfileUpdateWithoutManagerInput = {
+    legalName?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    agreementNotes?: StringFieldUpdateOperationsInput | string
+    signatureCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureSalt?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureIv?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPrivacyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedSharingAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPolicyVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type ManagerSigningProfileUncheckedUpdateWithoutManagerInput = {
+    legalName?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    agreementNotes?: StringFieldUpdateOperationsInput | string
+    signatureCiphertext?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureSalt?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureIv?: NullableStringFieldUpdateOperationsInput | string | null
+    signatureUpdatedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPrivacyAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedSharingAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    acceptedPolicyVersion?: NullableStringFieldUpdateOperationsInput | string | null
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type UserUpsertWithoutManagerInput = {
     update: XOR<UserUpdateWithoutManagerInput, UserUncheckedUpdateWithoutManagerInput>
     create: XOR<UserCreateWithoutManagerInput, UserUncheckedCreateWithoutManagerInput>
@@ -20073,6 +24469,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     tenant?: TenantUpdateOneWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutManagerInput = {
@@ -20085,6 +24482,49 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     tenant?: TenantUncheckedUpdateOneWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
+  }
+
+  export type ManagerCreateWithoutSigningProfileInput = {
+    managedProperties?: PropertyCreateNestedManyWithoutManagerInput
+    chats?: ChatCreateNestedManyWithoutManagerInput
+    user: UserCreateNestedOneWithoutManagerInput
+  }
+
+  export type ManagerUncheckedCreateWithoutSigningProfileInput = {
+    id?: number
+    userId: string
+    managedProperties?: PropertyUncheckedCreateNestedManyWithoutManagerInput
+    chats?: ChatUncheckedCreateNestedManyWithoutManagerInput
+  }
+
+  export type ManagerCreateOrConnectWithoutSigningProfileInput = {
+    where: ManagerWhereUniqueInput
+    create: XOR<ManagerCreateWithoutSigningProfileInput, ManagerUncheckedCreateWithoutSigningProfileInput>
+  }
+
+  export type ManagerUpsertWithoutSigningProfileInput = {
+    update: XOR<ManagerUpdateWithoutSigningProfileInput, ManagerUncheckedUpdateWithoutSigningProfileInput>
+    create: XOR<ManagerCreateWithoutSigningProfileInput, ManagerUncheckedCreateWithoutSigningProfileInput>
+    where?: ManagerWhereInput
+  }
+
+  export type ManagerUpdateToOneWithWhereWithoutSigningProfileInput = {
+    where?: ManagerWhereInput
+    data: XOR<ManagerUpdateWithoutSigningProfileInput, ManagerUncheckedUpdateWithoutSigningProfileInput>
+  }
+
+  export type ManagerUpdateWithoutSigningProfileInput = {
+    managedProperties?: PropertyUpdateManyWithoutManagerNestedInput
+    chats?: ChatUpdateManyWithoutManagerNestedInput
+    user?: UserUpdateOneRequiredWithoutManagerNestedInput
+  }
+
+  export type ManagerUncheckedUpdateWithoutSigningProfileInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    userId?: StringFieldUpdateOperationsInput | string
+    managedProperties?: PropertyUncheckedUpdateManyWithoutManagerNestedInput
+    chats?: ChatUncheckedUpdateManyWithoutManagerNestedInput
   }
 
   export type PropertyCreateWithoutTenantsInput = {
@@ -20105,6 +24545,9 @@ export namespace Prisma {
     postedDate?: Date | string
     averageRating?: number | null
     numberOfReviews?: number | null
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     location: LocationCreateNestedOneWithoutPropertiesInput
     manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
     leases?: LeaseCreateNestedManyWithoutPropertyInput
@@ -20133,6 +24576,9 @@ export namespace Prisma {
     numberOfReviews?: number | null
     locationId: number
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
@@ -20161,6 +24607,9 @@ export namespace Prisma {
     postedDate?: Date | string
     averageRating?: number | null
     numberOfReviews?: number | null
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     location: LocationCreateNestedOneWithoutPropertiesInput
     manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
     leases?: LeaseCreateNestedManyWithoutPropertyInput
@@ -20189,6 +24638,9 @@ export namespace Prisma {
     numberOfReviews?: number | null
     locationId: number
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
@@ -20206,6 +24658,23 @@ export namespace Prisma {
     email: string
     phoneNumber: string
     message?: string | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
     property: PropertyCreateNestedOneWithoutApplicationsInput
     lease?: LeaseCreateNestedOneWithoutApplicationInput
   }
@@ -20220,6 +24689,23 @@ export namespace Prisma {
     phoneNumber: string
     message?: string | null
     leaseId?: number | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
   }
 
   export type ApplicationCreateOrConnectWithoutTenantInput = {
@@ -20237,6 +24723,10 @@ export namespace Prisma {
     endDate: Date | string
     rent: number
     deposit: number
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     property: PropertyCreateNestedOneWithoutLeasesInput
     application?: ApplicationCreateNestedOneWithoutLeaseInput
     payments?: PaymentCreateNestedManyWithoutLeaseInput
@@ -20249,6 +24739,10 @@ export namespace Prisma {
     rent: number
     deposit: number
     propertyId: number
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     application?: ApplicationUncheckedCreateNestedOneWithoutLeaseInput
     payments?: PaymentUncheckedCreateNestedManyWithoutLeaseInput
   }
@@ -20302,6 +24796,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     manager?: ManagerCreateNestedOneWithoutUserInput
     messages?: MessageCreateNestedManyWithoutSenderInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutTenantInput = {
@@ -20314,6 +24809,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     manager?: ManagerUncheckedCreateNestedOneWithoutUserInput
     messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutTenantInput = {
@@ -20422,6 +24918,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     manager?: ManagerUpdateOneWithoutUserNestedInput
     messages?: MessageUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutTenantInput = {
@@ -20434,6 +24931,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     manager?: ManagerUncheckedUpdateOneWithoutUserNestedInput
     messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type PropertyCreateWithoutLocationInput = {
@@ -20454,6 +24952,9 @@ export namespace Prisma {
     postedDate?: Date | string
     averageRating?: number | null
     numberOfReviews?: number | null
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
     leases?: LeaseCreateNestedManyWithoutPropertyInput
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
@@ -20481,6 +24982,9 @@ export namespace Prisma {
     averageRating?: number | null
     numberOfReviews?: number | null
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
@@ -20531,6 +25035,9 @@ export namespace Prisma {
     postedDate?: Date | string
     averageRating?: number | null
     numberOfReviews?: number | null
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     location: LocationCreateNestedOneWithoutPropertiesInput
     manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
     leases?: LeaseCreateNestedManyWithoutPropertyInput
@@ -20559,6 +25066,9 @@ export namespace Prisma {
     numberOfReviews?: number | null
     locationId: number
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     leases?: LeaseUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
@@ -20596,6 +25106,10 @@ export namespace Prisma {
     endDate: Date | string
     rent: number
     deposit: number
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     property: PropertyCreateNestedOneWithoutLeasesInput
     tenant: TenantCreateNestedOneWithoutLeasesInput
     payments?: PaymentCreateNestedManyWithoutLeaseInput
@@ -20609,6 +25123,10 @@ export namespace Prisma {
     deposit: number
     propertyId: number
     tenantUserId: string
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     payments?: PaymentUncheckedCreateNestedManyWithoutLeaseInput
   }
 
@@ -20646,6 +25164,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
     manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
@@ -20674,6 +25195,9 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
@@ -20723,6 +25247,10 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     property?: PropertyUpdateOneRequiredWithoutLeasesNestedInput
     tenant?: TenantUpdateOneRequiredWithoutLeasesNestedInput
     payments?: PaymentUpdateManyWithoutLeaseNestedInput
@@ -20736,6 +25264,10 @@ export namespace Prisma {
     deposit?: FloatFieldUpdateOperationsInput | number
     propertyId?: IntFieldUpdateOperationsInput | number
     tenantUserId?: StringFieldUpdateOperationsInput | string
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     payments?: PaymentUncheckedUpdateManyWithoutLeaseNestedInput
   }
 
@@ -20757,6 +25289,9 @@ export namespace Prisma {
     postedDate?: Date | string
     averageRating?: number | null
     numberOfReviews?: number | null
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     location: LocationCreateNestedOneWithoutPropertiesInput
     manager: ManagerCreateNestedOneWithoutManagedPropertiesInput
     applications?: ApplicationCreateNestedManyWithoutPropertyInput
@@ -20785,6 +25320,9 @@ export namespace Prisma {
     numberOfReviews?: number | null
     locationId: number
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
     applications?: ApplicationUncheckedCreateNestedManyWithoutPropertyInput
     favoritedBy?: TenantUncheckedCreateNestedManyWithoutFavoritesInput
     tenants?: TenantUncheckedCreateNestedManyWithoutPropertiesInput
@@ -20824,6 +25362,23 @@ export namespace Prisma {
     email: string
     phoneNumber: string
     message?: string | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
     property: PropertyCreateNestedOneWithoutApplicationsInput
     tenant: TenantCreateNestedOneWithoutApplicationsInput
   }
@@ -20838,6 +25393,23 @@ export namespace Prisma {
     email: string
     phoneNumber: string
     message?: string | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
   }
 
   export type ApplicationCreateOrConnectWithoutLeaseInput = {
@@ -20901,6 +25473,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
     manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
@@ -20929,6 +25504,9 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
@@ -20980,6 +25558,23 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
     property?: PropertyUpdateOneRequiredWithoutApplicationsNestedInput
     tenant?: TenantUpdateOneRequiredWithoutApplicationsNestedInput
   }
@@ -20994,6 +25589,23 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type PaymentUpsertWithWhereUniqueWithoutLeaseInput = {
@@ -21030,6 +25642,10 @@ export namespace Prisma {
     endDate: Date | string
     rent: number
     deposit: number
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     property: PropertyCreateNestedOneWithoutLeasesInput
     tenant: TenantCreateNestedOneWithoutLeasesInput
     application?: ApplicationCreateNestedOneWithoutLeaseInput
@@ -21043,6 +25659,10 @@ export namespace Prisma {
     deposit: number
     propertyId: number
     tenantUserId: string
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
     application?: ApplicationUncheckedCreateNestedOneWithoutLeaseInput
   }
 
@@ -21067,6 +25687,10 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     property?: PropertyUpdateOneRequiredWithoutLeasesNestedInput
     tenant?: TenantUpdateOneRequiredWithoutLeasesNestedInput
     application?: ApplicationUpdateOneWithoutLeaseNestedInput
@@ -21080,6 +25704,10 @@ export namespace Prisma {
     deposit?: FloatFieldUpdateOperationsInput | number
     propertyId?: IntFieldUpdateOperationsInput | number
     tenantUserId?: StringFieldUpdateOperationsInput | string
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     application?: ApplicationUncheckedUpdateOneWithoutLeaseNestedInput
   }
 
@@ -21107,6 +25735,7 @@ export namespace Prisma {
 
   export type ManagerCreateWithoutChatsInput = {
     managedProperties?: PropertyCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileCreateNestedOneWithoutManagerInput
     user: UserCreateNestedOneWithoutManagerInput
   }
 
@@ -21114,6 +25743,7 @@ export namespace Prisma {
     id?: number
     userId: string
     managedProperties?: PropertyUncheckedCreateNestedManyWithoutManagerInput
+    signingProfile?: ManagerSigningProfileUncheckedCreateNestedOneWithoutManagerInput
   }
 
   export type ManagerCreateOrConnectWithoutChatsInput = {
@@ -21207,6 +25837,7 @@ export namespace Prisma {
 
   export type ManagerUpdateWithoutChatsInput = {
     managedProperties?: PropertyUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUpdateOneWithoutManagerNestedInput
     user?: UserUpdateOneRequiredWithoutManagerNestedInput
   }
 
@@ -21214,6 +25845,7 @@ export namespace Prisma {
     id?: IntFieldUpdateOperationsInput | number
     userId?: StringFieldUpdateOperationsInput | string
     managedProperties?: PropertyUncheckedUpdateManyWithoutManagerNestedInput
+    signingProfile?: ManagerSigningProfileUncheckedUpdateOneWithoutManagerNestedInput
   }
 
   export type MessageUpsertWithWhereUniqueWithoutChatInput = {
@@ -21292,6 +25924,7 @@ export namespace Prisma {
     accounts?: AccountCreateNestedManyWithoutUserInput
     manager?: ManagerCreateNestedOneWithoutUserInput
     tenant?: TenantCreateNestedOneWithoutUserInput
+    notifications?: NotificationCreateNestedManyWithoutUserInput
   }
 
   export type UserUncheckedCreateWithoutMessagesInput = {
@@ -21304,6 +25937,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
     manager?: ManagerUncheckedCreateNestedOneWithoutUserInput
     tenant?: TenantUncheckedCreateNestedOneWithoutUserInput
+    notifications?: NotificationUncheckedCreateNestedManyWithoutUserInput
   }
 
   export type UserCreateOrConnectWithoutMessagesInput = {
@@ -21386,6 +26020,7 @@ export namespace Prisma {
     accounts?: AccountUpdateManyWithoutUserNestedInput
     manager?: ManagerUpdateOneWithoutUserNestedInput
     tenant?: TenantUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUpdateManyWithoutUserNestedInput
   }
 
   export type UserUncheckedUpdateWithoutMessagesInput = {
@@ -21398,6 +26033,7 @@ export namespace Prisma {
     accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
     manager?: ManagerUncheckedUpdateOneWithoutUserNestedInput
     tenant?: TenantUncheckedUpdateOneWithoutUserNestedInput
+    notifications?: NotificationUncheckedUpdateManyWithoutUserNestedInput
   }
 
   export type ChatUpsertWithoutLastMessageInput = {
@@ -21430,6 +26066,74 @@ export namespace Prisma {
     messages?: MessageUncheckedUpdateManyWithoutChatNestedInput
   }
 
+  export type UserCreateWithoutNotificationsInput = {
+    id?: string
+    name: string
+    email: string
+    phoneNumber?: string | null
+    role: $Enums.UserRole
+    createdAt?: Date | string
+    accounts?: AccountCreateNestedManyWithoutUserInput
+    manager?: ManagerCreateNestedOneWithoutUserInput
+    tenant?: TenantCreateNestedOneWithoutUserInput
+    messages?: MessageCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserUncheckedCreateWithoutNotificationsInput = {
+    id?: string
+    name: string
+    email: string
+    phoneNumber?: string | null
+    role: $Enums.UserRole
+    createdAt?: Date | string
+    accounts?: AccountUncheckedCreateNestedManyWithoutUserInput
+    manager?: ManagerUncheckedCreateNestedOneWithoutUserInput
+    tenant?: TenantUncheckedCreateNestedOneWithoutUserInput
+    messages?: MessageUncheckedCreateNestedManyWithoutSenderInput
+  }
+
+  export type UserCreateOrConnectWithoutNotificationsInput = {
+    where: UserWhereUniqueInput
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+  }
+
+  export type UserUpsertWithoutNotificationsInput = {
+    update: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+    create: XOR<UserCreateWithoutNotificationsInput, UserUncheckedCreateWithoutNotificationsInput>
+    where?: UserWhereInput
+  }
+
+  export type UserUpdateToOneWithWhereWithoutNotificationsInput = {
+    where?: UserWhereInput
+    data: XOR<UserUpdateWithoutNotificationsInput, UserUncheckedUpdateWithoutNotificationsInput>
+  }
+
+  export type UserUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUpdateManyWithoutUserNestedInput
+    manager?: ManagerUpdateOneWithoutUserNestedInput
+    tenant?: TenantUpdateOneWithoutUserNestedInput
+    messages?: MessageUpdateManyWithoutSenderNestedInput
+  }
+
+  export type UserUncheckedUpdateWithoutNotificationsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    email?: StringFieldUpdateOperationsInput | string
+    phoneNumber?: NullableStringFieldUpdateOperationsInput | string | null
+    role?: EnumUserRoleFieldUpdateOperationsInput | $Enums.UserRole
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    accounts?: AccountUncheckedUpdateManyWithoutUserNestedInput
+    manager?: ManagerUncheckedUpdateOneWithoutUserNestedInput
+    tenant?: TenantUncheckedUpdateOneWithoutUserNestedInput
+    messages?: MessageUncheckedUpdateManyWithoutSenderNestedInput
+  }
+
   export type AccountCreateManyUserInput = {
     id?: string
     provider: $Enums.ProviderType
@@ -21446,6 +26150,19 @@ export namespace Prisma {
     chatId: number
     content: string
     createdAt?: Date | string
+  }
+
+  export type NotificationCreateManyUserInput = {
+    id?: number
+    kind: string
+    title: string
+    body: string
+    resourceId?: number | null
+    readAt?: Date | string | null
+    createdAt?: Date | string
+    emailSentAt?: Date | string | null
+    emailAttempts?: number
+    dedupeKey?: string | null
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -21503,6 +26220,44 @@ export namespace Prisma {
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type NotificationUpdateWithoutUserInput = {
+    kind?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailAttempts?: IntFieldUpdateOperationsInput | number
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type NotificationUncheckedUpdateWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    kind?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailAttempts?: IntFieldUpdateOperationsInput | number
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
+  export type NotificationUncheckedUpdateManyWithoutUserInput = {
+    id?: IntFieldUpdateOperationsInput | number
+    kind?: StringFieldUpdateOperationsInput | string
+    title?: StringFieldUpdateOperationsInput | string
+    body?: StringFieldUpdateOperationsInput | string
+    resourceId?: NullableIntFieldUpdateOperationsInput | number | null
+    readAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    emailSentAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    emailAttempts?: IntFieldUpdateOperationsInput | number
+    dedupeKey?: NullableStringFieldUpdateOperationsInput | string | null
+  }
+
   export type LeaseCreateManyPropertyInput = {
     id?: number
     startDate: Date | string
@@ -21510,6 +26265,10 @@ export namespace Prisma {
     rent: number
     deposit: number
     tenantUserId: string
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
   }
 
   export type ApplicationCreateManyPropertyInput = {
@@ -21522,6 +26281,23 @@ export namespace Prisma {
     phoneNumber: string
     message?: string | null
     leaseId?: number | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
   }
 
   export type LeaseUpdateWithoutPropertyInput = {
@@ -21529,6 +26305,10 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     tenant?: TenantUpdateOneRequiredWithoutLeasesNestedInput
     application?: ApplicationUpdateOneWithoutLeaseNestedInput
     payments?: PaymentUpdateManyWithoutLeaseNestedInput
@@ -21541,6 +26321,10 @@ export namespace Prisma {
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
     tenantUserId?: StringFieldUpdateOperationsInput | string
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     application?: ApplicationUncheckedUpdateOneWithoutLeaseNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutLeaseNestedInput
   }
@@ -21552,6 +26336,10 @@ export namespace Prisma {
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
     tenantUserId?: StringFieldUpdateOperationsInput | string
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ApplicationUpdateWithoutPropertyInput = {
@@ -21561,6 +26349,23 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
     tenant?: TenantUpdateOneRequiredWithoutApplicationsNestedInput
     lease?: LeaseUpdateOneWithoutApplicationNestedInput
   }
@@ -21575,6 +26380,23 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     leaseId?: NullableIntFieldUpdateOperationsInput | number | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ApplicationUncheckedUpdateManyWithoutPropertyInput = {
@@ -21587,6 +26409,23 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     leaseId?: NullableIntFieldUpdateOperationsInput | number | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type TenantUpdateWithoutFavoritesInput = {
@@ -21653,6 +26492,9 @@ export namespace Prisma {
     averageRating?: number | null
     numberOfReviews?: number | null
     locationId: number
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type ChatCreateManyManagerInput = {
@@ -21682,6 +26524,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
@@ -21709,6 +26554,9 @@ export namespace Prisma {
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
@@ -21735,6 +26583,9 @@ export namespace Prisma {
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ChatUpdateWithoutManagerInput = {
@@ -21775,6 +26626,23 @@ export namespace Prisma {
     phoneNumber: string
     message?: string | null
     leaseId?: number | null
+    originalMonthlyRent?: number | null
+    originalDeposit?: number | null
+    agreedMonthlyRent?: number | null
+    settlementMethod?: $Enums.SettlementMethod | null
+    tenantConfirmedAt?: Date | string | null
+    managerConfirmedAt?: Date | string | null
+    transferReference?: string | null
+    paidAt?: Date | string | null
+    approvedAt?: Date | string | null
+    paymentDueAt?: Date | string | null
+    cancellationRequestedAt?: Date | string | null
+    cancellationExecuteAt?: Date | string | null
+    cancellationReason?: string | null
+    denialReason?: string | null
+    paymentDisputedAt?: Date | string | null
+    paymentDisputeResolvedAt?: Date | string | null
+    paymentDisputeReason?: string | null
   }
 
   export type LeaseCreateManyTenantInput = {
@@ -21784,6 +26652,10 @@ export namespace Prisma {
     rent: number
     deposit: number
     propertyId: number
+    renewalStatus?: $Enums.RenewalStatus | null
+    renewalRequestedAt?: Date | string | null
+    renewalReviewedAt?: Date | string | null
+    renewalMonths?: number | null
   }
 
   export type ChatCreateManyTenantInput = {
@@ -21813,6 +26685,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
     manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
@@ -21841,6 +26716,9 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
@@ -21867,6 +26745,9 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PropertyUpdateWithoutFavoritedByInput = {
@@ -21887,6 +26768,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     location?: LocationUpdateOneRequiredWithoutPropertiesNestedInput
     manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
@@ -21915,6 +26799,9 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     tenants?: TenantUncheckedUpdateManyWithoutPropertiesNestedInput
@@ -21941,6 +26828,9 @@ export namespace Prisma {
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     locationId?: IntFieldUpdateOperationsInput | number
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type ApplicationUpdateWithoutTenantInput = {
@@ -21950,6 +26840,23 @@ export namespace Prisma {
     email?: StringFieldUpdateOperationsInput | string
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
     property?: PropertyUpdateOneRequiredWithoutApplicationsNestedInput
     lease?: LeaseUpdateOneWithoutApplicationNestedInput
   }
@@ -21964,6 +26871,23 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     leaseId?: NullableIntFieldUpdateOperationsInput | number | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type ApplicationUncheckedUpdateManyWithoutTenantInput = {
@@ -21976,6 +26900,23 @@ export namespace Prisma {
     phoneNumber?: StringFieldUpdateOperationsInput | string
     message?: NullableStringFieldUpdateOperationsInput | string | null
     leaseId?: NullableIntFieldUpdateOperationsInput | number | null
+    originalMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    originalDeposit?: NullableFloatFieldUpdateOperationsInput | number | null
+    agreedMonthlyRent?: NullableFloatFieldUpdateOperationsInput | number | null
+    settlementMethod?: NullableEnumSettlementMethodFieldUpdateOperationsInput | $Enums.SettlementMethod | null
+    tenantConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    managerConfirmedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    transferReference?: NullableStringFieldUpdateOperationsInput | string | null
+    paidAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    approvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDueAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationExecuteAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    cancellationReason?: NullableStringFieldUpdateOperationsInput | string | null
+    denialReason?: NullableStringFieldUpdateOperationsInput | string | null
+    paymentDisputedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeResolvedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    paymentDisputeReason?: NullableStringFieldUpdateOperationsInput | string | null
   }
 
   export type LeaseUpdateWithoutTenantInput = {
@@ -21983,6 +26924,10 @@ export namespace Prisma {
     endDate?: DateTimeFieldUpdateOperationsInput | Date | string
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     property?: PropertyUpdateOneRequiredWithoutLeasesNestedInput
     application?: ApplicationUpdateOneWithoutLeaseNestedInput
     payments?: PaymentUpdateManyWithoutLeaseNestedInput
@@ -21995,6 +26940,10 @@ export namespace Prisma {
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
     propertyId?: IntFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
     application?: ApplicationUncheckedUpdateOneWithoutLeaseNestedInput
     payments?: PaymentUncheckedUpdateManyWithoutLeaseNestedInput
   }
@@ -22006,6 +26955,10 @@ export namespace Prisma {
     rent?: FloatFieldUpdateOperationsInput | number
     deposit?: FloatFieldUpdateOperationsInput | number
     propertyId?: IntFieldUpdateOperationsInput | number
+    renewalStatus?: NullableEnumRenewalStatusFieldUpdateOperationsInput | $Enums.RenewalStatus | null
+    renewalRequestedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalReviewedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    renewalMonths?: NullableIntFieldUpdateOperationsInput | number | null
   }
 
   export type ChatUpdateWithoutTenantInput = {
@@ -22054,6 +27007,9 @@ export namespace Prisma {
     postedDate?: DateTimeFieldUpdateOperationsInput | Date | string
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     manager?: ManagerUpdateOneRequiredWithoutManagedPropertiesNestedInput
     leases?: LeaseUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUpdateManyWithoutPropertyNestedInput
@@ -22081,6 +27037,9 @@ export namespace Prisma {
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     leases?: LeaseUncheckedUpdateManyWithoutPropertyNestedInput
     applications?: ApplicationUncheckedUpdateManyWithoutPropertyNestedInput
     favoritedBy?: TenantUncheckedUpdateManyWithoutFavoritesNestedInput
@@ -22107,6 +27066,9 @@ export namespace Prisma {
     averageRating?: number | null
     numberOfReviews?: number | null
     managerUserId: string
+    listingStatus?: $Enums.PropertyListingStatus
+    closedAt?: Date | string | null
+    archivedAt?: Date | string | null
   }
 
   export type PropertyUncheckedUpdateManyWithoutLocationInput = {
@@ -22129,6 +27091,9 @@ export namespace Prisma {
     averageRating?: NullableFloatFieldUpdateOperationsInput | number | null
     numberOfReviews?: NullableIntFieldUpdateOperationsInput | number | null
     managerUserId?: StringFieldUpdateOperationsInput | string
+    listingStatus?: EnumPropertyListingStatusFieldUpdateOperationsInput | $Enums.PropertyListingStatus
+    closedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    archivedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type PaymentCreateManyLeaseInput = {

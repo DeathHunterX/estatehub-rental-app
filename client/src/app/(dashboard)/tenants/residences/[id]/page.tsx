@@ -1,13 +1,17 @@
 "use client";
 
+import PageSkeleton from "@/components/shared/page-skeleton";
+
+
 import PaymentMethod from "@/app/(dashboard)/tenants/residences/[id]/_components/payment-method";
 import ResidenceCard from "@/components/shared/card/residence-card";
+import Header from "@/components/shared/header";
 import {
     useGetAuthCurrentUserQuery,
     useGetLeasesQuery,
     useGetPaymentsQuery,
     useGetPropertyQuery,
-} from "@/states/api";
+} from "@/lib/api/api";
 import { useParams } from "next/navigation";
 import BillingHistory from "./_components/billing-history";
 
@@ -26,25 +30,22 @@ const ResidencePage = () => {
         authUser?.user.id || "",
         { skip: !authUser?.user.id }
     );
+    const currentLease = leases?.find((lease) => lease.propertyId === Number(id));
     const { data: payments, isLoading: paymentsLoading } = useGetPaymentsQuery(
-        (leases?.[0]?.id as number) || 0,
-        { skip: !(leases?.[0]?.id as number) }
+        currentLease?.id || 0,
+        { skip: !currentLease?.id }
     );
 
     if (propertyLoading || leasesLoading || paymentsLoading)
-        return <div>Loading...</div>;
-    if (!property || propertyError) return <div>Error loading property</div>;
-    if (!leases || !payments)
-        return <div>Error loading leases or payments</div>;
-
-    const currentLease = leases?.find(
-        (lease) => lease.propertyId === property.id
-    );
+        return <PageSkeleton variant="detail" />;
+    if (!property || propertyError) return <div className="dashboard-container text-destructive">Could not load this residence.</div>;
+    if (!currentLease) return <div className="dashboard-container text-muted-foreground">You do not have a lease for this property.</div>;
 
     return (
         <div className="dashboard-container">
+            <Header title="Residence Details" subtitle="Your lease and payment records" />
             <div className="w-full mx-auto">
-                <div className="md:flex gap-10">
+                <div className="flex flex-col gap-6 lg:flex-row">
                     {currentLease && (
                         <ResidenceCard
                             property={property}

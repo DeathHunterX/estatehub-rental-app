@@ -1,4 +1,5 @@
-import { PropertyTypeEnum } from "@/constants";
+import { AmenityEnum, HighlightEnum, PropertyTypeEnum } from "@/constants";
+import { APPLICATION_MESSAGE_MAX_CHARACTERS, APPLICATION_MESSAGE_MAX_WORDS, countApplicationWords } from "@/features/applications/lib/application-message";
 import * as z from "zod";
 
 export const propertySchema = z.object({
@@ -24,11 +25,9 @@ export const propertySchema = z.object({
         .transform((val) => val.toString()),
     isPetsAllowed: z.boolean(),
     isParkingIncluded: z.boolean(),
-    photoUrls: z
-        .array(z.instanceof(File))
-        .min(1, "At least one photo is required"),
-    amenities: z.string().min(1, "Amenities are required"),
-    highlights: z.string().min(1, "Highlights are required"),
+    photoUrls: z.array(z.url()).max(20, "A property can have up to 20 photos"),
+    amenities: z.array(z.nativeEnum(AmenityEnum)).min(1, "Choose at least one amenity"),
+    highlights: z.array(z.nativeEnum(HighlightEnum)).min(1, "Choose at least one highlight"),
     beds: z.coerce
         .number()
         .positive()
@@ -50,10 +49,12 @@ export const propertySchema = z.object({
         .transform((val) => val.toString()),
     propertyType: z.nativeEnum(PropertyTypeEnum),
     address: z.string().min(1, "Address is required"),
+    subdistrict: z.string(),
+    district: z.string(),
     city: z.string().min(1, "City is required"),
-    state: z.string().min(1, "State is required"),
+    state: z.string(),
     country: z.string().min(1, "Country is required"),
-    postalCode: z.string().min(1, "Postal code is required"),
+    postalCode: z.string(),
 });
 
 export type PropertyFormData = z.infer<typeof propertySchema>;
@@ -62,7 +63,10 @@ export const applicationSchema = z.object({
     name: z.string().min(1, "Name is required"),
     email: z.string().email("Invalid email address"),
     phoneNumber: z.string().min(10, "Phone number must be at least 10 digits"),
-    message: z.string().optional(),
+    message: z.string()
+        .max(APPLICATION_MESSAGE_MAX_CHARACTERS, "Keep your message under 1,000 characters")
+        .refine((value) => countApplicationWords(value) <= APPLICATION_MESSAGE_MAX_WORDS, "Keep your message to 150 words or fewer")
+        .optional(),
 });
 
 export type ApplicationFormData = z.infer<typeof applicationSchema>;

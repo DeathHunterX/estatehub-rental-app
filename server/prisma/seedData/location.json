@@ -6,7 +6,9 @@
     "state": "CA",
     "address": "123 Colorado Blvd",
     "postalCode": "91105",
-    "coordinates": "POINT(-118.144516 34.147785)"
+    "coordinates": "POINT(-118.144516 34.147785)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 2,
@@ -15,7 +17,9 @@
     "state": "CA",
     "address": "456 Ocean Ave",
     "postalCode": "90401",
-    "coordinates": "POINT(-118.496513 34.013654)"
+    "coordinates": "POINT(-118.496513 34.013654)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 3,
@@ -24,7 +28,9 @@
     "state": "CA",
     "address": "789 Hollywood Way",
     "postalCode": "91505",
-    "coordinates": "POINT(-118.328661 34.180839)"
+    "coordinates": "POINT(-118.328661 34.180839)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 4,
@@ -33,7 +39,9 @@
     "state": "CA",
     "address": "101 Pine Ave",
     "postalCode": "90802",
-    "coordinates": "POINT(-118.192604 33.766720)"
+    "coordinates": "POINT(-118.192604 33.766720)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 5,
@@ -42,7 +50,9 @@
     "state": "NY",
     "address": "555 Manhattan Ave",
     "postalCode": "10001",
-    "coordinates": "POINT(-74.005941 40.712784)"
+    "coordinates": "POINT(-74.005941 40.712784)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 6,
@@ -51,7 +61,9 @@
     "state": "CA",
     "address": "888 Malibu Road",
     "postalCode": "90265",
-    "coordinates": "POINT(-118.774518 34.025922)"
+    "coordinates": "POINT(-118.774518 34.025922)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 7,
@@ -60,7 +72,9 @@
     "state": "CA",
     "address": "777 Brand Blvd",
     "postalCode": "91203",
-    "coordinates": "POINT(-118.254708 34.142508)"
+    "coordinates": "POINT(-118.254708 34.142508)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 8,
@@ -69,7 +83,9 @@
     "state": "CA",
     "address": "555 Torrance Blvd",
     "postalCode": "90503",
-    "coordinates": "POINT(-118.352575 33.835849)"
+    "coordinates": "POINT(-118.352575 33.835849)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 9,
@@ -78,7 +94,9 @@
     "state": "FL",
     "address": "1234 Ocean Dr",
     "postalCode": "33139",
-    "coordinates": "POINT(-80.130045 25.782551)"
+    "coordinates": "POINT(-80.130045 25.782551)",
+    "subdistrict": null,
+    "district": null
   },
   {
     "id": 10,
@@ -87,6 +105,63 @@
     "state": "CA",
     "address": "789 Rodeo Dr",
     "postalCode": "90210",
-    "coordinates": "POINT(-118.400356 34.073620)"
+    "coordinates": "POINT(-118.400356 34.073620)",
+    "subdistrict": null,
+    "district": null
+  },
+  {
+    "id": 11,
+    "country": "Vietnam",
+    "city": "Ho Chi Minh City",
+    "state": "Ho Chi Minh City",
+    "address": "11 Demo Street",
+    "postalCode": "700000",
+    "coordinates": "POINT(106.7035 10.7769)",
+    "subdistrict": "Ben Nghe",
+    "district": "District 1"
+  },
+  {
+    "id": 12,
+    "country": "Singapore",
+    "city": "Singapore",
+    "state": "Central Region",
+    "address": "12 Demo Lane",
+    "postalCode": "018956",
+    "coordinates": "POINT(103.8519 1.2830)",
+    "subdistrict": null,
+    "district": "Downtown Core"
+  },
+  {
+    "id": 13,
+    "country": "United Kingdom",
+    "city": "London",
+    "state": "England",
+    "address": "13 Demo Road",
+    "postalCode": "SW1A 1AA",
+    "coordinates": "POINT(-0.1276 51.5072)",
+    "subdistrict": null,
+    "district": "Westminster"
+  },
+  {
+    "id": 14,
+    "country": "Germany",
+    "city": "Berlin",
+    "state": "Berlin",
+    "address": "14 Demo Platz",
+    "postalCode": "10117",
+    "coordinates": "POINT(13.4050 52.5200)",
+    "subdistrict": null,
+    "district": "Mitte"
+  },
+  {
+    "id": 15,
+    "country": "Canada",
+    "city": "Toronto",
+    "state": "Ontario",
+    "address": "15 Demo Avenue",
+    "postalCode": "M5H 2N2",
+    "coordinates": "POINT(-79.3832 43.6532)",
+    "subdistrict": null,
+    "district": "Old Toronto"
   }
 ]

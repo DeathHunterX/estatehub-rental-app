@@ -13,4 +13,10 @@ client/.next/
 .DS_Store
 Thumbs.db
 
-server/prisma/migrations/
+tmp
+.tmp
+/output/
+
+migrations
+tests
+docs

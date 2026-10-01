@@ -1,7 +1,10 @@
 "use client";
 
+import PageSkeleton from "@/components/shared/page-skeleton";
+
+
 import SettingsForm from "@/components/shared/forms/settings-form";
-import { useGetAuthCurrentUserQuery } from "@/states/api";
+import { useGetAuthCurrentUserQuery } from "@/lib/api/api";
 
 const SettingsPage = () => {
     const { data: authUser, isLoading: isAuthLoading } =
@@ -14,7 +17,7 @@ const SettingsPage = () => {
     };
 
     if (isAuthLoading) {
-        return <div>Loading...</div>;
+        return <PageSkeleton variant="form" />;
     }
 
     return <SettingsForm initialData={initialData} userType="tenant" />;

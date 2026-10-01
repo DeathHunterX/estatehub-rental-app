@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import type { SearchViewMode } from "@/features/search/lib/search-view";
+import { logout, restoreSession, setCredentials } from "./slices/auth.slice";
 
 export interface FiltersState {
     location: string;
@@ -7,20 +9,22 @@ export interface FiltersState {
     propertyType: string;
     amenities: string[];
     availableFrom: string;
-    priceRange: [number, number] | [null, null];
-    squareFeet: [number, number] | [null, null];
-    latitude: number;
-    longitude: number;
+    priceRange: [number | null, number | null];
+    squareFeet: [number | null, number | null];
+    latitude: number | null;
+    longitude: number | null;
 }
 
 interface InitialStateTypes {
     chatId: number | null;
+    chatSessionVersion: number;
     isFiltersFullOpen: boolean;
-    viewMode: "grid" | "list";
+    viewMode: SearchViewMode;
 }
 
 export const initialState: InitialStateTypes = {
     chatId: null,
+    chatSessionVersion: 0,
     isFiltersFullOpen: false,
     viewMode: "grid",
 };
@@ -32,16 +36,37 @@ export const globalSlice = createSlice({
         toggleFiltersFullOpen: (state) => {
             state.isFiltersFullOpen = !state.isFiltersFullOpen;
         },
-        setViewMode: (state, action: PayloadAction<"grid" | "list">) => {
+        setFiltersFullOpen: (state, action: PayloadAction<boolean>) => {
+            state.isFiltersFullOpen = action.payload;
+        },
+        setViewMode: (state, action: PayloadAction<SearchViewMode>) => {
             state.viewMode = action.payload;
         },
-        setChatId: (state, action: PayloadAction<number | null>) => {
-            state.chatId = action.payload;
+        setChatId: (state, action: PayloadAction<{ chatId: number; sessionVersion: number } | null>) => {
+            if (action.payload === null) {
+                state.chatId = null;
+            } else if (action.payload.sessionVersion === state.chatSessionVersion) {
+                state.chatId = action.payload.chatId;
+            }
         },
+    },
+    extraReducers: (builder) => {
+        builder.addCase(restoreSession, (state) => {
+            state.chatId = null;
+            state.chatSessionVersion += 1;
+        });
+        builder.addCase(logout, (state) => {
+            state.chatId = null;
+            state.chatSessionVersion += 1;
+        });
+        builder.addCase(setCredentials, (state) => {
+            state.chatId = null;
+            state.chatSessionVersion += 1;
+        });
     },
 });
 
-export const { toggleFiltersFullOpen, setViewMode, setChatId } =
+export const { toggleFiltersFullOpen, setFiltersFullOpen, setViewMode, setChatId } =
     globalSlice.actions;
 
 export default globalSlice.reducer;

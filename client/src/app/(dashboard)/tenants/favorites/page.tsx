@@ -1,16 +1,23 @@
 "use client";
 
-import PropertyCard from "@/components/shared/card/property-card";
+import PageSkeleton from "@/components/shared/page-skeleton";
+
+
+import PropertyCard from "@/features/properties/components/property-card";
 import Header from "@/components/shared/header";
 import {
     useGetAuthCurrentUserQuery,
     useGetPropertiesQuery,
     useGetTenantQuery,
-} from "@/states/api";
+    useRemoveFavoritePropertyMutation,
+} from "@/lib/api/api";
 
 const FavoritesPage = () => {
-    const { data: authUser } = useGetAuthCurrentUserQuery();
-    const { data: tenant } = useGetTenantQuery(authUser?.user?.id);
+    const { data: authUser, isLoading: isAuthLoading } = useGetAuthCurrentUserQuery();
+    const { data: tenant, isLoading: isTenantLoading } = useGetTenantQuery(authUser?.user?.id || "", {
+        skip: !authUser?.user?.id,
+    });
+    const [removeFavorite] = useRemoveFavoritePropertyMutation();
 
     const {
         data: favoriteProperties,
@@ -27,13 +34,13 @@ const FavoritesPage = () => {
         }
     );
 
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>Error loading favorites</div>;
+    if (isAuthLoading || isTenantLoading || isLoading) return <PageSkeleton variant="cards" />;
+    if (isError) return <div className="dashboard-container text-destructive">Could not load favorites.</div>;
 
     return (
         <div className="dashboard-container">
             <Header
-                title="Favorites Properties"
+                title="Favorite Properties"
                 subtitle="Browse and manage your saved property listings"
             />
 
@@ -43,16 +50,16 @@ const FavoritesPage = () => {
                         key={property.id}
                         property={property}
                         isFavorite={true}
-                        onFavoriteToggle={() => {}}
-                        showFavoriteButton={false}
-                        propertyLink={`/tenants/residences/${property.id}`}
+                        onFavoriteToggle={() => removeFavorite({ tenantId: tenant.id, propertyId: property.id })}
+                        showFavoriteButton={true}
+                        propertyLink={`/search/${property.id}`}
                     />
                 ))}
             </div>
             {(!favoriteProperties || favoriteProperties.length === 0) && (
-                <p className="text-center text-gray-500">
-                    You don&lsquo;t have any favorited properties
-                </p>
+                <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
+                    You have no saved properties yet.
+                </div>
             )}
         </div>
     );

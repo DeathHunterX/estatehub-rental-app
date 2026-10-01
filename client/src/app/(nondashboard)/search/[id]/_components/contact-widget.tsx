@@ -1,48 +1,37 @@
 import { Button } from "@/components/ui/button";
-import { useGetAuthCurrentUserQuery } from "@/states/api";
-import { Phone } from "lucide-react";
+import { useGetAuthCurrentUserQuery } from "@/lib/api/api";
+import { useAppSelector } from "@/states/store";
 import { useRouter } from "next/navigation";
 
-const ContactWidget = ({ onOpenModal, propertyId }: ContactWidgetProps) => {
-    const { data: authUser } = useGetAuthCurrentUserQuery();
+const ContactWidget = ({ onOpenModal, propertyId, availability }: ContactWidgetProps) => {
+    const accessToken = useAppSelector((state) => state.auth.accessToken);
+    const { data: authUser } = useGetAuthCurrentUserQuery(undefined, { skip: !accessToken });
     const router = useRouter();
+    const isManager = authUser?.user?.role?.toLowerCase() === "manager";
 
     const handleButtonClick = () => {
-        if (authUser) {
+        if (authUser && !isManager) {
             onOpenModal();
         } else {
             router.push(`/sign-in?redirect=/search/${propertyId}`);
         }
     };
     return (
-        <div className="bg-white border border-primary-200 rounded-2xl p-7 h-fit min-w-[300px]">
-            {/* Contact Property */}
-            <div className="flex items-center gap-5 mb-4 border border-primary-200 p-4 rounded-xl">
-                <div className="flex items-center p-4 bg-primary-900 rounded-full">
-                    <Phone className="text-primary-50" size={15} />
-                </div>
-                <div>
-                    <p>Contact This Property</p>
-                    <div className="text-lg font-bold text-primary-800">
-                        (424) 340-5574
-                    </div>
-                </div>
+        <div className="h-fit rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:grid sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:gap-5 sm:p-6 lg:block">
+            <div>
+                <p className="text-xs font-semibold uppercase tracking-[0.16em] text-primary">Interested in this home?</p>
+                <h2 className="mt-2 text-xl font-bold">Make your next move</h2>
+                <p className="mb-5 mt-2 text-sm leading-6 text-muted-foreground sm:mb-0 lg:mb-5">Send an application to the property manager and keep your rental search moving.</p>
             </div>
-            <Button
-                className="w-full bg-primary-700 text-white hover:bg-primary-600"
-                onClick={handleButtonClick}
-            >
-                {authUser ? "Submit Application" : "Sign In to Apply"}
-            </Button>
-
-            <hr className="my-4" />
-            <div className="text-sm">
-                <div className="text-primary-600 mb-1">
-                    Language: English, Bahasa.
-                </div>
-                <div className="text-primary-600">
-                    Open by appointment on Monday - Sunday
-                </div>
+            <div className="sm:min-w-44 lg:min-w-0">
+                <Button
+                    className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                    onClick={handleButtonClick}
+                    disabled={isManager || availability === "Closed" || availability === "Occupied"}
+                >
+                    {availability === "Closed" ? "Listing closed" : availability === "Occupied" ? "Currently occupied" : isManager ? "Only tenants can apply" : authUser ? "Submit Application" : "Sign In to Apply"}
+                </Button>
+                {isManager && <p className="mt-3 text-xs text-muted-foreground">Applications are available to tenant accounts.</p>}
             </div>
         </div>
     );

@@ -1,234 +1,277 @@
 [
-    {
-        "id": "acc-001",
-        "userId": "817b3540-a061-707b-742a-a28391181149",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|c94f8651-29db-4f10-8bc0-10615ba2d971",
-        "accessToken": "ya29.a0AfH6SMD-xyz-0",
-        "refreshToken": "1//refresh-token-0",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.870242Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.870242Z"
-    },
-    {
-        "id": "acc-002",
-        "userId": "us-east-2:87654321-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|48a0593b-fc2a-4546-ae34-e4a7d6bcf353",
-        "accessToken": "ya29.a0AfH6SMD-xyz-1",
-        "refreshToken": "1//refresh-token-1",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.870368Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.870368Z"
-    },
-    {
-        "id": "acc-003",
-        "userId": "us-east-2:98765432-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user3@example.com",
-        "passwordHash": "$2b$10$1ow1XykV0RoWi0AZ0BSdNsxXTItWiBA8wLwEmRyxvvTTtvE9aOFC1"
-    },
-    {
-        "id": "acc-004",
-        "userId": "us-east-2:65432109-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user4@example.com",
-        "passwordHash": "$2b$10$aXu987sJ6U1ysiGmbXJITgpCwQLek3uLRQSlLX9GDZNOPJvUAPgHM"
-    },
-    {
-        "id": "acc-005",
-        "userId": "us-east-2:54321098-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|0673ac99-b3f3-4f80-b415-71ed0c8c301e",
-        "accessToken": "ya29.a0AfH6SMD-xyz-4",
-        "refreshToken": "1//refresh-token-4",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.870722Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.870722Z"
-    },
-    {
-        "id": "acc-006",
-        "userId": "us-east-2:43210987-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|fd7051b7-7b28-4514-a38a-66afa23b8991",
-        "accessToken": "ya29.a0AfH6SMD-xyz-5",
-        "refreshToken": "1//refresh-token-5",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.870790Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.870790Z"
-    },
-    {
-        "id": "acc-007",
-        "userId": "us-east-2:32109876-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|9076387c-c864-4d03-ad39-d2f782e9e7fd",
-        "accessToken": "ya29.a0AfH6SMD-xyz-6",
-        "refreshToken": "1//refresh-token-6",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.870830Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.870830Z"
-    },
-    {
-        "id": "acc-008",
-        "userId": "us-east-2:21098765-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|da620747-0df0-4883-b703-e4465045627b",
-        "accessToken": "ya29.a0AfH6SMD-xyz-7",
-        "refreshToken": "1//refresh-token-7",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.870869Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.870869Z"
-    },
-    {
-        "id": "acc-009",
-        "userId": "us-east-2:10987654-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user9@example.com",
-        "passwordHash": "$2b$10$SQQlkhUc4r8QUXaLBmiQ4P7htYdtKJs8WisUzc0yKMyfjFKgL3vh5"
-    },
-    {
-        "id": "acc-010",
-        "userId": "us-east-2:09876543-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|5c73480b-20c0-47b7-979d-e52122a5e1b6",
-        "accessToken": "ya29.a0AfH6SMD-xyz-9",
-        "refreshToken": "1//refresh-token-9",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.870941Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.870941Z"
-    },
-    {
-        "id": "acc-011",
-        "userId": "us-east-2:a9876543-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user11@example.com",
-        "passwordHash": "$2b$10$1TooXz5WNwgiVtVTsGEowpm2OpYgoXRnxLwjN2RONT5zl35Cw0Lzb"
-    },
-    {
-        "id": "acc-012",
-        "userId": "us-east-2:b9876543-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user12@example.com",
-        "passwordHash": "$2b$10$mGK88f8BENdfNrY0Tyhq2dZgHen03Xf2RID3nU0pKEAhyuEIhSJZv"
-    },
-    {
-        "id": "acc-013",
-        "userId": "us-east-2:c9876543-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|76b60362-41ce-44e3-b8c1-27e0f7ea1a0f",
-        "accessToken": "ya29.a0AfH6SMD-xyz-12",
-        "refreshToken": "1//refresh-token-12",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871027Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871027Z"
-    },
-    {
-        "id": "acc-014",
-        "userId": "us-east-2:d9876543-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user14@example.com",
-        "passwordHash": "$2b$10$4sYdtkNPuglglm1GjebxVHXcKlL4QGWIE856Ku5swEDw2uwExFHAY"
-    },
-    {
-        "id": "acc-015",
-        "userId": "us-east-2:e9876543-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|c496fdf7-197d-4ed3-a554-f3ec436bc9ec",
-        "accessToken": "ya29.a0AfH6SMD-xyz-14",
-        "refreshToken": "1//refresh-token-14",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871083Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871083Z"
-    },
-    {
-        "id": "acc-016",
-        "userId": "us-east-2:010be580-60a1-70ae-780e-18a6fd94ad32",
-        "provider": "Credentials",
-        "providerAccountId": "user16@example.com",
-        "passwordHash": "$2a$10$d/pqUaufhbZ2M8fti2VbMulyONTTKG7uofq57.OFAEri6KKpol7Uq"
-    },
-    {
-        "id": "acc-017",
-        "userId": "us-east-2:23456789-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|71e0edd6-674a-4b79-a8c5-85654c255e8b",
-        "accessToken": "ya29.a0AfH6SMD-xyz-16",
-        "refreshToken": "1//refresh-token-16",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871138Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871138Z"
-    },
-    {
-        "id": "acc-018",
-        "userId": "us-east-2:34567890-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|e8093916-6d11-4db3-a861-1ba1c72715f6",
-        "accessToken": "ya29.a0AfH6SMD-xyz-17",
-        "refreshToken": "1//refresh-token-17",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871190Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871190Z"
-    },
-    {
-        "id": "acc-019",
-        "userId": "us-east-2:45678901-90ab-cdef-1234-567890abcdef",
-        "provider": "Google",
-        "providerAccountId": "google-oauth2|b496994f-a7e4-48e5-af52-a1c82acb82ca",
-        "accessToken": "ya29.a0AfH6SMD-xyz-18",
-        "refreshToken": "1//refresh-token-18",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871225Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871225Z"
-    },
-    {
-        "id": "acc-020",
-        "userId": "us-east-2:56789012-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user20@example.com",
-        "passwordHash": "$2b$10$Wp75M64ERbn17QiJ8TgVoQOcu4uV39Xl5JGGWNwXHGrYRULncruWl"
-    },
-
-    {
-        "id": "acc-021",
-        "userId": "us-east-2:67890123-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user21@example.com",
-        "passwordHash": "$2b$10$Wp75M64ERbn17QiJ8TgVoQOcu4uV39Xl5JGGWNwXHGrYRULncruWl",
-        "accessToken": "ya29.a0AfH6SMD-xyz-20",
-        "refreshToken": "1//refresh-token-20",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871260Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871260Z"
-    },
-    {
-        "id": "acc-022",
-        "userId": "us-east-2:78901234-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user22@example.com",
-        "passwordHash": "$2b$10$N9qo8uLOickgx2ZMRZo5i.uTrWyd4InENcy9XK6u.ZYdIJnVUL93K",
-        "accessToken": "ya29.a0AfH6SMD-xyz-22",
-        "refreshToken": "1//refresh-token-22",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871293Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871293Z"
-    },
-    {
-        "id": "acc-023",
-        "userId": "us-east-2:89012345-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user23@example.com",
-        "passwordHash": "$2b$10$N9qo8uLOickgx2ZMRZo5i.uTrWyd4InENcy9XK6u.ZYdIJnVUL93K",
-        "accessToken": "ya29.a0AfH6SMD-xyz-23",
-        "refreshToken": "1//refresh-token-23",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871321Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871321Z"
-    },
-    {
-        "id": "acc-024",
-        "userId": "us-east-2:90123456-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user24@example.com",
-        "passwordHash": "$2b$10$N9qo8uLOickgx2ZMRZo5i.uTrWyd4InENcy9XK6u.ZYdIJnVUL93K",
-        "accessToken": "ya29.a0AfH6SMD-xyz-24",
-        "refreshToken": "1//refresh-token-24",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871349Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871349Z"
-    },
-    {
-        "id": "acc-025",
-        "userId": "us-east-2:01234567-90ab-cdef-1234-567890abcdef",
-        "provider": "Credentials",
-        "providerAccountId": "user25@example.com",
-        "passwordHash": "$2b$10$N9qo8uLOickgx2ZMRZo5i.uTrWyd4InENcy9XK6u.ZYdIJnVUL93K",
-        "accessToken": "ya29.a0AfH6SMD-xyz-25",
-        "refreshToken": "1//refresh-token-25",
-        "accessTokenExpiresAt": "2025-08-19T17:31:24.871376Z",
-        "refreshTokenExpiresAt": "2026-01-16T17:31:24.871376Z"
-    }
+  {
+    "id": "8f1dbdbc-7f6b-40be-acf1-091b8693caa0",
+    "userId": "874e2785-9d0d-4594-ace6-840658bba540",
+    "provider": "Credentials",
+    "providerAccountId": "tenant01@estatehub.test",
+    "passwordHash": "$2b$12$d1hJwSL8c409vaBbteH8v.PlyUSssRaVDIc0WI.AzpZnSN83aVSt6",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "f137d290-ea64-4d27-af23-c3fcd23a30ab",
+    "userId": "4ddedc31-816e-42d8-bb9a-118ad57092e6",
+    "provider": "Credentials",
+    "providerAccountId": "tenant02@estatehub.test",
+    "passwordHash": "$2b$12$4LLK9A7LJFglbIl9xTogtOw9VJsLQMNiKmb03GLkZxvU8bK0wSR8a",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "8cb79390-f5e4-4711-93e9-6aba32047058",
+    "userId": "7d1d44e2-e7de-43ee-acf7-692358f30389",
+    "provider": "Credentials",
+    "providerAccountId": "tenant03@estatehub.test",
+    "passwordHash": "$2b$12$y35RjMGQQGuyK18QxIVSF.zAB5x0r2YXoAnx1pNTMeJYpg3QJoWYu",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "e3998be9-4144-4a81-a55d-09d077891055",
+    "userId": "a971039d-e630-4965-b9d6-148454a4e7bf",
+    "provider": "Credentials",
+    "providerAccountId": "tenant04@estatehub.test",
+    "passwordHash": "$2b$12$2Sx7z1EQXyBcDlp1ykGzi.DiIflJRKJzehlCcHPKFxymUsnhyMJ6W",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "1baf98fd-2338-489b-a5cd-ff737b978946",
+    "userId": "35623867-50cd-400c-96d5-de346f40fa3c",
+    "provider": "Credentials",
+    "providerAccountId": "tenant05@estatehub.test",
+    "passwordHash": "$2b$12$HsXgFkjdgXnKoSjHABVgv.yFEbEOLFdXGYv7fEQEZx649PdljeSP6",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "4c2a4298-0863-4b01-9d67-8ef0a9c709d2",
+    "userId": "6c9bcbc8-95bc-49a9-8a42-3c6d309c12c9",
+    "provider": "Credentials",
+    "providerAccountId": "tenant06@estatehub.test",
+    "passwordHash": "$2b$12$2BxhWqlpAG326S.SnWxYAuio084tDuwJa7krTzdZIhwURLv/UXl9a",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "30542340-27f1-4551-927e-1a0a92f43f80",
+    "userId": "98ffbb9f-3438-45fd-af8f-708f3ddd0030",
+    "provider": "Credentials",
+    "providerAccountId": "tenant07@estatehub.test",
+    "passwordHash": "$2b$12$RInJUvHYWa/P6bGoOr/44eo/rYoLTtsajheS9qFBFUUY3nsXPV4o2",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "f550a339-c269-49d9-8235-71c0831aae59",
+    "userId": "1ee88268-95ab-4be8-a0ba-9731124f52ad",
+    "provider": "Credentials",
+    "providerAccountId": "tenant08@estatehub.test",
+    "passwordHash": "$2b$12$Xt8uJja8oE2WfsiIzGW4yO6iXNA6rN4rpjfeGFRpIFs0RBESx4/ZW",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "65f2087b-6e3e-4bda-971a-e35bcd047182",
+    "userId": "49718327-262f-44c9-807d-c3f28110d3cc",
+    "provider": "Credentials",
+    "providerAccountId": "tenant09@estatehub.test",
+    "passwordHash": "$2b$12$r5dgMHOVyTEky.DAHWkybeFP.tpF071h5w1dOuobxm7faVA99fGKq",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "fec67c63-651c-4d80-b012-3c72ade33dfa",
+    "userId": "bcd29c95-8c71-44c8-bee7-32bda3d5704b",
+    "provider": "Credentials",
+    "providerAccountId": "tenant10@estatehub.test",
+    "passwordHash": "$2b$12$n.vsls2SR1Qoc1d6de20ZuyvSXrvB8gCmCPeTUhiP5GGf2aWhygiO",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "f398843f-ee8c-4ff2-a51c-6e1dba306790",
+    "userId": "7aff8424-f59d-4850-92ed-2433f259aeaa",
+    "provider": "Credentials",
+    "providerAccountId": "tenant11@estatehub.test",
+    "passwordHash": "$2b$12$ZUSUPIxFW2.FBqe49ohMkuyuIixlIYmWLArsT2Rw7EEiKaqyLZtNG",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "873438ca-44d1-4040-8842-bd6e32b08d79",
+    "userId": "8b347227-da61-4822-8983-6a293aa03923",
+    "provider": "Credentials",
+    "providerAccountId": "tenant12@estatehub.test",
+    "passwordHash": "$2b$12$nvQchxt12Qii99gBwJVBSuCJ1qtZ0Azq5mjWk6SGTZs0KOoIvIbUm",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "7476cda4-0768-4180-a33b-51e6db1a4f44",
+    "userId": "675cde53-30ba-4bac-9c3a-489897424388",
+    "provider": "Credentials",
+    "providerAccountId": "tenant13@estatehub.test",
+    "passwordHash": "$2b$12$93xWYc9Jeq9h.3D4.6wouesaxzfa.N7inAvmH2FT3aWhq3BEPKqzW",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "d0451625-38e2-4d6a-b2dc-647da0346867",
+    "userId": "bf584758-ff04-43b7-a9a8-1d321ca8c13e",
+    "provider": "Credentials",
+    "providerAccountId": "tenant14@estatehub.test",
+    "passwordHash": "$2b$12$OiS3PHwYfPvW9heXadpR0..2zf09D0Nr.iqaM7o487Mc41W3ZkM.u",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "4e5797c3-737b-47ba-9b4f-28e65cd5d5d4",
+    "userId": "c67314de-f36e-48c4-bd19-4708643cfdb1",
+    "provider": "Credentials",
+    "providerAccountId": "tenant15@estatehub.test",
+    "passwordHash": "$2b$12$znUva0TMKCcOxou8Oyq6Me7O6J./sjxbTotVXtBIehs0D3VhrYyVG",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "f5ad2c7b-d762-4973-b05e-485ecf07c7f8",
+    "userId": "abe75e04-ca7e-4547-a615-304899405a0e",
+    "provider": "Credentials",
+    "providerAccountId": "manager01@estatehub.test",
+    "passwordHash": "$2b$12$tBKKizPdDWOYxAXcK9fv4epyPpPocilhybzmCOKLHTg44XZxFyxg.",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "10e4f48a-3631-4aa3-9830-c559dffaf82e",
+    "userId": "fe35124c-70ba-4901-9857-623ae05ac265",
+    "provider": "Credentials",
+    "providerAccountId": "manager02@estatehub.test",
+    "passwordHash": "$2b$12$WUySk0ZvUi.uqro9drjNBONjfZ7E7YxSw1xWiF2u7EiJv4AHiGTpm",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "79eb8433-d989-453f-b383-512db53e1183",
+    "userId": "aa40967b-86f7-44b3-b567-05c9390ec80f",
+    "provider": "Credentials",
+    "providerAccountId": "manager03@estatehub.test",
+    "passwordHash": "$2b$12$mJDoIXH.im6CIWOi4HS0DOzHsQHtf5zxdWSwF0LICpz.ylHhBbeM2",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "08b23ca5-8ffe-40a9-9fbc-989ccc22b944",
+    "userId": "8dc9ec1f-1924-4092-a838-7b70baac0b0c",
+    "provider": "Credentials",
+    "providerAccountId": "manager04@estatehub.test",
+    "passwordHash": "$2b$12$MPrj32urrStKbY.t1rL1tO9rCzMpoed/ER/5m3/xs8aE.M6FeqC6K",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "241e8b3d-a7db-4e3a-a6d5-70fce3f69bfe",
+    "userId": "b33e6186-2cf5-4b74-95dd-748288dc0955",
+    "provider": "Credentials",
+    "providerAccountId": "manager05@estatehub.test",
+    "passwordHash": "$2b$12$XYrPzqacb3T6sinEGxUBLe.XEcly1PXx9ggoktdCJhuWBYaS1JWCm",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "0bdf5999-f728-43ea-9531-6bbbf43d63fa",
+    "userId": "45d241ee-c69d-43b5-be60-ac3761f488a4",
+    "provider": "Credentials",
+    "providerAccountId": "manager06@estatehub.test",
+    "passwordHash": "$2b$12$ex7/DwA4CktVOp6lIlJtxeIujbmA.hA5WmSN635Db9yuhIsJstUga",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "e9d4b113-b330-4e68-b88d-09a3b26f7ed0",
+    "userId": "515e9bff-e168-4e5d-b979-48e69e8b0b84",
+    "provider": "Credentials",
+    "providerAccountId": "manager07@estatehub.test",
+    "passwordHash": "$2b$12$dMCR.7l6ViNk2dez3d0h7eiKeNOwDStGlXm0PaSclQQlY./vXG7RC",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "70f30b2c-2b66-49b1-b91e-c2e87bad3984",
+    "userId": "846acd3c-273b-42c0-80ac-cd45cab7dac0",
+    "provider": "Credentials",
+    "providerAccountId": "manager08@estatehub.test",
+    "passwordHash": "$2b$12$BjK98zUVYxIwKZDO7jEw8ONPI2SWID0HomIH04zmBI4O3SLqdEK0G",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "74f0cdd8-42ca-4082-b128-1789468804db",
+    "userId": "6c57daf1-3b20-42d3-acd1-7d265ee8f6f6",
+    "provider": "Credentials",
+    "providerAccountId": "manager09@estatehub.test",
+    "passwordHash": "$2b$12$CYzriABCfqZMNMyBT2DsCe/Z78QYHA9MjZhZ.KMQaXZSXqO6QLrOq",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  },
+  {
+    "id": "39ed0742-3451-44d1-9a32-402c90bddbbf",
+    "userId": "8cb3c6bd-94b8-42ce-a781-0e48812d2eec",
+    "provider": "Credentials",
+    "providerAccountId": "manager10@estatehub.test",
+    "passwordHash": "$2b$12$StZIsdlXC4aBw5.NCDQ5hepVlK7q0lG9J5b3Us/uSLXwpVqnmn2gi",
+    "accessToken": null,
+    "refreshToken": null,
+    "accessTokenExpiresAt": null,
+    "refreshTokenExpiresAt": null
+  }
 ]

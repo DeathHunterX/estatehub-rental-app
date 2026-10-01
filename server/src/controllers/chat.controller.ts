@@ -1,8 +1,8 @@
+import type { UserIdentity, AuthenticatedRequest } from "../types/global";
 import { UserRole } from "@prisma/client";
 import { Response } from "express";
 import { BadRequestError, NotFoundError } from "../errors/http-error";
 import prisma from "../lib/prisma";
-import { AuthenticatedRequest } from "../middleware/auth";
 
 export const getChats = async (req: AuthenticatedRequest, res: Response) => {
     const tokenUserId = req.user?.id as string;
@@ -12,6 +12,7 @@ export const getChats = async (req: AuthenticatedRequest, res: Response) => {
             OR: [{ tenantUserId: tokenUserId }, { managerUserId: tokenUserId }],
         },
         include: {
+            lastMessage: true,
             tenant: {
                 include: {
                     user: true,
@@ -23,6 +24,7 @@ export const getChats = async (req: AuthenticatedRequest, res: Response) => {
                 },
             },
         },
+        orderBy: { lastMessageId: "desc" },
     });
 
     for (const chat of chats) {
@@ -52,9 +54,10 @@ export const getChats = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 export const getChat = async (req: AuthenticatedRequest, res: Response) => {
-    const { role, id } = req.user as { role: UserRole; id: string };
+    const { role, id } = req.user as UserIdentity;
     const { chatId } = req.params;
 
+    // Scope the lookup to the caller's role and ID before loading message history.
     const chat = await prisma.chat.findUnique({
         where: {
             id: Number(chatId),
@@ -103,17 +106,6 @@ export const getChat = async (req: AuthenticatedRequest, res: Response) => {
     (chat as any).receiverId = receiverId;
     (chat as any).receiver = receiver;
 
-    await prisma.chat.updateMany({
-        where: {
-            id: Number(chatId),
-        },
-        data: {
-            ...(role === UserRole.Tenant
-                ? { tenantLastReadAt: new Date() }
-                : { managerLastReadAt: new Date() }),
-        },
-    });
-
     return res.status(200).json({
         success: true,
         data: chat,
@@ -121,7 +113,7 @@ export const getChat = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 export const addChat = async (req: AuthenticatedRequest, res: Response) => {
-    const { role, id } = req.user as { role: UserRole; id: string };
+    const { role, id } = req.user as UserIdentity;
     const { receiverId } = req.body;
 
     const receiver = await prisma.user.findUnique({
@@ -152,7 +144,7 @@ export const addChat = async (req: AuthenticatedRequest, res: Response) => {
     });
 
     if (existingChat) {
-        throw new BadRequestError("Chat already exists");
+        return res.status(200).json({ success: true, data: existingChat });
     }
 
     let newChat;
@@ -180,7 +172,7 @@ export const addChat = async (req: AuthenticatedRequest, res: Response) => {
 };
 
 export const readChat = async (req: AuthenticatedRequest, res: Response) => {
-    const { role, id } = req.user as { role: UserRole; id: string };
+    const { role, id } = req.user as UserIdentity;
     const { chatId } = req.params;
 
     const chat = await prisma.chat.update({

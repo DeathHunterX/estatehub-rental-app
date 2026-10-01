@@ -72,6 +72,6 @@ export const withToast = async <T>(
             const errorMessage = errorObj.data?.error?.message || error;
             toast.error(errorMessage);
         }
-        throw err;
+        return;
     }
 };

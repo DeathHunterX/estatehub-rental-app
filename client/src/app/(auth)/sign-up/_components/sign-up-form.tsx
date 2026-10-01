@@ -1,6 +1,12 @@
 "use client";
 
-// UI Components
+// Libraries
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+
+// Components
 import { Icons } from "@/components/shared/icons";
 import { Button } from "@/components/ui/button";
 import {
@@ -13,18 +19,16 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { toast } from "react-hot-toast";
 
-// Form validation and handling
+// Validation
 import { SignUpFormData, signUpSchema } from "@/lib/schemas/auth";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
 
-// State management
-import { useSignUpMutation } from "@/states/api/auth-api.slice";
+// APIs
+import { useSignUpMutation } from "@/lib/api/auth-api.slice";
 
 export function SignUpForm() {
     const [signUp, { isLoading }] = useSignUpMutation();
+    const router = useRouter();
 
     const form = useForm<SignUpFormData>({
         resolver: zodResolver(signUpSchema),
@@ -42,15 +46,14 @@ export function SignUpForm() {
             .unwrap()
             .then((res) => {
                 toast.success(res.data.message);
-                form.reset();
+                router.push("/sign-in");
             })
             .catch((error) => {
                 if (error.status === "FETCH_ERROR") {
                     toast.error("Network error");
                 } else {
-                    toast.error(error.data.error.message);
+                    toast.error(error.data?.error?.message || "Sign up failed");
                 }
-                throw error;
             });
     }
 
@@ -121,7 +124,7 @@ export function SignUpForm() {
                                     placeholder="********"
                                     type="password"
                                     autoCapitalize="none"
-                                    autoComplete="password"
+                                    autoComplete="new-password"
                                     autoCorrect="off"
                                     disabled={isLoading}
                                     {...field}
@@ -147,7 +150,7 @@ export function SignUpForm() {
                                     placeholder="********"
                                     type="password"
                                     autoCapitalize="none"
-                                    autoComplete="password"
+                                    autoComplete="new-password"
                                     autoCorrect="off"
                                     disabled={isLoading}
                                     {...field}
@@ -196,7 +199,7 @@ export function SignUpForm() {
 
                 <Button
                     disabled={isLoading}
-                    className="hover:bg-primary-100/65 w-full"
+                    className="w-full"
                     variant="default"
                 >
                     {isLoading ? (

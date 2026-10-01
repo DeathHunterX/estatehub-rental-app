@@ -1,13 +1,19 @@
 import React, { Fragment } from "react";
-import ChatContainer from "../chat/chatbox";
+import ChatContainer from "../../../features/chat/components/chatbox";
 import Navbar from "../navbar/navbar";
 
-const AdaptiveWrapper = ({ children }: { children: React.ReactNode }) => {
+const AdaptiveWrapper = ({
+    children,
+    mobileDashboardNav = false,
+}: {
+    children: React.ReactNode;
+    mobileDashboardNav?: boolean;
+}) => {
     return (
         <Fragment>
             <Navbar />
             {children}
-            <ChatContainer />
+            <ChatContainer mobileDashboardNav={mobileDashboardNav} />
         </Fragment>
     );
 };

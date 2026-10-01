@@ -1,7 +1,7 @@
 "use client";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/query";
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import {
     Provider,
     TypedUseSelectorHook,
@@ -10,7 +10,7 @@ import {
 } from "react-redux";
 
 import globalReducer from "@/states";
-import { api } from "@/states/api";
+import { api } from "@/lib/api/api";
 import authReducer from "./slices/auth.slice";
 
 /* REDUX STORE */
@@ -41,10 +41,7 @@ export default function StoreProvider({
 }: {
     children: React.ReactNode;
 }) {
-    const storeRef = useRef<AppStore | null>(null);
-    if (!storeRef.current) {
-        storeRef.current = makeStore();
-        setupListeners(storeRef.current.dispatch);
-    }
-    return <Provider store={storeRef.current}>{children}</Provider>;
+    const [store] = useState(makeStore);
+    useEffect(() => setupListeners(store.dispatch), [store]);
+    return <Provider store={store}>{children}</Provider>;
 }

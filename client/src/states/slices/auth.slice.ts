@@ -1,37 +1,49 @@
 import { createSlice } from "@reduxjs/toolkit";
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+export type SessionUser = {
+    id?: string;
+    name?: string | null;
+    email?: string | null;
+    role?: string | null;
+    image?: string | null;
+};
 
 const initialState = {
-    accessToken:
-        typeof window !== "undefined"
-            ? localStorage.getItem("accessToken") || null
-            : null,
-    userInfo:
-        typeof window !== "undefined"
-            ? JSON.parse(localStorage.getItem("userInfo") || "{}")
-            : null,
+    accessToken: null as string | null,
+    userInfo: null as SessionUser | null,
+    hydrated: false,
 };
 
 const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        setCredentials: (state, action) => {
+        restoreSession: (state, action: PayloadAction<{ accessToken: string | null; userInfo: SessionUser | null }>) => {
+            state.accessToken = action.payload.accessToken;
+            state.userInfo = action.payload.userInfo;
+            state.hydrated = true;
+        },
+        setCredentials: (state, action: PayloadAction<{ user: SessionUser; accessToken: string }>) => {
             const { user, accessToken } = action.payload;
 
             state.userInfo = user;
             state.accessToken = accessToken;
-            localStorage.setItem("userInfo", JSON.stringify(user));
-            localStorage.setItem("accessToken", accessToken);
+            state.hydrated = true;
+        },
+        renewSession: (state, action: PayloadAction<{ userInfo: SessionUser; accessToken: string }>) => {
+            state.userInfo = action.payload.userInfo;
+            state.accessToken = action.payload.accessToken;
+            state.hydrated = true;
         },
         logout: (state) => {
-            state.userInfo = {};
+            state.userInfo = null;
             state.accessToken = null;
-            localStorage.removeItem("userInfo");
-            localStorage.removeItem("accessToken");
+            state.hydrated = true;
         },
     },
 });
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { restoreSession, setCredentials, renewSession, logout } = authSlice.actions;
 
 export default authSlice.reducer;

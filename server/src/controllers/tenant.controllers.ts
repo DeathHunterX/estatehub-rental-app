@@ -1,10 +1,13 @@
+import type { GeographyQueryRow, AuthenticatedRequest } from "../types/global";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { Request, Response } from "express";
-import { ConflictError } from "../errors/http-error";
+import { Response } from "express";
+import { ConflictError, ForbiddenError } from "../errors/http-error";
 import prisma from "../lib/prisma";
+import { activeLeaseWhere } from "../services/policies/rental-policy";
 
-export const getTenant = async (req: Request, res: Response) => {
+export const getTenant = async (req: AuthenticatedRequest, res: Response) => {
     const { tenantUserId } = req.params;
+    if (tenantUserId !== req.user!.id) throw new ForbiddenError("Tenant access denied");
     const tenant = await prisma.tenant.findUnique({
         where: { userId: tenantUserId },
         include: {
@@ -19,12 +22,13 @@ export const getTenant = async (req: Request, res: Response) => {
     });
 };
 
-export const getCurrentResidences = async (req: Request, res: Response) => {
+export const getCurrentResidences = async (req: AuthenticatedRequest, res: Response) => {
     const { tenantUserId } = req.params;
+    if (tenantUserId !== req.user!.id) throw new ForbiddenError("Tenant access denied");
 
     const properties = await prisma.property.findMany({
         where: {
-            tenants: { some: { userId: tenantUserId } },
+            leases: { some: { tenantUserId, ...activeLeaseWhere() } },
         },
         include: {
             location: true,
@@ -33,7 +37,7 @@ export const getCurrentResidences = async (req: Request, res: Response) => {
 
     const residencesWithFormattedLocation = await Promise.all(
         properties.map(async (property) => {
-            const coordinates: { coordinates: string }[] =
+            const coordinates: GeographyQueryRow[] =
                 await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates FROM "Location" WHERE id = ${property.location.id}`;
 
             const geoJSON: any = wktToGeoJSON(coordinates[0].coordinates || "");
@@ -56,7 +60,7 @@ export const getCurrentResidences = async (req: Request, res: Response) => {
     });
 };
 
-export const addFavorProperty = async (req: Request, res: Response) => {
+export const addFavorProperty = async (req: AuthenticatedRequest, res: Response) => {
     const { tenantId, propertyId } = req.params;
 
     const tenantIdNumber = Number(tenantId);
@@ -66,6 +70,9 @@ export const addFavorProperty = async (req: Request, res: Response) => {
         where: { id: tenantIdNumber },
         include: { favorites: true },
     });
+    if (!tenant || tenant.userId !== req.user!.id) {
+        throw new ForbiddenError("Favorites access denied");
+    }
 
     const existingFavorites = tenant?.favorites || [];
 
@@ -91,11 +98,15 @@ export const addFavorProperty = async (req: Request, res: Response) => {
     }
 };
 
-export const removeFavorProperty = async (req: Request, res: Response) => {
+export const removeFavorProperty = async (req: AuthenticatedRequest, res: Response) => {
     const { tenantId, propertyId } = req.params;
 
     const tenantIdNumber = Number(tenantId);
     const propertyIdNumber = Number(propertyId);
+    const tenant = await prisma.tenant.findUnique({ where: { id: tenantIdNumber } });
+    if (!tenant || tenant.userId !== req.user!.id) {
+        throw new ForbiddenError("Favorites access denied");
+    }
 
     const updatedTenant = await prisma.tenant.update({
         where: { id: tenantIdNumber },

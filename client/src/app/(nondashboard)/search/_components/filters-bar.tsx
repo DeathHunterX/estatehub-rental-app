@@ -1,9 +1,20 @@
 "use client";
-import { useAppSelector } from "@/states/store";
-import { useSearchParams } from "next/navigation";
-import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
 
+// Libraries
+import { useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
+import { useState, useSyncExternalStore } from "react";
+import { useDispatch } from "react-redux";
+import {
+    Eye,
+    EyeOff,
+    Filter,
+    Grid,
+    Map as MapIcon,
+    Search,
+} from "lucide-react";
+
+// Components
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -13,17 +24,36 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
-import { PropertyTypeIcons } from "@/constants";
-import { cn, formatPriceValue } from "@/lib/utils";
+
+// Hooks
+import { useSearchFilter } from "@/features/search/hooks/use-search-filter";
+
+// State
+import { useAppSelector } from "@/states/store";
 import { setViewMode, toggleFiltersFullOpen } from "@/states";
 
-import { useSearchFilter } from "@/hooks/use-search-filter";
-import { Filter, Grid, List, Search } from "lucide-react";
+// Constants
+import { PropertyTypeIcons } from "@/constants";
 
-const FiltersBar = () => {
+// Libs
+import { cn, formatPriceValue } from "@/lib/utils";
+import {
+    SearchViewMode,
+    searchViewHref,
+} from "@/features/search/lib/search-view";
+import { updateFilterRange } from "@/features/search/lib/search-filter-behavior";
+
+const FiltersBar = ({
+    showMapPrices,
+    onShowMapPricesChange,
+}: {
+    showMapPrices: boolean;
+    onShowMapPricesChange: (value: boolean) => void;
+}) => {
     const dispatch = useDispatch();
 
     const searchParams = useSearchParams();
+    const router = useRouter();
 
     const [
         { location, priceRange, beds, baths, propertyType },
@@ -35,14 +65,29 @@ const FiltersBar = () => {
     );
 
     const viewMode = useAppSelector((state) => state.global.viewMode);
-    const [searchInput, setSearchInput] = useState<string>(
-        location ?? searchParams.get("location") ?? ""
+    const handleViewChange = (mode: SearchViewMode) => {
+        dispatch(setViewMode(mode));
+        router.replace(
+            searchViewHref(new URLSearchParams(searchParams.toString()), mode),
+            { scroll: false }
+        );
+    };
+    const [searchDraft, setSearchDraft] = useState({
+        location,
+        value: location ?? searchParams.get("location") ?? "",
+    });
+    // Discard the previous draft when navigation changes the URL location.
+    const searchInput =
+        searchDraft.location === location
+            ? searchDraft.value
+            : (location ?? "");
+    const setSearchInput = (value: string) =>
+        setSearchDraft({ location, value });
+    const isMounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
     );
-    const [isMounted, setIsMounted] = useState(false);
-
-    useEffect(() => {
-        setIsMounted(true);
-    }, []);
 
     if (!isMounted) {
         return null;
@@ -57,19 +102,18 @@ const FiltersBar = () => {
             case "priceRange":
                 setQueryParams((prev) => {
                     const current = prev.priceRange ?? [null, null];
-                    const newRange: [number | null, number | null] = [
-                        ...current,
-                    ];
-
-                    if (isMin !== null) {
-                        const index = isMin ? 0 : 1;
-                        newRange[index] =
-                            value === "any" ? null : Number(value);
-                    }
+                    const newRange =
+                        isMin === null
+                            ? current
+                            : updateFilterRange(
+                                  current,
+                                  isMin ? 0 : 1,
+                                  value === "any" ? null : Number(value)
+                              );
 
                     return {
                         ...prev,
-                        priceRange: newRange, // ✅ return full object with updated field
+                        priceRange: newRange,
                     };
                 });
                 break;
@@ -79,16 +123,14 @@ const FiltersBar = () => {
                     const current =
                         prev.squareFeet ??
                         ([null, null] as [number | null, number | null]);
-                    const newRange: [number | null, number | null] = [
-                        current[0],
-                        current[1],
-                    ];
-
-                    if (isMin !== null) {
-                        const index = isMin ? 0 : 1;
-                        newRange[index] =
-                            value === "any" ? null : Number(value);
-                    }
+                    const newRange =
+                        isMin === null
+                            ? current
+                            : updateFilterRange(
+                                  current,
+                                  isMin ? 0 : 1,
+                                  value === "any" ? null : Number(value)
+                              );
 
                     return {
                         ...prev,
@@ -137,29 +179,13 @@ const FiltersBar = () => {
         }
     };
 
-    const handleLocationSearch = async () => {
-        try {
-            const response = await fetch(
-                `https://api.mapbox.com/geocoding/v5/mapbox.places/${encodeURIComponent(
-                    searchInput
-                )}.json?access_token=${
-                    process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
-                }&fuzzyMatch=true`
-            );
-            const data = await response.json();
-
-            if (data.features && data.features.length > 0) {
-                const [lng, lat] = data.features[0].center;
-                setQueryParams((prev) => ({
-                    ...prev,
-                    location: searchInput,
-                    latitude: lat,
-                    longitude: lng,
-                }));
-            }
-        } catch (err) {
-            console.error("Error search location:", err);
-        }
+    const handleLocationSearch = () => {
+        void setQueryParams((prev) => ({
+            ...prev,
+            location: searchInput.trim(),
+            latitude: null,
+            longitude: null,
+        }));
     };
 
     return (
@@ -169,6 +195,7 @@ const FiltersBar = () => {
                 {/* All Filters */}
                 <Button
                     variant="outline"
+                    aria-label="All Filters"
                     className={cn(
                         "gap-2 rounded-xl border-primary-400 hover:bg-primary-500 hover:text-primary-100",
                         isFiltersFullOpen && "bg-primary-700 text-primary-100"
@@ -176,20 +203,29 @@ const FiltersBar = () => {
                     onClick={() => dispatch(toggleFiltersFullOpen())}
                 >
                     <Filter className="size-4" />
-                    <span>All Filters</span>
+                    <span className="max-[359px]:sr-only">All Filters</span>
                 </Button>
                 <div className="hidden md:flex items-center gap-4 p-2 overflow-x-auto">
                     {/* Search Location */}
                     <div className="flex items-center">
                         <Input
+                            aria-label="Search location"
                             placeholder="Search location"
                             value={searchInput}
                             onChange={(e) => {
                                 setSearchInput(e.target.value);
                             }}
                             className="w-52 lg:w-36 rounded-l-xl rounded-r-none border-primary-400 border-r-0"
+                            onKeyDown={(event) => {
+                                if (event.key === "Enter") {
+                                    event.preventDefault();
+                                    handleLocationSearch();
+                                }
+                            }}
                         />
                         <Button
+                            type="button"
+                            aria-label="Search location"
                             onClick={handleLocationSearch}
                             className={`rounded-r-xl rounded-l-none border-l-none border-primary-400 shadow-none 
               border hover:bg-primary-700 hover:text-primary-50`}
@@ -199,7 +235,7 @@ const FiltersBar = () => {
                     </div>
 
                     {/* Price Range */}
-                    <div className="flex gap-1">
+                    <div className="hidden gap-1 lg:flex">
                         {/* Minimum Price Selector */}
                         <Select
                             value={priceRange?.[0]?.toString() || "any"}
@@ -215,7 +251,7 @@ const FiltersBar = () => {
                                     )}
                                 </SelectValue>
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-popover text-popover-foreground">
                                 <SelectItem value="any">
                                     Any Min Price
                                 </SelectItem>
@@ -247,7 +283,7 @@ const FiltersBar = () => {
                                     )}
                                 </SelectValue>
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-popover text-popover-foreground">
                                 <SelectItem value="any">
                                     Any Max Price
                                 </SelectItem>
@@ -277,7 +313,7 @@ const FiltersBar = () => {
                             <SelectTrigger className="w-30 rounded-xl border-primary-400 hidden lg:flex">
                                 <SelectValue placeholder="Beds" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-popover text-popover-foreground">
                                 <SelectItem value="any">Any Beds</SelectItem>
                                 <SelectItem value="1">1+ bed</SelectItem>
                                 <SelectItem value="2">2+ beds</SelectItem>
@@ -296,7 +332,7 @@ const FiltersBar = () => {
                             <SelectTrigger className="w-30 rounded-xl border-primary-400 hidden lg:flex">
                                 <SelectValue placeholder="Baths" />
                             </SelectTrigger>
-                            <SelectContent className="bg-white">
+                            <SelectContent className="bg-popover text-popover-foreground">
                                 <SelectItem value="any">Any Baths</SelectItem>
                                 <SelectItem value="1">1+ bath</SelectItem>
                                 <SelectItem value="2">2+ baths</SelectItem>
@@ -315,7 +351,7 @@ const FiltersBar = () => {
                         <SelectTrigger className="w-32 rounded-xl border-primary-400 whitespace-nowrap hidden lg:flex">
                             <SelectValue placeholder="Home Type" />
                         </SelectTrigger>
-                        <SelectContent className="bg-white">
+                        <SelectContent className="bg-popover text-popover-foreground">
                             <SelectItem value="any">
                                 Any Property Type
                             </SelectItem>
@@ -336,30 +372,103 @@ const FiltersBar = () => {
 
             {/* View Mode */}
             <div className="flex justify-between items-center gap-4 p-2 shrink-0">
-                <div className="flex border rounded-xl">
+                {viewMode !== "grid" && (
+                    <Button
+                        type="button"
+                        variant="outline"
+                        aria-label={
+                            showMapPrices
+                                ? "Hide map prices"
+                                : "Show map prices"
+                        }
+                        aria-pressed={showMapPrices}
+                        onClick={() => onShowMapPricesChange(!showMapPrices)}
+                        className={cn(
+                            "gap-2 rounded-xl border-border bg-card text-card-foreground hover:bg-accent hover:text-accent-foreground",
+                            viewMode === "list" && "hidden lg:inline-flex"
+                        )}
+                    >
+                        {showMapPrices ? (
+                            <Eye className="size-4" />
+                        ) : (
+                            <EyeOff className="size-4" />
+                        )}
+                        <span className="hidden sm:inline">
+                            {showMapPrices
+                                ? "Hide map prices"
+                                : "Show map prices"}
+                        </span>
+                        <span className="sm:hidden max-[359px]:sr-only">
+                            Prices
+                        </span>
+                    </Button>
+                )}
+                <div className="flex rounded-xl border lg:hidden">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        aria-label="Map view"
+                        aria-pressed={viewMode === "map"}
+                        className={cn(
+                            "gap-1.5 rounded-none rounded-l-xl px-3",
+                            viewMode === "map" &&
+                                "bg-primary-700 text-primary-50"
+                        )}
+                        onClick={() => handleViewChange("map")}
+                    >
+                        <MapIcon className="size-4" />
+                        Map
+                    </Button>
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        aria-label="List view"
+                        aria-pressed={viewMode === "list"}
+                        className={cn(
+                            "gap-1.5 rounded-none rounded-r-xl px-3",
+                            viewMode === "list" &&
+                                "bg-primary-700 text-primary-50"
+                        )}
+                        onClick={() => handleViewChange("list")}
+                    >
+                        <Grid className="size-4" />
+                        List
+                    </Button>
+                </div>
+                <div className="hidden rounded-xl border lg:flex">
                     <Button
                         variant="ghost"
+                        type="button"
+                        aria-label="Map and list view"
+                        aria-pressed={viewMode !== "grid"}
+                        title="Map and list view"
                         className={cn(
-                            "px-3 py-1 rounded-none rounded-l-xl hover:bg-primary-600 hover:text-primary-50",
-                            viewMode === "list"
+                            "gap-1.5 px-2 py-1 rounded-none rounded-l-xl hover:bg-primary-600 hover:text-primary-50 sm:px-3",
+                            viewMode !== "grid"
                                 ? "bg-primary-700 text-primary-50"
                                 : ""
                         )}
-                        onClick={() => dispatch(setViewMode("list"))}
+                        onClick={() => handleViewChange("list")}
                     >
-                        <List className="size-5" />
+                        <MapIcon className="size-4" />
+                        <span>Map + list</span>
                     </Button>
                     <Button
                         variant="ghost"
+                        type="button"
+                        aria-label="Grid view"
+                        aria-pressed={viewMode === "grid"}
+                        title="Grid view"
                         className={cn(
-                            "px-3 py-1 rounded-none rounded-r-xl hover:bg-primary-600 hover:text-primary-50",
+                            "gap-1.5 px-2 py-1 rounded-none rounded-r-xl hover:bg-primary-600 hover:text-primary-50 sm:px-3",
                             viewMode === "grid"
                                 ? "bg-primary-700 text-primary-50"
                                 : ""
                         )}
-                        onClick={() => dispatch(setViewMode("grid"))}
+                        onClick={() => handleViewChange("grid")}
                     >
-                        <Grid className="size-5" />
+                        <Grid className="size-4" />
+                        <span>Grid</span>
                     </Button>
                 </div>
             </div>

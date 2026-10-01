@@ -1,166 +1,156 @@
-# EstateHub - Enterprise rental-app
+# EstateHub
 
-EstateHub is a modern full-stack enterprise rental management system built to simplify property rentals for managers, tenants, and admins. It provides role-based access control, task automation, and real-time insights to streamline rental operations.
+EstateHub is a full-stack rental platform that connects people looking for a home with property managers. The public site helps visitors discover and compare properties; signed-in tenants and managers use separate workspaces to handle applications and ongoing rentals.
 
-## 🚀 Features
+## What the project does
 
--   ✅ Create, update, and delete tasks effortlessly
--   📅 Organize tasks by due dates and priorities
--   🏷️ Add categories or tags for better task grouping
--   🔔 Smart reminders to keep you on track
--   📈 Track your productivity and progress
--   🌙 Clean, distraction-free interface with dark mode
--   🔒 Secure user authentication (optional if using login)
+| Area | Tenant experience | Manager experience |
+| --- | --- | --- |
+| Discover | Search by location and filters, explore results on a map, view photos and property details | Publish and update property listings |
+| Decide | Save favorites, contact a manager, submit an application | Review applications and communicate with applicants |
+| Rent | Track application status, confirm a cash handover, view a residence, request a lease renewal | Review payment claims, manage leases, prepare signing details and export property history |
+| Account | Manage profile and preferences, receive notifications | Manage profile and preferences, receive notifications |
 
-## 🛠️ Tech Stack
+The interface supports light and dark themes and adapts to desktop, tablet, and mobile screens. Maps and location search use Mapbox. Property photos are stored through Cloudinary. Chat uses Socket.IO for real-time message and typing updates.
 
-**Frontend**
+## How it is built
 
-Next.js 15 (App Router, SSR, ISR)
+The repository has three independently running services:
 
-TailwindCSS + Shadcn/UI
-
-Redux Toolkit – state management
-
-FilePond – file uploads
-
-next-themes – dark/light mode support
-
-nuqs – URL-based filters
-
-React Hot Toast – notifications
-
-Zod – form validation
-
-FontAwesome – icons
-
-**Backend**
-
-Node.js + Express.js
-
-Prisma ORM – database management
-
-@terraformer/wkt – geospatial data handling
-
-Axios – API requests
-
-bcryptjs – password hashing
-
-Cloudinary – image storage
-
-Multer – file uploads
-
-jsonwebtoken – authentication
-
-uuid – unique ID generation
-
-helmet, cors, morgan, dotenv, body-parser, cookie-parser – security & middleware
-
-**Others**
-
-Docker + Kubernetes – deployment & scaling
-
-PWA – offline-first app experience
-
-Socket.IO – real-time updates
-
-## 📦 Installation
-
-1. Clone the repository
-
-```bash
-    git clone https://github.com/DeathHunterX/moti--task-manager-project.git
-    cd moti
+```text
+estatehub-enterprise-rental-app/
+├── client/   Next.js web application (port 3000)
+├── server/   Express REST API and Prisma schema (port 5000)
+├── socket/   Socket.IO chat service (port 4000)
+└── docs/     Architecture, plans, and verification reports
 ```
 
-2. Install dependencies
-   Using **npm**
+| Layer | Main technologies | Responsibility |
+| --- | --- | --- |
+| Web | Next.js 16, React 19, Tailwind CSS, Redux Toolkit | Pages, forms, map, dashboards, application state |
+| API | Node.js, Express, Prisma | Authentication, authorization, property data, applications, leases, notifications |
+| Data | PostgreSQL with PostGIS | Users, listings, geographic locations, applications, leases, payments, chats |
+| Real-time | Socket.IO | Authenticated chat and typing events |
+| External services | Mapbox, Cloudinary | Maps/location search and property image storage |
 
-```bash
- npm install
+The browser calls the API at `/api`. The socket service uses the API to verify conversation membership before forwarding chat events. Both services must share the same access-token secret.
+
+Each service keeps its own source and tests. See the [web app folder guide](client/README.md) and [document index](docs/README.md) for more detail. Generated PDF exports go to the root `output/` folder and are ignored by Git.
+
+## Main pages
+
+| Route | Purpose |
+| --- | --- |
+| `/` | Landing page and entry point to property search |
+| `/search` | Filterable property results with map and card views |
+| `/search/[id]` | Public property details, photos, and application entry point |
+| `/sign-in`, `/sign-up` | Account access |
+| `/tenants/*` | Tenant favorites, applications, payments, residences, and settings |
+| `/managers/*` | Manager properties, applications, payments, and settings |
+
+## Run locally
+
+### Requirements
+
+- Node.js and npm (or Bun for dependency installation).
+- PostgreSQL with the PostGIS extension enabled.
+- A public Mapbox access token.
+- Cloudinary credentials for property photo uploads.
+
+### 1. Install dependencies
+
+```powershell
+git clone https://github.com/DeathHunterX/estatehub-enterprise-rental-app.git
+cd estatehub-enterprise-rental-app
+npm install --prefix client
+npm install --prefix server
+npm install --prefix socket
 ```
 
-Using **bun** (if you prefer speed ⚡):
+Alternatively, `npm run setup` installs the three services with Bun.
 
-```bash
- bun install
+### 2. Configure the services
+
+```powershell
+Copy-Item client/.env.example client/.env.local
+Copy-Item server/.env.example server/.env.local
+Copy-Item socket/.env.example socket/.env.local
 ```
 
-3. Set up environmental variables and configure the following
+Fill in the values in each local file. The example files document the available variables:
 
-```bash
-cp .env.local
+| File | Key settings |
+| --- | --- |
+| `client/.env.local` | API URL including `/api`, public Mapbox token, socket URL |
+| `server/.env.local` | PostgreSQL URL, `PORT=5000`, client URL, JWT secrets, Cloudinary credentials, `NOMINATIM_SEARCH_URL` and `NOMINATIM_USER_AGENT` |
+| `socket/.env.local` | `SOCKET_PORT=4000`, client URL, API URL, the **same** `JWT_ACCESS_TOKEN_SECRET` as the API |
+
+Do not commit local environment files or real credentials.
+Replace the sample `legal@estatehub.example` in `NOMINATIM_USER_AGENT` with a real monitored contact before creating or editing listings. The sample is documentation only; the server requires both Nominatim variables for address lookup.
+
+### 3. Prepare the database
+
+For a new, empty database, apply the checked-in Prisma migrations and generate the client from `server/`:
+
+```powershell
+cd server
+npm run prisma:deploy
+npm run prisma:generate
+cd ..
 ```
 
-Configuration
+The schema and migration history live together in [`server/prisma`](server/prisma/README.md). They include PostGIS, unaccent, all current tables, indexes and the data backfills needed by earlier installations. Prisma loads local settings through `server/prisma.config.ts`; no custom CLI or separate SQL upgrade folder is needed.
 
-## ⚙️ Environment Variables
+For an existing database, back it up, run `npm run prisma:status`, then follow the [existing-database guide](server/prisma/README.md#existing-databases). Do not reset a database that contains real records. Future schema changes use `npm run prisma:migrate -- --name descriptive_change`; migration/reset commands skip automatic seeding.
 
-Front-end `.env.local`
+`prisma:generate` also updates the Prisma type file consumed by the client. To add optional demo data, explicitly run the seed from `server/`:
 
-```bash
-NEXT_PUBLIC_CLIENT_BASE_URL="http://localhost:3000"
-NEXT_PUBLIC_API_BASE_URL="http://localhost:5000/api"
-NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN="<your-access-token>"
+```powershell
+npm run prisma:seed
 ```
 
-Back-end `.env`
+The 25 demo accounts (10 Managers and 15 Tenants) have distinct passwords listed in [`server/prisma/SEED_ACCOUNTS.md`](server/prisma/SEED_ACCOUNTS.md). The fixture stores bcrypt hashes. The seed includes all current tables and application statuses; dates shift together to the time you seed. Demo manager agreement profiles are drafts: each manager must complete their own encrypted signature and privacy/sharing acknowledgements before creating a listing or approving an application. Repeating the seed stops on conflicts instead of overwriting records. Seeding is disabled when `NODE_ENV=production`.
 
-```bash
-SERVER_PORT= 5000
-CLIENT_URL="http://localhost:3000"
-DATABASE_URL="<your-database-url>"
+### 4. Start the services
 
-JWT_ACCESS_TOKEN_SECRET="<your-access-token-secret>"
-JWT_REFRESH_TOKEN_SECRET="<your-refresh-token-secret>"
+Open three terminals at the repository root:
 
-CLOUDINARY_CLOUD_NAME="<your-cloudinary-cloud-name>"
-CLOUDINARY_API_KEY="<your-cloudinary-api-key>"
-CLOUDINARY_API_SECRET="<your-cloudinary-api-secret>"
+```powershell
+npm run dev:server
 ```
 
-4. Run the development server
-   Using **npm**:
-
-```bash
+```powershell
+cd socket
 npm run dev
 ```
 
-Using **bun** (if you prefer speed ⚡):
-
-```bash
-bun run dev
+```powershell
+npm run dev:client
 ```
 
-## Folder Structure
+Then open `http://localhost:3000`. The root package has separate `dev:client` and `dev:server` scripts; it does not have a combined `dev` script.
 
-```
-├── app
-│   ├── css
-│   │   ├── **/*.css
-│   ├── favicon.ico
-│   ├── images
-│   ├── index.html
-│   ├── js
-│   │   ├── **/*.js
-│   └── partials/template
-├── lib
-├── ├── utils.ts
-├── node_modules
-├── public
-├── .gitignore
-├── .bun.lock               # Lockfile for bun install
-├── package.lock.json       # Lockfile for npm install
-├── .components.json        # Shadcn UI Config
-├── next-env.d.ts
-├── package.json
-├── postcss.config.mjs
-├── README.md               # README
-└── tsconfig.json           # TypeScript configuration
-```
+## Development commands
 
-## Usage
+| Working directory | Command | Purpose |
+| --- | --- | --- |
+| `client/` | `npm run lint` | Lint the web application |
+| `client/` | `npx tsc --noEmit` | Check frontend types |
+| `server/` | `npm test` | Build and run API tests |
+| `socket/` | `npm test` | Build and run socket tests |
+| `server/` | `npm run prisma:validate` | Validate the Prisma schema |
+| `server/` | `npm run prisma:deploy` | Apply checked-in migrations |
+| `server/` | `npm run prisma:status` | Check applied and pending migrations |
+| `server/` | `npm run prisma:migrate -- --name descriptive_change` | Create a development migration for a schema change |
 
-## Screenshot
+## Current scope
 
-## Template references for research
+Applications, listing availability, cash settlement, leases, and renewals are modeled in the app. An approved application does not become a lease until the cash handover is confirmed by both parties. Managers can export a property's application, lease, and payment history as CSV.
+
+On first sign-in, a manager is directed to **Lease agreement setup**. They must save a legal name, agreement terms, an encrypted signature and two acknowledgements covering applicant privacy and information sharing before creating a property or approving an application. The API enforces the same rule, including for existing managers with an incomplete setup. Managers can revise the setup later from Settings. The signature passphrase stays in the browser and is not stored by the server.
+
+Managers can open **Payments & deadlines** from their sidebar (or from Applications) to choose a payment term when approving a pending application, follow approved payments, and review completed first payments. Approval sets a deadline 7–21 days later (14 days by default). An hourly server task declines an unpaid application after its deadline if the tenant has not reported handing over cash. A tenant cash claim keeps the application open for manager confirmation or dispute. A manager can request cancellation of an approved, unpaid application without a lease or cash claim; the server locks payment immediately and completes the non-reversible cancellation after 48 hours. For an older approved application with no lease, payment, or cash claim, the manager can set one new 7–21 day window from today and the tenant receives an account notification. Older approvals with an existing lease remain visible for payment follow-up, but have no automatic application deadline because a lease already exists.
+
+Tenants can open **Payments** from their sidebar or an approved application to see the first amount due, deadline, payment method, cash handover confirmations, and completed payment records. The tenant Applications page supports status filters and property-name search; its payment action links to the dedicated page.
+
+Bank transfer is not connected to a payment provider yet, so the API rejects that payment method. In-app notifications are available; outbound notification emails are not configured. Cash handover relies on the tenant's and manager's confirmations and may require manual dispute resolution.

@@ -72,6 +72,7 @@ declare global {
     interface ContactWidgetProps {
         onOpenModal: () => void;
         propertyId: number;
+        availability?: "Free" | "Waiting" | "Occupied" | "Closed";
     }
 
     interface ImagePreviewsProps {
@@ -110,6 +111,8 @@ declare global {
         onFavoriteToggle: () => void;
         showFavoriteButton?: boolean;
         propertyLink?: string;
+        selected?: boolean;
+        onFocusMap?: () => void;
     }
 
     interface HeaderProps {

@@ -24,16 +24,19 @@ const FeaturesSection = () => {
             whileInView="visible"
             viewport={{ once: true }}
             variants={containerVariants}
-            className="py-24 px-6 sm:px-8 lg:px-12 xl:px-16 bg-white"
+            className="bg-background px-6 py-20 text-foreground sm:px-8 lg:px-12 lg:py-28 xl:px-16"
         >
             <div className="max-w-4xl xl:max-w-6xl mx-auto">
                 <motion.h2
                     variants={itemVariants}
-                    className="text-3xl font-bold text-center mb-12 w-full sm:w-2/3 mx-auto"
+                    className="mx-auto mb-4 max-w-3xl text-center text-3xl font-semibold tracking-tight sm:text-4xl"
                 >
-                    Quickly find the home you want using our effective search
-                    filters!
+                    Find a place that fits your day to day
                 </motion.h2>
+
+                <p className="mx-auto mb-12 max-w-2xl text-center leading-7 text-muted-foreground">
+                    A good rental search starts with the details. Browse available homes, check what each space offers, and focus on the options that match your needs.
+                </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
                     {[0, 1, 2].map((idx) => (
@@ -42,23 +45,23 @@ const FeaturesSection = () => {
                                 imageSrc={`/landing-search${3 - idx}.png`}
                                 title={
                                     [
-                                        "Trustworthy and Verified Listings",
-                                        "Browse Rental Listings with Ease",
-                                        "Simplify Your Rental Search with Advanced",
+                                        "Explore rental homes",
+                                        "Compare the details",
+                                        "Refine your search",
                                     ][idx]
                                 }
                                 description={
                                     [
-                                        "Discover the best rental options with user reviews and ratings.",
-                                        "Get access to user reviews and ratings for a better understanding of rental options.",
-                                        "Find trustworthy and verified rental listings to ensure a hassle-free experience.",
+                                        "Start with available homes and open any listing for a closer look at the space, location, and photos.",
+                                        "Check rent, bedrooms, bathrooms, and amenities side by side as you decide what belongs on your shortlist.",
+                                        "Set a location and narrow results by price, property type, and the features that matter most to you.",
                                     ][idx]
                                 }
                                 linkText={
-                                    ["Explore", "Search", "Discover"][idx]
+                                    ["Browse homes", "See listings", "Start filtering"][idx]
                                 }
                                 linkHref={
-                                    ["/explore", "/search", "/discover"][idx]
+                                    ["/search", "/search", "/search"][idx]
                                 }
                             />
                         </motion.div>
@@ -82,8 +85,8 @@ const FeatureCard = ({
     linkText: string;
     linkHref: string;
 }) => (
-    <div className="text-center">
-        <div className="p-4 rounded-lg mb-4 flex items-center justify-center h-48">
+    <div className="flex h-full flex-col rounded-2xl border border-border bg-card p-6 text-center text-card-foreground shadow-sm">
+        <div className="mb-5 flex h-44 items-center justify-center rounded-xl bg-background p-4">
             <Image
                 src={imageSrc}
                 alt={title}
@@ -92,12 +95,12 @@ const FeatureCard = ({
                 className="size-full object-contain"
             />
         </div>
-        <h3 className="text-xl font-semibold mb-2">{title}</h3>
-        <p className="mb-4">{description}</p>
+        <h3 className="mb-2 text-xl font-semibold">{title}</h3>
+        <p className="mb-6 flex-1 text-sm leading-6 text-muted-foreground">{description}</p>
 
         <Link
             href={linkHref}
-            className="inline-block border border-gray-300 rounded px-4 py-2 hover:bg-gray-100"
+            className="inline-block rounded-lg border border-border px-4 py-2 text-sm font-medium hover:bg-accent"
             scroll={false}
         >
             {linkText}

@@ -1,7 +1,8 @@
-import { Button } from "@/components/ui/button";
+import TenantAgreementButton from "@/features/leases/components/tenant-agreement-button";
 import { Lease, Property } from "@/types/prisma";
-import { Download, MapPin, User } from "lucide-react";
+import { MapPin } from "lucide-react";
 import Image from "next/image";
+import { propertyImageSrc } from "@/features/properties/lib/property-image";
 
 const ResidenceCard = ({
     property,
@@ -10,32 +11,36 @@ const ResidenceCard = ({
     property: Property;
     currentLease: Lease;
 }) => {
+    const nextPaymentDate = new Date(currentLease.startDate);
+    while (nextPaymentDate <= new Date() && nextPaymentDate <= new Date(currentLease.endDate)) {
+        nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
+    }
     return (
-        <div className="bg-white rounded-xl shadow-md overflow-hidden p-6 flex-1 flex flex-col justify-between">
+        <div className="flex flex-1 flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm">
             {/* Header */}
-            <div className="flex gap-5">
+            <div className="flex flex-col sm:flex-row gap-5">
                 {property?.photoUrls?.length > 0 ? (
                     <Image
-                        src={property.photoUrls[0]}
+                        src={propertyImageSrc(property.photoUrls[0])}
                         alt={property.name}
                         width={256}
                         height={128}
-                        className="w-64 h-32 object-cover bg-slate-500 rounded-xl"
+                        className="h-32 w-full rounded-xl bg-muted object-cover sm:w-64"
                     />
                 ) : (
-                    <div className="w-64 h-32 object-cover bg-slate-500 rounded-xl" />
+                    <div className="h-32 w-full rounded-xl bg-muted sm:w-64" />
                 )}
 
                 <div className="flex flex-col justify-between">
                     <div>
-                        <div className="bg-green-500 w-fit text-white px-4 py-1 rounded-full text-sm font-semibold">
-                            Active Leases
+                        <div className="w-fit rounded-full bg-emerald-950/60 px-3 py-1 text-sm font-semibold text-emerald-300">
+                            Active lease
                         </div>
 
                         <h2 className="text-2xl font-bold my-2">
                             {property.name}
                         </h2>
-                        <div className="flex items-center mb-2">
+                        <div className="mb-2 flex items-center text-muted-foreground">
                             <MapPin className="w-5 h-5 mr-1" />
                             <span>
                                 {property.location.city},{" "}
@@ -45,55 +50,44 @@ const ResidenceCard = ({
                     </div>
                     <div className="text-xl font-bold">
                         ${currentLease.rent}{" "}
-                        <span className="text-gray-500 text-sm font-normal">
-                            / night
+                        <span className="text-sm font-normal text-muted-foreground">
+                            / month
                         </span>
                     </div>
                 </div>
             </div>
             {/* Dates */}
             <div>
-                <hr className="my-4" />
-                <div className="flex justify-between items-center">
+                <hr className="my-4 border-border" />
+                <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div className="xl:flex">
-                        <div className="text-gray-500 mr-2">Start Date: </div>
+                        <div className="mr-2 text-muted-foreground">Start Date: </div>
                         <div className="font-semibold">
                             {new Date(
                                 currentLease.startDate
                             ).toLocaleDateString()}
                         </div>
                     </div>
-                    <div className="border-[0.5px] border-primary-300 h-4" />
                     <div className="xl:flex">
-                        <div className="text-gray-500 mr-2">End Date: </div>
+                        <div className="mr-2 text-muted-foreground">End Date: </div>
                         <div className="font-semibold">
-                            {new Date(
-                                currentLease.endDate
-                            ).toLocaleDateString()}
+                            {new Date(currentLease.endDate).toLocaleDateString()}
                         </div>
                     </div>
-                    <div className="border-[0.5px] border-primary-300 h-4" />
                     <div className="xl:flex">
-                        <div className="text-gray-500 mr-2">Next Payment: </div>
+                        <div className="mr-2 text-muted-foreground">Next Payment: </div>
                         <div className="font-semibold">
-                            {new Date(
-                                currentLease.endDate
-                            ).toLocaleDateString()}
+                            {nextPaymentDate > new Date(currentLease.endDate)
+                                ? "Lease ended"
+                                : nextPaymentDate.toLocaleDateString()}
                         </div>
                     </div>
                 </div>
-                <hr className="my-4" />
+                <hr className="my-4 border-border" />
             </div>
             {/* Buttons */}
             <div className="flex justify-end gap-2 w-full">
-                <Button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
-                    <User className="w-5 h-5 mr-2" />
-                    Manager
-                </Button>
-                <Button className="bg-white border border-gray-300 text-gray-700 py-2 px-4 rounded-md flex items-center justify-center hover:bg-primary-700 hover:text-primary-50">
-                    <Download className="w-5 h-5 mr-2" />
-                    Download Agreement
-                </Button>
+                <TenantAgreementButton leaseId={currentLease.id} />
             </div>
         </div>
     );

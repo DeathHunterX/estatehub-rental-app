@@ -1,96 +1,105 @@
 "use client";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+
+import PageSkeleton from "@/components/shared/page-skeleton";
+
+
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from "@/components/ui/popover";
-import { useGetAuthCurrentUserQuery, useGetChatsQuery } from "@/states/api";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { chatActivityTime, chatPartner } from "@/features/chat/lib/chat-behavior";
+import { useGetAuthCurrentUserQuery, useGetChatsQuery } from "@/lib/api/api";
 import { setChatId } from "@/states/index";
-import { useAppDispatch } from "@/states/store";
-import { ExpandIcon } from "lucide-react";
-import React, { Fragment, useState } from "react";
+import { useAppDispatch, useAppSelector } from "@/states/store";
+import React, { useState } from "react";
 
 interface ChatDropdownProps {
     trigger: React.ReactNode;
 }
 
 const ChatDropdown = ({ trigger }: ChatDropdownProps) => {
-    const { data: chats, isLoading: chatsLoading } = useGetChatsQuery();
+    const [open, setOpen] = useState(false);
+    const [search, setSearch] = useState("");
+    const { data: chats, isLoading } = useGetChatsQuery();
     const { data: authUser } = useGetAuthCurrentUserQuery();
-
-    const [isChatDropdownOpen, setIsChatDropdownOpen] =
-        useState<boolean>(false);
-
     const dispatch = useAppDispatch();
-
-    const handleOpenChat = (id: number) => {
-        dispatch(setChatId(id));
-        setIsChatDropdownOpen(false);
+    const chatSessionVersion = useAppSelector((state) => state.global.chatSessionVersion);
+    const userId = authUser?.user?.id;
+    const filteredChats = chats
+        ?.filter((chat) => !userId || chatPartner(chat, userId).name.toLowerCase().includes(search.trim().toLowerCase()))
+        .sort((left, right) =>
+            new Date(chatActivityTime(right)).getTime() - new Date(chatActivityTime(left)).getTime()
+        );
+    const isUnread = (chat: NonNullable<typeof chats>[number]) => {
+        if (!userId || !chat.lastMessage || chat.lastMessage.senderId === userId) return false;
+        const lastReadAt = chat.tenantUserId === userId ? chat.tenantLastReadAt : chat.managerLastReadAt;
+        return !lastReadAt || new Date(chat.lastMessage.createdAt) > new Date(lastReadAt);
     };
+    const hasUnread = chats?.some(isUnread);
 
     return (
-        <Fragment>
-            <Popover
-                open={isChatDropdownOpen}
-                onOpenChange={setIsChatDropdownOpen}
-            >
-                <PopoverTrigger>{trigger}</PopoverTrigger>
-                <PopoverContent>
-                    <div className="">
-                        <div className="flex flex-row justify-between items-center">
-                            <h3 className="text-lg font-semibold">Messages</h3>
-                            <ExpandIcon size={16} />
-                        </div>
-
-                        <div className="mt-2">
-                            <Input
-                                className="rounded-full w-full"
-                                placeholder="Search..."
-                            />
-                        </div>
-
-                        <div className="py-2">
-                            {chatsLoading && <p>Loading chats...</p>}
-                            {chats?.map((chat) => (
-                                <div
-                                    key={chat.id}
-                                    className="flex flex-row items-center gap-2 hover:bg-muted p-2 rounded-md cursor-pointer"
-                                    onClick={() => handleOpenChat(chat.id)}
-                                >
-                                    <Avatar>
-                                        <AvatarImage src="https://github.com/shadcn.png" />
-                                        <AvatarFallback>CN</AvatarFallback>
-                                    </Avatar>
-                                    <div>
-                                        <h3 className="text-sm font-semibold">
-                                            {authUser?.user.role === "Tenant"
-                                                ? chat.manager.user.name
-                                                : chat.tenant.user.name ||
-                                                  "Unknown"}
-                                        </h3>
-                                        <div className="flex flex-row items-center gap-2">
-                                            <p className="text-sm text-muted-foreground">
-                                                {chat.lastMessage?.content ??
-                                                    "No messages yet"}
-                                            </p>
-                                            <p className="text-sm text-muted-foreground">
-                                                {chat.updatedAt
-                                                    ? new Date(
-                                                          chat.updatedAt
-                                                      ).toLocaleTimeString()
-                                                    : ""}
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                </PopoverContent>
-            </Popover>
-        </Fragment>
+        <Popover open={open} onOpenChange={setOpen}>
+            <PopoverTrigger aria-label="Open messages" className="relative hidden rounded-md p-1 transition-colors hover:bg-white/10 focus-visible:outline-2 focus-visible:outline-white md:inline-flex">
+                {trigger}
+                {hasUnread && <span aria-label="Unread messages" className="absolute right-0 top-0 size-2 rounded-full bg-secondary-500 ring-2 ring-primary-700" />}
+            </PopoverTrigger>
+            <PopoverContent align="end" className="w-[min(24rem,calc(100vw-1rem))] overflow-hidden rounded-xl border-border bg-popover p-0 text-popover-foreground shadow-xl">
+                <div className="border-b border-border px-4 py-4">
+                    <h2 className="text-base font-semibold">Messages</h2>
+                    <p className="mt-0.5 text-xs text-muted-foreground">Your recent conversations</p>
+                    <Input
+                        value={search}
+                        onChange={(event) => setSearch(event.target.value)}
+                        placeholder="Search conversations"
+                        aria-label="Search conversations"
+                        className="mt-3 rounded-full bg-muted/40 px-4"
+                    />
+                </div>
+                <div className="max-h-80 overflow-y-auto p-2">
+                    {isLoading && <PageSkeleton variant="chat" />}
+                    {!isLoading && filteredChats?.length === 0 && (
+                        <p className="px-3 py-6 text-center text-sm text-muted-foreground">
+                            {search ? "No matching conversations." : "No conversations yet."}
+                        </p>
+                    )}
+                    {filteredChats?.map((chat) => {
+                        const partner = userId ? chatPartner(chat, userId) : null;
+                        const lastMessage = chat.lastMessage;
+                        const unread = isUnread(chat);
+                        return (
+                            <button
+                                key={chat.id}
+                                type="button"
+                                onClick={() => {
+                                    dispatch(setChatId({ chatId: chat.id, sessionVersion: chatSessionVersion }));
+                                    setOpen(false);
+                                }}
+                                className="flex w-full items-center gap-3 rounded-lg px-3 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-primary"
+                            >
+                                <Avatar className="size-10 shrink-0">
+                                    <AvatarFallback className="bg-primary/10 font-semibold text-primary">
+                                        {(partner?.name || "C").charAt(0).toUpperCase()}
+                                    </AvatarFallback>
+                                </Avatar>
+                                <span className="min-w-0 flex-1">
+                                    <span className="flex items-center justify-between gap-2">
+                                        <span className={`truncate text-sm ${unread ? "font-semibold" : "font-medium"}`}>{partner?.name || "Conversation"}</span>
+                                        <span className="shrink-0 text-[11px] text-muted-foreground">
+                                            {new Date(chatActivityTime(chat)).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" })}
+                                        </span>
+                                    </span>
+                                    <span className="mt-0.5 flex items-center gap-2">
+                                        <span className={`truncate text-xs ${unread ? "font-medium text-foreground" : "text-muted-foreground"}`}>
+                                            {lastMessage?.content || "Start the conversation"}
+                                        </span>
+                                        {unread && <span className="ml-auto size-2 shrink-0 rounded-full bg-secondary-500" aria-label="Unread message" />}
+                                    </span>
+                                </span>
+                            </button>
+                        );
+                    })}
+                </div>
+            </PopoverContent>
+        </Popover>
     );
 };
 

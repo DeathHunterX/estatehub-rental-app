@@ -1,16 +1,19 @@
 "use client";
 
-import PropertyCard from "@/components/shared/card/property-card";
+import PageSkeleton from "@/components/shared/page-skeleton";
+
+
+import PropertyCard from "@/features/properties/components/property-card";
 import Header from "@/components/shared/header";
 import {
     useGetAuthCurrentUserQuery,
     useGetCurrentResidencesQuery,
     useGetTenantQuery,
-} from "@/states/api";
+} from "@/lib/api/api";
 
 const ResidencesPage = () => {
-    const { data: authUser } = useGetAuthCurrentUserQuery();
-    const { data: tenant } = useGetTenantQuery(authUser?.user?.id || "", {
+    const { data: authUser, isLoading: isAuthLoading } = useGetAuthCurrentUserQuery();
+    const { data: tenant, isLoading: isTenantLoading } = useGetTenantQuery(authUser?.user?.id || "", {
         skip: !authUser?.user?.id,
     });
 
@@ -22,8 +25,8 @@ const ResidencesPage = () => {
         skip: !authUser?.user?.id,
     });
 
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error loading current residences</div>;
+    if (isAuthLoading || isTenantLoading || isLoading) return <PageSkeleton variant="cards" />;
+    if (error) return <div className="dashboard-container text-destructive">Could not load residences.</div>;
 
     return (
         <div className="dashboard-container">
@@ -37,7 +40,7 @@ const ResidencesPage = () => {
                         key={property.id}
                         property={property}
                         isFavorite={
-                            tenant?.favorites.includes(property.id) || false
+                            tenant?.favorites?.some((favorite: { id: number }) => favorite.id === property.id) || false
                         }
                         onFavoriteToggle={() => {}}
                         showFavoriteButton={false}
@@ -46,7 +49,9 @@ const ResidencesPage = () => {
                 ))}
             </div>
             {(!currentResidences || currentResidences.length === 0) && (
-                <p>You don&lsquo;t have any current residences</p>
+                <div className="rounded-xl border border-border bg-card p-8 text-center text-muted-foreground">
+                    You have no current residences.
+                </div>
             )}
         </div>
     );

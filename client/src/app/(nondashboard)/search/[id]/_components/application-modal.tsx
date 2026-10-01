@@ -1,3 +1,8 @@
+// Libraries
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm, useWatch } from "react-hook-form";
+
+// Components
 import { CustomFormField } from "@/components/shared/form-field";
 import { Button } from "@/components/ui/button";
 import {
@@ -6,15 +11,20 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { ApplicationFormData, applicationSchema } from "@/lib/schemas";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+
+// APIs
 import {
     useCreateApplicationMutation,
     useGetAuthCurrentUserQuery,
-} from "@/states/api";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import toast from "react-hot-toast";
+} from "@/lib/api/api";
+
+// Validation
+import { ApplicationFormData, applicationSchema } from "@/lib/schemas";
+
+// Libs
+import { APPLICATION_MESSAGE_MAX_CHARACTERS, APPLICATION_MESSAGE_MAX_WORDS, countApplicationWords, limitApplicationMessage } from "@/features/applications/lib/application-message";
 
 const ApplicationModal = ({
     isOpen,
@@ -33,6 +43,7 @@ const ApplicationModal = ({
             message: "",
         },
     });
+    const messageWordCount = countApplicationWords(useWatch({ control: form.control, name: "message" }) ?? "");
 
     const onSubmit = async (data: ApplicationFormData) => {
         if (!authUser || authUser.user?.role.toLowerCase() !== "tenant") {
@@ -42,25 +53,18 @@ const ApplicationModal = ({
             return;
         }
 
-        const response = await createApplication({
-            ...data,
-            applicationDate: new Date().toISOString(),
-            status: "Pending",
-            propertyId: propertyId,
-            tenantUserId: authUser.user.id,
-        }).unwrap();
-
-        if (response.success) {
-            toast.success("Application submitted successfully");
+        try {
+            await createApplication({
+                ...data,
+                propertyId,
+            }).unwrap();
             onClose();
-        } else {
-            toast.error("Failed to submit application");
-        }
+        } catch { /* API mutation displays the error */ }
     };
 
     return (
         <Dialog open={isOpen} onOpenChange={onClose}>
-            <DialogContent className="bg-white">
+            <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto border-border bg-card text-card-foreground">
                 <DialogHeader className="mb-4">
                     <DialogTitle>
                         Submit Application for this Property
@@ -88,20 +92,39 @@ const ApplicationModal = ({
                         <CustomFormField
                             name="phoneNumber"
                             label="Phone Number"
-                            type="text"
+                            type="tel"
                             placeholder="Enter your phone number"
                             disabled={isLoading}
                         />
-                        <CustomFormField
+                        <FormField
+                            control={form.control}
                             name="message"
-                            label="Message (Optional)"
-                            type="textarea"
-                            placeholder="Enter any additional information"
-                            disabled={isLoading}
+                            render={({ field }) => (
+                                <FormItem>
+                                    <FormLabel>Message (Optional)</FormLabel>
+                                    <FormControl>
+                                        <Textarea
+                                            {...field}
+                                            value={field.value ?? ""}
+                                            onChange={(event) => field.onChange(limitApplicationMessage(event.target.value))}
+                                            maxLength={APPLICATION_MESSAGE_MAX_CHARACTERS}
+                                            rows={5}
+                                            placeholder="Tell the manager a little about yourself"
+                                            disabled={isLoading}
+                                            aria-describedby="application-message-count"
+                                            className="h-32 max-h-32 resize-none overflow-y-auto border-input bg-background p-4 text-foreground placeholder:text-muted-foreground [field-sizing:fixed]"
+                                        />
+                                    </FormControl>
+                                    <p id="application-message-count" className="text-right text-xs text-muted-foreground">
+                                        {messageWordCount}/{APPLICATION_MESSAGE_MAX_WORDS} words
+                                    </p>
+                                    <FormMessage className="text-red-400" />
+                                </FormItem>
+                            )}
                         />
                         <Button
                             type="submit"
-                            className="bg-primary-700 text-white w-full"
+                            className="w-full bg-secondary-500 text-primary-950 hover:bg-secondary-400"
                             disabled={isLoading}
                         >
                             {isLoading ? "Submitting..." : "Submit Application"}

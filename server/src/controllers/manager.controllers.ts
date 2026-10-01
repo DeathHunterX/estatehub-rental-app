@@ -1,9 +1,14 @@
+import type { GeographyQueryRow, AuthenticatedRequest } from "../types/global";
 import { wktToGeoJSON } from "@terraformer/wkt";
-import { Request, Response } from "express";
+import { Response } from "express";
+import { ForbiddenError } from "../errors/http-error";
 import prisma from "../lib/prisma";
+import { parseSigningProfile } from "../services/policies/signing-profile";
 
-export const getManager = async (req: Request, res: Response) => {
+export const getManager = async (req: AuthenticatedRequest, res: Response) => {
     const { managerUserId } = req.params;
+    if (managerUserId !== req.user!.id)
+        throw new ForbiddenError("Manager access denied");
     const manager = await prisma.manager.findUnique({
         where: { userId: managerUserId },
         include: {
@@ -18,8 +23,13 @@ export const getManager = async (req: Request, res: Response) => {
     });
 };
 
-export const getManagerProperties = async (req: Request, res: Response) => {
+export const getManagerProperties = async (
+    req: AuthenticatedRequest,
+    res: Response
+) => {
     const { managerUserId } = req.params;
+    if (managerUserId !== req.user!.id)
+        throw new ForbiddenError("Manager access denied");
 
     const properties = await prisma.property.findMany({
         where: {
@@ -32,7 +42,7 @@ export const getManagerProperties = async (req: Request, res: Response) => {
 
     const propertiesWithFormattedLocation = await Promise.all(
         properties.map(async (property) => {
-            const coordinates: { coordinates: string }[] =
+            const coordinates: GeographyQueryRow[] =
                 await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates FROM "Location" WHERE id = ${property.location.id}`;
 
             const geoJSON: any = wktToGeoJSON(coordinates[0].coordinates || "");
@@ -53,4 +63,63 @@ export const getManagerProperties = async (req: Request, res: Response) => {
         success: true,
         data: propertiesWithFormattedLocation,
     });
+};
+
+export const getManagerSigningProfile = async (
+    req: AuthenticatedRequest,
+    res: Response
+) => {
+    const profile = await prisma.managerSigningProfile.findUnique({
+        where: { managerUserId: req.user!.id },
+    });
+    return res.status(200).json({ success: true, data: profile });
+};
+
+export const updateManagerSigningProfile = async (
+    req: AuthenticatedRequest,
+    res: Response
+) => {
+    const input = parseSigningProfile(req.body);
+    const signatureUpdate = input.clearSignature
+        ? {
+              signatureCiphertext: null,
+              signatureSalt: null,
+              signatureIv: null,
+              signatureUpdatedAt: null,
+          }
+        : input.signatureCiphertext
+          ? {
+                signatureCiphertext: input.signatureCiphertext,
+                signatureSalt: input.signatureSalt,
+                signatureIv: input.signatureIv,
+                signatureUpdatedAt: new Date(),
+            }
+          : {};
+    const acceptedAt = new Date();
+    const consentUpdate = {
+        ...(input.acceptPrivacy ? { acceptedPrivacyAt: acceptedAt } : {}),
+        ...(input.acceptSharing ? { acceptedSharingAt: acceptedAt } : {}),
+        ...(input.acceptPrivacy && input.acceptSharing
+            ? { acceptedPolicyVersion: "2026-09-27" }
+            : {}),
+    };
+    const profile = await prisma.managerSigningProfile.upsert({
+        where: { managerUserId: req.user!.id },
+        create: {
+            managerUserId: req.user!.id,
+            legalName: input.legalName,
+            title: input.title,
+            agreementNotes: input.agreementNotes,
+            ...signatureUpdate,
+            ...consentUpdate,
+        },
+        update: {
+            legalName: input.legalName,
+            title: input.title,
+            agreementNotes: input.agreementNotes,
+            ...signatureUpdate,
+            ...consentUpdate,
+        },
+    });
+    return res.status(200).json({ success: true, data: profile });
 };

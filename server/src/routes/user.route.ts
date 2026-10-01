@@ -1,5 +1,5 @@
 import express from "express";
-import { getMe, updateMe } from "../controllers/auth/session";
+import { getMe, updateMe } from "../controllers/auth/session.controller";
 
 const router = express.Router();
 

@@ -1,11 +1,11 @@
+import type { UserIdentity, AuthenticatedRequest } from "../types/global";
 import { UserRole } from "@prisma/client";
 import { Response } from "express";
 import { NotFoundError } from "../errors/http-error";
 import prisma from "../lib/prisma";
-import { AuthenticatedRequest } from "../middleware/auth";
 
 export const addMessage = async (req: AuthenticatedRequest, res: Response) => {
-    const { role, id } = req.user as { role: UserRole; id: string };
+    const { role, id } = req.user as UserIdentity;
     const { chatId } = req.params;
     const { content } = req.body;
 
