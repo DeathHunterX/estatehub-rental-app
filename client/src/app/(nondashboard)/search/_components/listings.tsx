@@ -184,11 +184,12 @@ const Listings = ({
                                 : "p-4 w-full"
                         }
                     >
-                        {displayedProperties.map((property) =>
+                        {displayedProperties.map((property, index) =>
                             viewMode === "grid" ? (
                                 <PropertyCard
                                     key={property.id}
                                     property={property}
+                                    eagerImage={index < 3}
                                     isFavorite={
                                         tenant?.favorites?.some(
                                             (fav: Property) =>
@@ -205,6 +206,7 @@ const Listings = ({
                                 <PropertyCardCompact
                                     key={property.id}
                                     property={property}
+                                    eagerImage={index < 3}
                                     isFavorite={
                                         tenant?.favorites?.some(
                                             (fav: Property) =>

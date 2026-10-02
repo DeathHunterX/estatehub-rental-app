@@ -1,15 +1,17 @@
 "use client";
-// React and Next.js core imports
+// Libraries
+import { useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useEffect } from "react";
-import SocialAuthForm from "../forms/social-auth-form";
-
-// Redux and state management imports
-import { RootState } from "@/states/store";
 import { useSelector } from "react-redux";
+
+// State
+import { RootState } from "@/states/store";
 import { destinationAfterSignIn } from "@/features/auth/lib/session-navigation";
+
+// Components
+import SocialAuthForm from "../forms/social-auth-form";
 
 interface AuthPageWrapperProps {
     title: string;
@@ -114,9 +116,19 @@ const AuthPageWrapper = ({
                                 Privacy Policy
                             </Link>{" "}
                             are available for review. Read our{" "}
-                            <Link href="/refund-cancellation" className="hover:text-foreground underline underline-offset-4">Refund & Cancellation Policy</Link>{" "}
+                            <Link
+                                href="/refund-cancellation"
+                                className="hover:text-foreground underline underline-offset-4"
+                            >
+                                Refund & Cancellation Policy
+                            </Link>{" "}
                             and{" "}
-                            <Link href="/cookies" className="hover:text-foreground underline underline-offset-4">Cookie Policy</Link>{" "}
+                            <Link
+                                href="/cookies"
+                                className="hover:text-foreground underline underline-offset-4"
+                            >
+                                Cookie Policy
+                            </Link>{" "}
                             too.
                         </p>
                         {formType === "SIGN_IN" ? (

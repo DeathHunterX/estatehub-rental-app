@@ -1,9 +1,8 @@
 "use client";
 
 import PageSkeleton from "@/components/shared/page-skeleton";
-
-
 import SettingsForm from "@/components/shared/forms/settings-form";
+
 import { useGetAuthCurrentUserQuery } from "@/lib/api/api";
 
 const SettingsPage = () => {

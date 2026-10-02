@@ -1,3 +1,7 @@
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, ArrowLeft } from "lucide-react";
+
 import {
     Sidebar,
     SidebarContent,
@@ -8,15 +12,12 @@ import {
     SidebarFooter,
     useSidebar,
 } from "@/components/ui/sidebar";
+
 import { NAVBAR_HEIGHT } from "@/constants";
+
 import { cn } from "@/lib/utils";
+
 import { dashboardNavigation } from "@/lib/dashboard-navigation";
-import {
-    Menu,
-    ArrowLeft,
-} from "lucide-react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
 
 const AppSidebar = ({ userType }: AppSidebarProps) => {
     const pathname = usePathname();

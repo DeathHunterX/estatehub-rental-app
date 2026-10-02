@@ -1,11 +1,12 @@
 "use client";
 
+// Components
 import PageSkeleton from "@/components/shared/page-skeleton";
-
-
 import SettingsForm from "@/components/shared/forms/settings-form";
-import { useGetAuthCurrentUserQuery } from "@/lib/api/api";
 import SigningSetup from "../../../../features/signing/components/signing-setup";
+
+// APIs
+import { useGetAuthCurrentUserQuery } from "@/lib/api/api";
 
 const SettingsPage = () => {
     const { data: authUser, isLoading: isAuthLoading } =
@@ -21,7 +22,14 @@ const SettingsPage = () => {
         return <PageSkeleton variant="form" />;
     }
 
-    return <><SettingsForm initialData={initialData} userType="manager" /><div className="dashboard-container pt-0!"><SigningSetup /></div></>;
+    return (
+        <>
+            <SettingsForm initialData={initialData} userType="manager" />
+            <div className="dashboard-container pt-0!">
+                <SigningSetup />
+            </div>
+        </>
+    );
 };
 
 export default SettingsPage;

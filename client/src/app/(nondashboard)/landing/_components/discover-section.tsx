@@ -38,32 +38,36 @@ const DiscoverSection = () => {
                     </p>
 
                     <p className="mx-auto mt-2 max-w-3xl text-muted-foreground">
-                        See how a promising listing becomes an application, then keep track of what happens next from your account.
+                        See how a promising listing becomes an application, then
+                        keep track of what happens next from your account.
                     </p>
                 </motion.div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 xl:gap-16 text-center">
                     {[
                         {
+                            id: "search",
                             imageSrc: "/landing-icon-wand.png",
                             title: "Search for Properties",
                             description:
                                 "Search by location, explore listing photos, and check the rent and amenities before you make a shortlist.",
                         },
                         {
+                            id: "apply",
                             imageSrc: "/landing-icon-calendar.png",
                             title: "Apply for a Home",
                             description:
                                 "When a home feels right, send an application from its listing and follow updates in your dashboard.",
                         },
                         {
+                            id: "connect",
                             imageSrc: "/landing-icon-heart.png",
                             title: "Stay Connected",
                             description:
                                 "Message the property manager and return to your application and rental details whenever you need them.",
                         },
-                    ].map((card, idx) => (
-                        <motion.div key={idx} variants={itemVariants}>
+                    ].map((card) => (
+                        <motion.div key={card.id} variants={itemVariants}>
                             <DiscoverCard {...card} />
                         </motion.div>
                     ))}
@@ -93,7 +97,9 @@ const DiscoverCard = ({
             />
         </div>
         <h3 className="mt-4 text-xl font-medium">{title}</h3>
-        <p className="mt-2 text-sm leading-6 text-muted-foreground">{description}</p>
+        <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            {description}
+        </p>
     </div>
 );
 export default DiscoverSection;

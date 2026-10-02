@@ -1,18 +1,30 @@
 "use client";
 
-import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
-import { dashboardNavigation, type DashboardNavItem, type DashboardRole } from "@/lib/dashboard-navigation";
-import { cn } from "@/lib/utils";
-import { Plus, Search } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Plus, Search } from "lucide-react";
+
+import {
+    Tooltip,
+    TooltipContent,
+    TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
+    dashboardNavigation,
+    type DashboardNavItem,
+    type DashboardRole,
+} from "@/lib/dashboard-navigation";
+
+import { cn } from "@/lib/utils";
 
 export default function MobileDashboardNav({ role }: { role: DashboardRole }) {
     const pathname = usePathname();
     const links = dashboardNavigation[role];
     const midpoint = Math.ceil(links.length / 2);
-    const centerHref = role === "manager" ? "/managers/properties/new" : "/search";
-    const centerLabel = role === "manager" ? "Add new property" : "Search properties";
+    const centerHref =
+        role === "manager" ? "/managers/properties/new" : "/search";
+    const centerLabel =
+        role === "manager" ? "Add new property" : "Search properties";
     const CenterIcon = role === "manager" ? Plus : Search;
 
     const renderLink = ({ href, label, icon: Icon }: DashboardNavItem) => {
@@ -33,7 +45,9 @@ export default function MobileDashboardNav({ role }: { role: DashboardRole }) {
                         <Icon aria-hidden="true" className="size-5" />
                     </Link>
                 </TooltipTrigger>
-                <TooltipContent side="top" sideOffset={8}>{label}</TooltipContent>
+                <TooltipContent side="top" sideOffset={8}>
+                    {label}
+                </TooltipContent>
             </Tooltip>
         );
     };
@@ -45,7 +59,9 @@ export default function MobileDashboardNav({ role }: { role: DashboardRole }) {
             style={{ paddingBottom: "env(safe-area-inset-bottom)" }}
         >
             <div className="flex h-16 items-center px-2">
-                <div className="flex min-w-0 flex-1 items-center justify-around">{links.slice(0, midpoint).map(renderLink)}</div>
+                <div className="flex min-w-0 flex-1 items-center justify-around">
+                    {links.slice(0, midpoint).map(renderLink)}
+                </div>
                 <Tooltip>
                     <TooltipTrigger asChild>
                         <Link
@@ -57,9 +73,13 @@ export default function MobileDashboardNav({ role }: { role: DashboardRole }) {
                             <CenterIcon aria-hidden="true" className="size-6" />
                         </Link>
                     </TooltipTrigger>
-                    <TooltipContent side="top" sideOffset={8}>{centerLabel}</TooltipContent>
+                    <TooltipContent side="top" sideOffset={8}>
+                        {centerLabel}
+                    </TooltipContent>
                 </Tooltip>
-                <div className="flex min-w-0 flex-1 items-center justify-around">{links.slice(midpoint).map(renderLink)}</div>
+                <div className="flex min-w-0 flex-1 items-center justify-around">
+                    {links.slice(midpoint).map(renderLink)}
+                </div>
             </div>
         </nav>
     );

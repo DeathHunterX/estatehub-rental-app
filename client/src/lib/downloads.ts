@@ -32,12 +32,23 @@ export const downloadLeaseSummary = (
         "",
         "This is a record summary, not a signed rental agreement.",
     ];
-    saveText(`lease-${lease.id}-summary.txt`, lines.join("\n"), "text/plain;charset=utf-8");
+    saveText(
+        `lease-${lease.id}-summary.txt`,
+        lines.join("\n"),
+        "text/plain;charset=utf-8"
+    );
 };
 
 export const downloadLeasesCsv = (leases: Lease[], propertyName: string) => {
     const rows = [
-        ["Lease ID", "Property", "Tenant", "Start date", "End date", "Monthly rent"],
+        [
+            "Lease ID",
+            "Property",
+            "Tenant",
+            "Start date",
+            "End date",
+            "Monthly rent",
+        ],
         ...leases.map((lease) => [
             lease.id,
             propertyName,
@@ -47,12 +58,24 @@ export const downloadLeasesCsv = (leases: Lease[], propertyName: string) => {
             lease.rent,
         ]),
     ];
-    saveText("leases.csv", rows.map((row) => row.map(csvCell).join(",")).join("\n"), "text/csv;charset=utf-8");
+    saveText(
+        "leases.csv",
+        rows.map((row) => row.map(csvCell).join(",")).join("\n"),
+        "text/csv;charset=utf-8"
+    );
 };
 
 export const downloadPaymentsCsv = (payments: Payment[]) => {
     const rows = [
-        ["Payment ID", "Lease ID", "Due date", "Payment date", "Amount due", "Amount paid", "Status"],
+        [
+            "Payment ID",
+            "Lease ID",
+            "Due date",
+            "Payment date",
+            "Amount due",
+            "Amount paid",
+            "Status",
+        ],
         ...payments.map((payment) => [
             payment.id,
             payment.leaseId,
@@ -63,18 +86,26 @@ export const downloadPaymentsCsv = (payments: Payment[]) => {
             payment.paymentStatus,
         ]),
     ];
-    saveText("payment-history.csv", rows.map((row) => row.map(csvCell).join(",")).join("\n"), "text/csv;charset=utf-8");
+    saveText(
+        "payment-history.csv",
+        rows.map((row) => row.map(csvCell).join(",")).join("\n"),
+        "text/csv;charset=utf-8"
+    );
 };
 
 export const downloadPaymentRecord = (payment: Payment) => {
-    saveText(`payment-${payment.id}.txt`, [
-        "EstateHub payment record",
-        `Payment ID: ${payment.id}`,
-        `Lease ID: ${payment.leaseId}`,
-        `Due date: ${new Date(payment.dueDate).toLocaleDateString()}`,
-        `Payment date: ${new Date(payment.paymentDate).toLocaleDateString()}`,
-        `Amount due: $${payment.amountDue.toFixed(2)}`,
-        `Amount paid: $${payment.amountPaid.toFixed(2)}`,
-        `Status: ${payment.paymentStatus}`,
-    ].join("\n"), "text/plain;charset=utf-8");
+    saveText(
+        `payment-${payment.id}.txt`,
+        [
+            "EstateHub payment record",
+            `Payment ID: ${payment.id}`,
+            `Lease ID: ${payment.leaseId}`,
+            `Due date: ${new Date(payment.dueDate).toLocaleDateString()}`,
+            `Payment date: ${new Date(payment.paymentDate).toLocaleDateString()}`,
+            `Amount due: $${payment.amountDue.toFixed(2)}`,
+            `Amount paid: $${payment.amountPaid.toFixed(2)}`,
+            `Status: ${payment.paymentStatus}`,
+        ].join("\n"),
+        "text/plain;charset=utf-8"
+    );
 };

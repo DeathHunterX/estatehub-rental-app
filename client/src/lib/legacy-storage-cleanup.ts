@@ -11,7 +11,11 @@ export const clearLegacyStorage = (
     setCookie: (value: string) => void
 ) => {
     for (const key of LEGACY_KEYS) {
-        try { storage.removeItem(key); } catch { /* Browser storage may be unavailable. */ }
+        try {
+            storage.removeItem(key);
+        } catch {
+            /* Browser storage may be unavailable. */
+        }
     }
     setCookie("sidebar_state=; path=/; Max-Age=0; SameSite=Lax");
 };

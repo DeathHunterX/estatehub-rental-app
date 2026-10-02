@@ -4,7 +4,8 @@ import { CalendarDays, Mail, MapPin, MessageSquareText, Phone } from "lucide-rea
 import Image from "next/image";
 import { useId, useState } from "react";
 import { applicationContact } from "@/features/applications/lib/application-display";
-import { propertyImageSrc } from "@/features/properties/lib/property-image";
+import { propertyImageSrc, usablePropertyPhotos } from "@/features/properties/lib/property-image";
+import PropertyPhotoFallback from "@/features/properties/components/property-photo-fallback";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 
 const statusStyles: Record<string, string> = {
@@ -15,8 +16,8 @@ const statusStyles: Record<string, string> = {
     Withdrawn: "border-border bg-muted text-muted-foreground",
 };
 
-const ApplicationCard = ({ application, userType, children }: ApplicationCardProps) => {
-    const [imgSrc, setImgSrc] = useState(propertyImageSrc(application.property.photoUrls?.[0]));
+const ApplicationCard = ({ application, userType, children, eagerImage = false }: ApplicationCardProps) => {
+    const [imgSrc, setImgSrc] = useState(propertyImageSrc(usablePropertyPhotos(application.property.photoUrls)[0]));
     const [isMessageExpanded, setIsMessageExpanded] = useState(false);
     const messageId = useId();
     const contact = applicationContact(application, userType);
@@ -28,7 +29,7 @@ const ApplicationCard = ({ application, userType, children }: ApplicationCardPro
         <article className="mb-4 overflow-hidden rounded-2xl border border-border bg-card text-card-foreground shadow-sm">
             <div className="grid gap-5 p-5 md:grid-cols-[180px_minmax(0,1fr)] md:gap-6 md:p-6">
                 <div className="relative h-44 overflow-hidden rounded-xl bg-muted md:h-48">
-                    <Image src={imgSrc} alt={application.property.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 180px" onError={() => setImgSrc("/placeholder.jpg")} />
+                    {imgSrc === "/placeholder.jpg" ? <PropertyPhotoFallback /> : <Image src={imgSrc} alt={application.property.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, 180px" loading={eagerImage ? "eager" : "lazy"} onError={() => setImgSrc("/placeholder.jpg")} />}
                 </div>
                 <div className="min-w-0 space-y-5">
                     <div className="flex flex-wrap items-start justify-between gap-3">

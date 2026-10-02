@@ -1,7 +1,7 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import PageSkeleton from "@/components/shared/page-skeleton";
-
 
 import PaymentMethod from "@/app/(dashboard)/tenants/residences/[id]/_components/payment-method";
 import ResidenceCard from "@/components/shared/card/residence-card";
@@ -12,7 +12,6 @@ import {
     useGetPaymentsQuery,
     useGetPropertyQuery,
 } from "@/lib/api/api";
-import { useParams } from "next/navigation";
 import BillingHistory from "./_components/billing-history";
 
 const ResidencePage = () => {
@@ -30,7 +29,9 @@ const ResidencePage = () => {
         authUser?.user.id || "",
         { skip: !authUser?.user.id }
     );
-    const currentLease = leases?.find((lease) => lease.propertyId === Number(id));
+    const currentLease = leases?.find(
+        (lease) => lease.propertyId === Number(id)
+    );
     const { data: payments, isLoading: paymentsLoading } = useGetPaymentsQuery(
         currentLease?.id || 0,
         { skip: !currentLease?.id }
@@ -38,12 +39,25 @@ const ResidencePage = () => {
 
     if (propertyLoading || leasesLoading || paymentsLoading)
         return <PageSkeleton variant="detail" />;
-    if (!property || propertyError) return <div className="dashboard-container text-destructive">Could not load this residence.</div>;
-    if (!currentLease) return <div className="dashboard-container text-muted-foreground">You do not have a lease for this property.</div>;
+    if (!property || propertyError)
+        return (
+            <div className="dashboard-container text-destructive">
+                Could not load this residence.
+            </div>
+        );
+    if (!currentLease)
+        return (
+            <div className="dashboard-container text-muted-foreground">
+                You do not have a lease for this property.
+            </div>
+        );
 
     return (
         <div className="dashboard-container">
-            <Header title="Residence Details" subtitle="Your lease and payment records" />
+            <Header
+                title="Residence Details"
+                subtitle="Your lease and payment records"
+            />
             <div className="w-full mx-auto">
                 <div className="flex flex-col gap-6 lg:flex-row">
                     {currentLease && (

@@ -17,6 +17,33 @@ const itemVariants: Variants = {
     visible: { opacity: 1, y: 0 },
 };
 
+const features = [
+    {
+        id: "explore",
+        imageSrc: "/landing-search3.png",
+        title: "Explore rental homes",
+        description: "Start with available homes and open any listing for a closer look at the space, location, and photos.",
+        linkText: "Browse homes",
+        linkHref: "/search",
+    },
+    {
+        id: "compare",
+        imageSrc: "/landing-search2.png",
+        title: "Compare the details",
+        description: "Check rent, bedrooms, bathrooms, and amenities side by side as you decide what belongs on your shortlist.",
+        linkText: "See listings",
+        linkHref: "/search",
+    },
+    {
+        id: "refine",
+        imageSrc: "/landing-search1.png",
+        title: "Refine your search",
+        description: "Set a location and narrow results by price, property type, and the features that matter most to you.",
+        linkText: "Start filtering",
+        linkHref: "/search",
+    },
+];
+
 const FeaturesSection = () => {
     return (
         <motion.div
@@ -39,31 +66,9 @@ const FeaturesSection = () => {
                 </p>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12 xl:gap-16">
-                    {[0, 1, 2].map((idx) => (
-                        <motion.div key={idx} variants={itemVariants}>
-                            <FeatureCard
-                                imageSrc={`/landing-search${3 - idx}.png`}
-                                title={
-                                    [
-                                        "Explore rental homes",
-                                        "Compare the details",
-                                        "Refine your search",
-                                    ][idx]
-                                }
-                                description={
-                                    [
-                                        "Start with available homes and open any listing for a closer look at the space, location, and photos.",
-                                        "Check rent, bedrooms, bathrooms, and amenities side by side as you decide what belongs on your shortlist.",
-                                        "Set a location and narrow results by price, property type, and the features that matter most to you.",
-                                    ][idx]
-                                }
-                                linkText={
-                                    ["Browse homes", "See listings", "Start filtering"][idx]
-                                }
-                                linkHref={
-                                    ["/search", "/search", "/search"][idx]
-                                }
-                            />
+                    {features.map((feature) => (
+                        <motion.div key={feature.id} variants={itemVariants}>
+                            <FeatureCard {...feature} />
                         </motion.div>
                     ))}
                 </div>

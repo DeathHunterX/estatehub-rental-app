@@ -6,9 +6,12 @@ let socketToken: string | null = null;
 export const createSocket = (accessToken: string): Socket => {
     if (socket && socketToken !== accessToken) disconnectSocket();
     if (!socket) {
-        socket = io(process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:4000", {
-            auth: { token: accessToken },
-        });
+        socket = io(
+            process.env.NEXT_PUBLIC_SOCKET_URL ?? "http://localhost:4000",
+            {
+                auth: { token: accessToken },
+            }
+        );
         socketToken = accessToken;
     }
     return socket;

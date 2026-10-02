@@ -728,12 +728,12 @@ export const api = createApi({
         getNotifications: builder.query<
             {
                 items: Array<{
-                id: number;
-                title: string;
-                body: string;
-                kind: string;
-                readAt: string | null;
-                createdAt: string;
+                    id: number;
+                    title: string;
+                    body: string;
+                    kind: string;
+                    readAt: string | null;
+                    createdAt: string;
                 }>;
                 unreadCount: number;
             },

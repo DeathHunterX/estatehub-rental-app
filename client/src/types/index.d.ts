@@ -95,6 +95,7 @@ declare global {
         application: Application;
         userType: "manager" | "renter";
         children: React.ReactNode;
+        eagerImage?: boolean;
     }
 
     interface CardProps {
@@ -103,6 +104,7 @@ declare global {
         onFavoriteToggle: () => void;
         showFavoriteButton?: boolean;
         propertyLink?: string;
+        eagerImage?: boolean;
     }
 
     interface CardCompactProps {
@@ -111,6 +113,7 @@ declare global {
         onFavoriteToggle: () => void;
         showFavoriteButton?: boolean;
         propertyLink?: string;
+        eagerImage?: boolean;
         selected?: boolean;
         onFocusMap?: () => void;
     }

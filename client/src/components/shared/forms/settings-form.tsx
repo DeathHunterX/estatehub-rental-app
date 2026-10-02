@@ -21,7 +21,11 @@ import { SettingsFormData, settingsSchema } from "@/lib/schemas";
 
 const SettingsForm = ({ initialData, userType }: SettingsFormProps) => {
     const { theme, setTheme } = useTheme();
-    const appearanceReady = useSyncExternalStore(() => () => {}, () => true, () => false);
+    const appearanceReady = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
+    );
     const reduceMotion = useSyncExternalStore(
         (notify) => {
             window.addEventListener("storage", notify);
@@ -91,15 +95,31 @@ const SettingsForm = ({ initialData, userType }: SettingsFormProps) => {
                 </p>
             </div>
 
-            <section className="mb-6 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-8" aria-labelledby="appearance-heading">
-                <h2 id="appearance-heading" className="text-lg font-semibold text-card-foreground">Appearance</h2>
-                <p className="mt-1 text-sm text-muted-foreground">Your choices are saved on this browser.</p>
-                <div className="mt-5 grid gap-3 sm:grid-cols-3" role="group" aria-label="Color theme">
-                    {([
-                        { value: "dark", label: "Dark", Icon: Moon },
-                        { value: "light", label: "Light", Icon: Sun },
-                        { value: "system", label: "System", Icon: Monitor },
-                    ] as const).map(({ value, label, Icon }) => (
+            <section
+                className="mb-6 rounded-2xl border border-border bg-card p-5 shadow-sm sm:p-8"
+                aria-labelledby="appearance-heading"
+            >
+                <h2
+                    id="appearance-heading"
+                    className="text-lg font-semibold text-card-foreground"
+                >
+                    Appearance
+                </h2>
+                <p className="mt-1 text-sm text-muted-foreground">
+                    Your choices are saved on this browser.
+                </p>
+                <div
+                    className="mt-5 grid gap-3 sm:grid-cols-3"
+                    role="group"
+                    aria-label="Color theme"
+                >
+                    {(
+                        [
+                            { value: "dark", label: "Dark", Icon: Moon },
+                            { value: "light", label: "Light", Icon: Sun },
+                            { value: "system", label: "System", Icon: Monitor },
+                        ] as const
+                    ).map(({ value, label, Icon }) => (
                         <button
                             key={value}
                             type="button"
@@ -107,13 +127,26 @@ const SettingsForm = ({ initialData, userType }: SettingsFormProps) => {
                             onClick={() => setTheme(value)}
                             className={`flex items-center gap-3 rounded-xl border px-4 py-3 text-left text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-ring ${appearanceReady && theme === value ? "border-primary bg-primary/10 text-foreground" : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:text-foreground"}`}
                         >
-                            <Icon className="size-4" />{label}
+                            <Icon className="size-4" />
+                            {label}
                         </button>
                     ))}
                 </div>
                 <label className="mt-6 flex cursor-pointer items-center justify-between gap-4 rounded-xl border border-border bg-background px-4 py-3">
-                    <span><span className="block font-medium text-foreground">Reduce motion</span><span className="block text-sm text-muted-foreground">Minimize animations and map movement.</span></span>
-                    <input type="checkbox" checked={reduceMotion} onChange={(event) => updateMotion(event.target.checked)} className="size-5 accent-secondary-500" />
+                    <span>
+                        <span className="block font-medium text-foreground">
+                            Reduce motion
+                        </span>
+                        <span className="block text-sm text-muted-foreground">
+                            Minimize animations and map movement.
+                        </span>
+                    </span>
+                    <input
+                        type="checkbox"
+                        checked={reduceMotion}
+                        onChange={(event) => updateMotion(event.target.checked)}
+                        className="size-5 accent-secondary-500"
+                    />
                 </label>
             </section>
 

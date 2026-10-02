@@ -42,10 +42,18 @@ export const globalSlice = createSlice({
         setViewMode: (state, action: PayloadAction<SearchViewMode>) => {
             state.viewMode = action.payload;
         },
-        setChatId: (state, action: PayloadAction<{ chatId: number; sessionVersion: number } | null>) => {
+        setChatId: (
+            state,
+            action: PayloadAction<{
+                chatId: number;
+                sessionVersion: number;
+            } | null>
+        ) => {
             if (action.payload === null) {
                 state.chatId = null;
-            } else if (action.payload.sessionVersion === state.chatSessionVersion) {
+            } else if (
+                action.payload.sessionVersion === state.chatSessionVersion
+            ) {
                 state.chatId = action.payload.chatId;
             }
         },
@@ -66,7 +74,11 @@ export const globalSlice = createSlice({
     },
 });
 
-export const { toggleFiltersFullOpen, setFiltersFullOpen, setViewMode, setChatId } =
-    globalSlice.actions;
+export const {
+    toggleFiltersFullOpen,
+    setFiltersFullOpen,
+    setViewMode,
+    setChatId,
+} = globalSlice.actions;
 
 export default globalSlice.reducer;

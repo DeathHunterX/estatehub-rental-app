@@ -1,5 +1,5 @@
+import { ArrowDownToLineIcon, Check, Download, FileText } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { downloadPaymentRecord, downloadPaymentsCsv } from "@/lib/downloads";
 import {
     Table,
     TableBody,
@@ -9,7 +9,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { Payment } from "@/types/prisma";
-import { ArrowDownToLineIcon, Check, Download, FileText } from "lucide-react";
+import { downloadPaymentRecord, downloadPaymentsCsv } from "@/lib/downloads";
 
 const BillingHistory = ({ payments }: { payments: Payment[] }) => {
     return (
@@ -23,7 +23,11 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
                     </p>
                 </div>
                 <div>
-                    <Button onClick={() => downloadPaymentsCsv(payments)} disabled={!payments.length} className="flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-card-foreground hover:bg-accent hover:text-accent-foreground">
+                    <Button
+                        onClick={() => downloadPaymentsCsv(payments)}
+                        disabled={!payments.length}
+                        className="flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 text-card-foreground hover:bg-accent hover:text-accent-foreground"
+                    >
                         <Download className="w-5 h-5 mr-2" />
                         <span>Export Payments</span>
                     </Button>
@@ -79,7 +83,12 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
                                     ${payment.amountPaid.toFixed(2)}
                                 </TableCell>
                                 <TableCell>
-                                    <Button onClick={() => downloadPaymentRecord(payment)} className="flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 font-semibold text-card-foreground hover:bg-accent hover:text-accent-foreground">
+                                    <Button
+                                        onClick={() =>
+                                            downloadPaymentRecord(payment)
+                                        }
+                                        className="flex items-center justify-center rounded-md border border-border bg-card px-4 py-2 font-semibold text-card-foreground hover:bg-accent hover:text-accent-foreground"
+                                    >
                                         <ArrowDownToLineIcon className="w-4 h-4 mr-1" />
                                         Download Record
                                     </Button>
@@ -88,7 +97,10 @@ const BillingHistory = ({ payments }: { payments: Payment[] }) => {
                         ))}
                         {payments.length === 0 && (
                             <TableRow>
-                                <TableCell colSpan={5} className="py-10 text-center text-muted-foreground">
+                                <TableCell
+                                    colSpan={5}
+                                    className="py-10 text-center text-muted-foreground"
+                                >
                                     No payment records yet.
                                 </TableCell>
                             </TableRow>

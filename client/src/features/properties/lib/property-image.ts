@@ -6,4 +6,9 @@ export const propertyImageSrc = (url?: string | null) => {
 };
 
 export const usablePropertyPhotos = (urls?: string[] | null) =>
-    (urls ?? []).filter((url) => Boolean(url) && propertyImageSrc(url) === url);
+    (urls ?? []).filter(
+        (url) =>
+            Boolean(url) &&
+            url !== "/placeholder.jpg" &&
+            propertyImageSrc(url) === url
+    );

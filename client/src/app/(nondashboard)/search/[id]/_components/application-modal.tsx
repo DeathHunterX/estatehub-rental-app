@@ -11,7 +11,14 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import {
+    Form,
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
+} from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 
 // APIs
@@ -24,7 +31,12 @@ import {
 import { ApplicationFormData, applicationSchema } from "@/lib/schemas";
 
 // Libs
-import { APPLICATION_MESSAGE_MAX_CHARACTERS, APPLICATION_MESSAGE_MAX_WORDS, countApplicationWords, limitApplicationMessage } from "@/features/applications/lib/application-message";
+import {
+    APPLICATION_MESSAGE_MAX_CHARACTERS,
+    APPLICATION_MESSAGE_MAX_WORDS,
+    countApplicationWords,
+    limitApplicationMessage,
+} from "@/features/applications/lib/application-message";
 
 const ApplicationModal = ({
     isOpen,
@@ -43,7 +55,9 @@ const ApplicationModal = ({
             message: "",
         },
     });
-    const messageWordCount = countApplicationWords(useWatch({ control: form.control, name: "message" }) ?? "");
+    const messageWordCount = countApplicationWords(
+        useWatch({ control: form.control, name: "message" }) ?? ""
+    );
 
     const onSubmit = async (data: ApplicationFormData) => {
         if (!authUser || authUser.user?.role.toLowerCase() !== "tenant") {
@@ -59,7 +73,9 @@ const ApplicationModal = ({
                 propertyId,
             }).unwrap();
             onClose();
-        } catch { /* API mutation displays the error */ }
+        } catch {
+            /* API mutation displays the error */
+        }
     };
 
     return (
@@ -106,8 +122,16 @@ const ApplicationModal = ({
                                         <Textarea
                                             {...field}
                                             value={field.value ?? ""}
-                                            onChange={(event) => field.onChange(limitApplicationMessage(event.target.value))}
-                                            maxLength={APPLICATION_MESSAGE_MAX_CHARACTERS}
+                                            onChange={(event) =>
+                                                field.onChange(
+                                                    limitApplicationMessage(
+                                                        event.target.value
+                                                    )
+                                                )
+                                            }
+                                            maxLength={
+                                                APPLICATION_MESSAGE_MAX_CHARACTERS
+                                            }
                                             rows={5}
                                             placeholder="Tell the manager a little about yourself"
                                             disabled={isLoading}
@@ -115,8 +139,12 @@ const ApplicationModal = ({
                                             className="h-32 max-h-32 resize-none overflow-y-auto border-input bg-background p-4 text-foreground placeholder:text-muted-foreground [field-sizing:fixed]"
                                         />
                                     </FormControl>
-                                    <p id="application-message-count" className="text-right text-xs text-muted-foreground">
-                                        {messageWordCount}/{APPLICATION_MESSAGE_MAX_WORDS} words
+                                    <p
+                                        id="application-message-count"
+                                        className="text-right text-xs text-muted-foreground"
+                                    >
+                                        {messageWordCount}/
+                                        {APPLICATION_MESSAGE_MAX_WORDS} words
                                     </p>
                                     <FormMessage className="text-red-400" />
                                 </FormItem>

@@ -2,7 +2,8 @@ import { Bath, Bed, Heart, House, MapPin, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { propertyImageSrc } from "@/features/properties/lib/property-image";
+import { propertyImageSrc, usablePropertyPhotos } from "@/features/properties/lib/property-image";
+import PropertyPhotoFallback from "./property-photo-fallback";
 
 const PropertyCardCompact = ({
     property,
@@ -10,24 +11,26 @@ const PropertyCardCompact = ({
     onFavoriteToggle,
     showFavoriteButton = true,
     propertyLink,
+    eagerImage = false,
     selected = false,
     onFocusMap,
 }: CardCompactProps) => {
     const [imgSrc, setImgSrc] = useState(
-        propertyImageSrc(property.photoUrls?.[0])
+        propertyImageSrc(usablePropertyPhotos(property.photoUrls)[0])
     );
 
     return (
         <article onClick={onFocusMap} className={`group bg-card text-card-foreground relative border rounded-xl overflow-hidden shadow-sm w-full flex min-h-44 mb-4 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 hover:border-primary/70 hover:shadow-xl focus-within:border-primary/70 focus-within:shadow-lg ${onFocusMap ? "cursor-pointer" : ""} ${selected ? "border-primary ring-2 ring-primary/50 shadow-lg" : "border-border"}`}>
             <div className="relative w-1/3">
-                <Image
+                {imgSrc === "/placeholder.jpg" ? <PropertyPhotoFallback /> : <Image
                     src={imgSrc}
                     alt={property.name}
                     fill
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    loading={eagerImage ? "eager" : "lazy"}
                     onError={() => setImgSrc("/placeholder.jpg")}
-                />
+                />}
                 <div className="absolute bottom-2 left-2 flex gap-1 flex-col">
                     {property.isPetsAllowed && (
                         <span className="w-fit rounded-full border border-border bg-card/90 px-2 py-1 text-xs font-semibold text-card-foreground backdrop-blur-sm">

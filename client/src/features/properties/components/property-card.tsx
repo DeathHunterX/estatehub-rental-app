@@ -4,7 +4,8 @@ import { Bath, Bed, Heart, House, Star } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
-import { propertyImageSrc } from "@/features/properties/lib/property-image";
+import { propertyImageSrc, usablePropertyPhotos } from "@/features/properties/lib/property-image";
+import PropertyPhotoFallback from "./property-photo-fallback";
 
 const PropertyCard = ({
     property,
@@ -12,9 +13,10 @@ const PropertyCard = ({
     onFavoriteToggle,
     showFavoriteButton = true,
     propertyLink,
+    eagerImage = false,
 }: CardProps) => {
     const [imgSrc, setImgSrc] = useState<string>(
-        propertyImageSrc(property.photoUrls?.[0])
+        propertyImageSrc(usablePropertyPhotos(property.photoUrls)[0])
     );
 
     return (
@@ -22,14 +24,15 @@ const PropertyCard = ({
             <div className="relative">
                 {property.listingStatus === "Closed" && <span className="absolute right-3 top-3 z-10 rounded-full bg-background/90 px-3 py-1 text-xs font-semibold text-foreground backdrop-blur">Closed</span>}
                 <div className="w-full h-48 relative">
-                    <Image
+                    {imgSrc === "/placeholder.jpg" ? <PropertyPhotoFallback /> : <Image
                         src={imgSrc}
                         alt={property.name}
                         fill
                         className="object-cover"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                        loading={eagerImage ? "eager" : "lazy"}
                         onError={() => setImgSrc("/placeholder.jpg")}
-                    />
+                    />}
                 </div>
                 <div className="absolute bottom-4 left-4 flex gap-2">
                     {property.isPetsAllowed && (

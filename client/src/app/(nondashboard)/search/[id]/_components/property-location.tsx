@@ -4,7 +4,10 @@ import { ExternalLink, MapPin } from "lucide-react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Link from "next/link";
-import { formatPropertyAddress, propertyMapHref } from "@/features/properties/lib/property-address";
+import {
+    formatPropertyAddress,
+    propertyMapHref,
+} from "@/features/properties/lib/property-address";
 import { useEffect, useRef } from "react";
 
 mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
@@ -18,7 +21,14 @@ const PropertyLocation = ({ propertyId }: PropertyDetailsProps) => {
     const mapContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
-        if (isLoading || isError || !property || !mapContainerRef.current || !mapboxgl.accessToken) return;
+        if (
+            isLoading ||
+            isError ||
+            !property ||
+            !mapContainerRef.current ||
+            !mapboxgl.accessToken
+        )
+            return;
 
         const map = new mapboxgl.Map({
             container: mapContainerRef.current,
@@ -57,10 +67,17 @@ const PropertyLocation = ({ propertyId }: PropertyDetailsProps) => {
             <h2 className="text-xl font-semibold">Location</h2>
             <div className="mt-3 flex flex-col gap-3 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex min-w-0 items-start gap-2">
-                    <MapPin className="mt-0.5 size-4 shrink-0" aria-hidden="true" />
-                    <span className="min-w-0">Property address: <span className="font-medium text-foreground">
-                        {formatPropertyAddress(property.location) || "Address not available"}
-                    </span></span>
+                    <MapPin
+                        className="mt-0.5 size-4 shrink-0"
+                        aria-hidden="true"
+                    />
+                    <span className="min-w-0">
+                        Property address:{" "}
+                        <span className="font-medium text-foreground">
+                            {formatPropertyAddress(property.location) ||
+                                "Address not available"}
+                        </span>
+                    </span>
                 </div>
                 <Link
                     href={propertyMapHref(property.location)}
@@ -80,7 +97,9 @@ const PropertyLocation = ({ propertyId }: PropertyDetailsProps) => {
                     aria-label={`Map of ${property.name}`}
                 />
             ) : (
-                <p className="mt-5 rounded-xl border border-border bg-card p-6 text-muted-foreground">Map is unavailable.</p>
+                <p className="mt-5 rounded-xl border border-border bg-card p-6 text-muted-foreground">
+                    Map is unavailable.
+                </p>
             )}
         </section>
     );

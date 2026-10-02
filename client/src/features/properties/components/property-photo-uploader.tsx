@@ -66,7 +66,9 @@ export const PropertyPhotoUploader = ({
     const previews = useRef(new Set<string>());
     const uploaded = useRef(new Set<string>());
     const accessTokenRef = useRef(accessToken);
-    useEffect(() => { accessTokenRef.current = accessToken; }, [accessToken]);
+    useEffect(() => {
+        accessTokenRef.current = accessToken;
+    }, [accessToken]);
 
     useEffect(() => {
         const active = requests.current;
@@ -74,7 +76,9 @@ export const PropertyPhotoUploader = ({
         const staged = uploaded.current;
         const discardUncommitted = () => {
             if (!savedRef.current)
-                staged.forEach((url) => discardPhoto(url, accessTokenRef.current, true));
+                staged.forEach((url) =>
+                    discardPhoto(url, accessTokenRef.current, true)
+                );
         };
         window.addEventListener("pagehide", discardUncommitted);
         return () => {
@@ -99,7 +103,8 @@ export const PropertyPhotoUploader = ({
             `${process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, "")}/properties/photos`
         );
 
-        if (accessToken) request.setRequestHeader("Authorization", `Bearer ${accessToken}`);
+        if (accessToken)
+            request.setRequestHeader("Authorization", `Bearer ${accessToken}`);
 
         request.upload.onprogress = (event) => {
             if (event.lengthComputable) {

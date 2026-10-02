@@ -33,12 +33,24 @@ import { serializePropertyFields } from "@/features/properties/lib/property-form
 // Types
 import type { Property } from "@/types/prisma";
 
-type EditableProperty = Property & { location: { address: string; subdistrict?: string | null; district?: string | null; city: string; state: string; country: string; postalCode: string } };
-const optionLabel = (value: string) => value.replace(/([a-z])([A-Z])/g, "$1 $2");
+type EditableProperty = Property & {
+    location: {
+        address: string;
+        subdistrict?: string | null;
+        district?: string | null;
+        city: string;
+        state: string;
+        country: string;
+        postalCode: string;
+    };
+};
+const optionLabel = (value: string) =>
+    value.replace(/([a-z])([A-Z])/g, "$1 $2");
 
 const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
     const [createProperty, { isLoading }] = useCreatePropertyMutation();
-    const [updateProperty, { isLoading: isUpdating }] = useUpdatePropertyMutation();
+    const [updateProperty, { isLoading: isUpdating }] =
+        useUpdatePropertyMutation();
     const [photosPending, setPhotosPending] = useState(false);
     const savedRef = useRef(false);
     const { data: authUser } = useGetAuthCurrentUserQuery();
@@ -88,7 +100,10 @@ const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
 
         try {
             if (property) {
-                await updateProperty({ id: property.id, data: formData }).unwrap();
+                await updateProperty({
+                    id: property.id,
+                    data: formData,
+                }).unwrap();
                 savedRef.current = true;
                 router.push(`/managers/properties/${property.id}`);
             } else {
@@ -96,7 +111,9 @@ const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
                 savedRef.current = true;
                 router.push("/managers/properties");
             }
-        } catch { /* API mutation displays the error */ }
+        } catch {
+            /* API mutation displays the error */
+        }
     }
 
     // React Hook Form invokes this callback only after a submit event.
@@ -107,14 +124,15 @@ const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
         <div className="dashboard-container property-new-page text-foreground">
             <Header
                 title={property ? "Edit Property" : "Add New Property"}
-                subtitle={property ? "Update your listing details and photos" : "Create a new property listing with detailed information"}
+                subtitle={
+                    property
+                        ? "Update your listing details and photos"
+                        : "Create a new property listing with detailed information"
+                }
             />
             <div className="mx-auto max-w-5xl rounded-2xl border border-border bg-card p-5 text-card-foreground shadow-sm sm:p-8">
                 <Form {...form}>
-                    <form
-                        onSubmit={submitHandler}
-                        className="space-y-10"
-                    >
+                    <form onSubmit={submitHandler} className="space-y-10">
                         {/* Basic Information */}
                         <div>
                             <h2 className="text-lg font-semibold mb-4">
@@ -259,7 +277,12 @@ const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
                             <h2 className="text-lg font-semibold mb-4">
                                 Photos
                             </h2>
-                            <PropertyPhotoUploader initialUrls={property?.photoUrls} disabled={isLoading || isUpdating} onUploadStateChange={setPhotosPending} savedRef={savedRef} />
+                            <PropertyPhotoUploader
+                                initialUrls={property?.photoUrls}
+                                disabled={isLoading || isUpdating}
+                                onUploadStateChange={setPhotosPending}
+                                savedRef={savedRef}
+                            />
                         </div>
 
                         <hr className="my-6 border-border" />
@@ -269,11 +292,27 @@ const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
                             <h2 className="text-lg font-semibold mb-4">
                                 Property Address
                             </h2>
-                            <p className="text-sm text-muted-foreground">Enter the full street address and local administrative areas so guests can find this property accurately.</p>
-                            <CustomFormField name="address" label="Street address and number" disabled={isLoading || isUpdating} />
+                            <p className="text-sm text-muted-foreground">
+                                Enter the full street address and local
+                                administrative areas so guests can find this
+                                property accurately.
+                            </p>
+                            <CustomFormField
+                                name="address"
+                                label="Street address and number"
+                                disabled={isLoading || isUpdating}
+                            />
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <CustomFormField name="subdistrict" label="Ward / suburb (optional)" disabled={isLoading || isUpdating} />
-                                <CustomFormField name="district" label="District / county (optional)" disabled={isLoading || isUpdating} />
+                                <CustomFormField
+                                    name="subdistrict"
+                                    label="Ward / suburb (optional)"
+                                    disabled={isLoading || isUpdating}
+                                />
+                                <CustomFormField
+                                    name="district"
+                                    label="District / county (optional)"
+                                    disabled={isLoading || isUpdating}
+                                />
                                 <CustomFormField
                                     name="city"
                                     label="City / town / locality"
@@ -288,8 +327,16 @@ const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
                                 />
                             </div>
                             <div className="grid gap-4 sm:grid-cols-2">
-                                <CustomFormField name="country" label="Country" disabled={isLoading || isUpdating} />
-                                <CustomFormField name="postalCode" label="Postal / ZIP code (optional)" disabled={isLoading || isUpdating} />
+                                <CustomFormField
+                                    name="country"
+                                    label="Country"
+                                    disabled={isLoading || isUpdating}
+                                />
+                                <CustomFormField
+                                    name="postalCode"
+                                    label="Postal / ZIP code (optional)"
+                                    disabled={isLoading || isUpdating}
+                                />
                             </div>
                         </div>
 
@@ -298,7 +345,11 @@ const PropertyEditorForm = ({ property }: { property?: EditableProperty }) => {
                             className="mt-8 w-full bg-primary text-primary-foreground hover:bg-primary/90"
                             disabled={isLoading || isUpdating || photosPending}
                         >
-                            {isLoading || isUpdating ? "Saving..." : property ? "Save Changes" : "Create Property"}
+                            {isLoading || isUpdating
+                                ? "Saving..."
+                                : property
+                                  ? "Save Changes"
+                                  : "Create Property"}
                         </Button>
                     </form>
                 </Form>

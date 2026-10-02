@@ -19,19 +19,34 @@ const authSlice = createSlice({
     name: "auth",
     initialState,
     reducers: {
-        restoreSession: (state, action: PayloadAction<{ accessToken: string | null; userInfo: SessionUser | null }>) => {
+        restoreSession: (
+            state,
+            action: PayloadAction<{
+                accessToken: string | null;
+                userInfo: SessionUser | null;
+            }>
+        ) => {
             state.accessToken = action.payload.accessToken;
             state.userInfo = action.payload.userInfo;
             state.hydrated = true;
         },
-        setCredentials: (state, action: PayloadAction<{ user: SessionUser; accessToken: string }>) => {
+        setCredentials: (
+            state,
+            action: PayloadAction<{ user: SessionUser; accessToken: string }>
+        ) => {
             const { user, accessToken } = action.payload;
 
             state.userInfo = user;
             state.accessToken = accessToken;
             state.hydrated = true;
         },
-        renewSession: (state, action: PayloadAction<{ userInfo: SessionUser; accessToken: string }>) => {
+        renewSession: (
+            state,
+            action: PayloadAction<{
+                userInfo: SessionUser;
+                accessToken: string;
+            }>
+        ) => {
             state.userInfo = action.payload.userInfo;
             state.accessToken = action.payload.accessToken;
             state.hydrated = true;
@@ -44,6 +59,7 @@ const authSlice = createSlice({
     },
 });
 
-export const { restoreSession, setCredentials, renewSession, logout } = authSlice.actions;
+export const { restoreSession, setCredentials, renewSession, logout } =
+    authSlice.actions;
 
 export default authSlice.reducer;

@@ -1,3 +1,15 @@
+// Libraries
+import React from "react";
+import { Edit, Plus, X } from "lucide-react";
+import {
+    ControllerRenderProps,
+    Control,
+    FieldValues,
+    useFieldArray,
+    useFormContext,
+} from "react-hook-form";
+
+// Components
 import { Button } from "@/components/ui/button";
 import {
     FormControl,
@@ -16,15 +28,6 @@ import {
 } from "@/components/ui/select";
 import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
-import { Edit, Plus, X } from "lucide-react";
-import React from "react";
-import {
-    ControllerRenderProps,
-    Control,
-    FieldValues,
-    useFieldArray,
-    useFormContext,
-} from "react-hook-form";
 
 interface FormFieldProps {
     name: string;
@@ -110,19 +113,40 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
                 return (
                     <div className="grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                         {options?.map((option) => {
-                            const selected = Array.isArray(field.value) && field.value.includes(option.value);
+                            const selected =
+                                Array.isArray(field.value) &&
+                                field.value.includes(option.value);
                             return (
                                 <button
                                     key={option.value}
                                     type="button"
                                     aria-pressed={selected}
                                     disabled={disabled}
-                                    onClick={() => field.onChange(selected
-                                        ? (field.value as string[]).filter((value) => value !== option.value)
-                                        : [...(Array.isArray(field.value) ? field.value : []), option.value])}
+                                    onClick={() =>
+                                        field.onChange(
+                                            selected
+                                                ? (
+                                                      field.value as string[]
+                                                  ).filter(
+                                                      (value) =>
+                                                          value !== option.value
+                                                  )
+                                                : [
+                                                      ...(Array.isArray(
+                                                          field.value
+                                                      )
+                                                          ? field.value
+                                                          : []),
+                                                      option.value,
+                                                  ]
+                                        )
+                                    }
                                     className={`flex min-h-11 items-center justify-between gap-3 rounded-xl border px-4 py-2 text-left text-sm transition-colors ${selected ? "border-primary bg-primary/15 text-foreground" : "border-border bg-background text-muted-foreground hover:border-primary/60 hover:text-foreground"}`}
                                 >
-                                    <span>{option.label}</span><span className="text-xs">{selected ? "✓" : "+"}</span>
+                                    <span>{option.label}</span>
+                                    <span className="text-xs">
+                                        {selected ? "✓" : "+"}
+                                    </span>
                                 </button>
                             );
                         })}
@@ -152,11 +176,44 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
                             className={`h-11 border-0 bg-transparent px-4 shadow-none focus-visible:ring-0 ${inputClassName}`}
                             disabled={disabled}
                             value={field.value ?? ""}
-                            onChange={(e) => field.onChange(e.target.value === "" ? undefined : Number(e.target.value))}
+                            onChange={(e) =>
+                                field.onChange(
+                                    e.target.value === ""
+                                        ? undefined
+                                        : Number(e.target.value)
+                                )
+                            }
                         />
                         <div className="flex shrink-0 border-l border-border">
-                            <button type="button" aria-label={`Decrease ${label}`} disabled={disabled || Number(field.value ?? 0) <= 0} onClick={() => field.onChange(Math.max(0, Number(field.value || 0) - 1))} className="flex size-11 items-center justify-center border-r border-border text-lg hover:bg-accent disabled:opacity-40">−</button>
-                            <button type="button" aria-label={`Increase ${label}`} disabled={disabled} onClick={() => field.onChange(Number(field.value || 0) + 1)} className="flex size-11 items-center justify-center text-lg hover:bg-accent disabled:opacity-40">+</button>
+                            <button
+                                type="button"
+                                aria-label={`Decrease ${label}`}
+                                disabled={
+                                    disabled || Number(field.value ?? 0) <= 0
+                                }
+                                onClick={() =>
+                                    field.onChange(
+                                        Math.max(
+                                            0,
+                                            Number(field.value || 0) - 1
+                                        )
+                                    )
+                                }
+                                className="flex size-11 items-center justify-center border-r border-border text-lg hover:bg-accent disabled:opacity-40"
+                            >
+                                −
+                            </button>
+                            <button
+                                type="button"
+                                aria-label={`Increase ${label}`}
+                                disabled={disabled}
+                                onClick={() =>
+                                    field.onChange(Number(field.value || 0) + 1)
+                                }
+                                className="flex size-11 items-center justify-center text-lg hover:bg-accent disabled:opacity-40"
+                            >
+                                +
+                            </button>
                         </div>
                     </div>
                 );
@@ -200,11 +257,9 @@ export const CustomFormField: React.FC<FormFieldProps> = ({
                                 {label}
                             </FormLabel>
 
-                            {!disabled &&
-                                isIcon &&
-                                type !== "multi-input" && (
-                                    <Edit className="size-4 text-customgreys-dirtyGrey" />
-                                )}
+                            {!disabled && isIcon && type !== "multi-input" && (
+                                <Edit className="size-4 text-customgreys-dirtyGrey" />
+                            )}
                         </div>
                     )}
                     <FormControl>

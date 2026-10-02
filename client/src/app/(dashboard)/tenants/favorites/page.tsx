@@ -2,7 +2,6 @@
 
 import PageSkeleton from "@/components/shared/page-skeleton";
 
-
 import PropertyCard from "@/features/properties/components/property-card";
 import Header from "@/components/shared/header";
 import {
@@ -13,10 +12,14 @@ import {
 } from "@/lib/api/api";
 
 const FavoritesPage = () => {
-    const { data: authUser, isLoading: isAuthLoading } = useGetAuthCurrentUserQuery();
-    const { data: tenant, isLoading: isTenantLoading } = useGetTenantQuery(authUser?.user?.id || "", {
-        skip: !authUser?.user?.id,
-    });
+    const { data: authUser, isLoading: isAuthLoading } =
+        useGetAuthCurrentUserQuery();
+    const { data: tenant, isLoading: isTenantLoading } = useGetTenantQuery(
+        authUser?.user?.id || "",
+        {
+            skip: !authUser?.user?.id,
+        }
+    );
     const [removeFavorite] = useRemoveFavoritePropertyMutation();
 
     const {
@@ -34,8 +37,14 @@ const FavoritesPage = () => {
         }
     );
 
-    if (isAuthLoading || isTenantLoading || isLoading) return <PageSkeleton variant="cards" />;
-    if (isError) return <div className="dashboard-container text-destructive">Could not load favorites.</div>;
+    if (isAuthLoading || isTenantLoading || isLoading)
+        return <PageSkeleton variant="cards" />;
+    if (isError)
+        return (
+            <div className="dashboard-container text-destructive">
+                Could not load favorites.
+            </div>
+        );
 
     return (
         <div className="dashboard-container">
@@ -45,12 +54,18 @@ const FavoritesPage = () => {
             />
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                {favoriteProperties?.map((property) => (
+                {favoriteProperties?.map((property, index) => (
                     <PropertyCard
                         key={property.id}
                         property={property}
+                        eagerImage={index < 4}
                         isFavorite={true}
-                        onFavoriteToggle={() => removeFavorite({ tenantId: tenant.id, propertyId: property.id })}
+                        onFavoriteToggle={() =>
+                            removeFavorite({
+                                tenantId: tenant.id,
+                                propertyId: property.id,
+                            })
+                        }
                         showFavoriteButton={true}
                         propertyLink={`/search/${property.id}`}
                     />

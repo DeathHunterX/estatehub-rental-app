@@ -33,33 +33,58 @@ const RestoreSession = () => {
         // Clear storage from the old session model before restoring from the cookie.
         try {
             if (!legacyStorageCleaned) {
-                clearLegacyStorage(localStorage, (value) => { document.cookie = value; });
+                clearLegacyStorage(localStorage, (value) => {
+                    document.cookie = value;
+                });
                 legacyStorageCleaned = true;
             }
             document.documentElement.dataset.reduceMotion =
-                localStorage.getItem("estatehub:reduce-motion") === "true" ? "true" : "false";
+                localStorage.getItem("estatehub:reduce-motion") === "true"
+                    ? "true"
+                    : "false";
         } catch {
             document.documentElement.dataset.reduceMotion = "false";
         }
-        void refreshToken().unwrap().then((response) => {
-            if (active && !store.getState().auth.hydrated)
-                dispatch(restoreSession({ accessToken: response.data.accessToken, userInfo: response.data.user }));
-        }).catch(() => {
-            if (active && !store.getState().auth.hydrated)
-                dispatch(restoreSession({ accessToken: null, userInfo: null }));
-        });
-        return () => { active = false; };
+        void refreshToken()
+            .unwrap()
+            .then((response) => {
+                if (active && !store.getState().auth.hydrated)
+                    dispatch(
+                        restoreSession({
+                            accessToken: response.data.accessToken,
+                            userInfo: response.data.user,
+                        })
+                    );
+            })
+            .catch(() => {
+                if (active && !store.getState().auth.hydrated)
+                    dispatch(
+                        restoreSession({ accessToken: null, userInfo: null })
+                    );
+            });
+        return () => {
+            active = false;
+        };
     }, [dispatch, refreshToken, store]);
     return null;
 };
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
-    const mounted = useSyncExternalStore(() => () => {}, () => true, () => false);
+    const mounted = useSyncExternalStore(
+        () => () => {},
+        () => true,
+        () => false
+    );
 
     return (
         <StoreProvider>
             <RestoreSession />
-            <ThemeProvider attribute="class" defaultTheme="dark" enableSystem disableTransitionOnChange>
+            <ThemeProvider
+                attribute="class"
+                defaultTheme="dark"
+                enableSystem
+                disableTransitionOnChange
+            >
                 <AvailabilityBoundary>
                     <SocketProvider>
                         <NuqsAdapter>

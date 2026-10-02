@@ -1,8 +1,14 @@
-import TenantAgreementButton from "@/features/leases/components/tenant-agreement-button";
-import { Lease, Property } from "@/types/prisma";
-import { MapPin } from "lucide-react";
 import Image from "next/image";
-import { propertyImageSrc } from "@/features/properties/lib/property-image";
+import { MapPin } from "lucide-react";
+
+import TenantAgreementButton from "@/features/leases/components/tenant-agreement-button";
+import PropertyPhotoFallback from "@/features/properties/components/property-photo-fallback";
+import {
+    propertyImageSrc,
+    usablePropertyPhotos,
+} from "@/features/properties/lib/property-image";
+
+import { Lease, Property } from "@/types/prisma";
 
 const ResidenceCard = ({
     property,
@@ -12,23 +18,30 @@ const ResidenceCard = ({
     currentLease: Lease;
 }) => {
     const nextPaymentDate = new Date(currentLease.startDate);
-    while (nextPaymentDate <= new Date() && nextPaymentDate <= new Date(currentLease.endDate)) {
+    while (
+        nextPaymentDate <= new Date() &&
+        nextPaymentDate <= new Date(currentLease.endDate)
+    ) {
         nextPaymentDate.setMonth(nextPaymentDate.getMonth() + 1);
     }
+    const photo = usablePropertyPhotos(property.photoUrls)[0];
     return (
         <div className="flex flex-1 flex-col justify-between overflow-hidden rounded-xl border border-border bg-card p-6 text-card-foreground shadow-sm">
             {/* Header */}
             <div className="flex flex-col sm:flex-row gap-5">
-                {property?.photoUrls?.length > 0 ? (
+                {photo ? (
                     <Image
-                        src={propertyImageSrc(property.photoUrls[0])}
+                        src={propertyImageSrc(photo)}
                         alt={property.name}
                         width={256}
                         height={128}
+                        loading="eager"
                         className="h-32 w-full rounded-xl bg-muted object-cover sm:w-64"
                     />
                 ) : (
-                    <div className="h-32 w-full rounded-xl bg-muted sm:w-64" />
+                    <div className="relative h-32 w-full overflow-hidden rounded-xl bg-muted sm:w-64">
+                        <PropertyPhotoFallback />
+                    </div>
                 )}
 
                 <div className="flex flex-col justify-between">
@@ -61,7 +74,9 @@ const ResidenceCard = ({
                 <hr className="my-4 border-border" />
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
                     <div className="xl:flex">
-                        <div className="mr-2 text-muted-foreground">Start Date: </div>
+                        <div className="mr-2 text-muted-foreground">
+                            Start Date:{" "}
+                        </div>
                         <div className="font-semibold">
                             {new Date(
                                 currentLease.startDate
@@ -69,13 +84,19 @@ const ResidenceCard = ({
                         </div>
                     </div>
                     <div className="xl:flex">
-                        <div className="mr-2 text-muted-foreground">End Date: </div>
+                        <div className="mr-2 text-muted-foreground">
+                            End Date:{" "}
+                        </div>
                         <div className="font-semibold">
-                            {new Date(currentLease.endDate).toLocaleDateString()}
+                            {new Date(
+                                currentLease.endDate
+                            ).toLocaleDateString()}
                         </div>
                     </div>
                     <div className="xl:flex">
-                        <div className="mr-2 text-muted-foreground">Next Payment: </div>
+                        <div className="mr-2 text-muted-foreground">
+                            Next Payment:{" "}
+                        </div>
                         <div className="font-semibold">
                             {nextPaymentDate > new Date(currentLease.endDate)
                                 ? "Lease ended"

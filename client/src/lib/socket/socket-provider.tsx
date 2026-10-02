@@ -1,18 +1,25 @@
 "use client";
+// Libraries
+import { useEffect } from "react";
+import { useSelector, useStore } from "react-redux";
+
+// APIs, slices, and libs
 import { createSocket, disconnectSocket, getSocket } from "@/lib/socket/socket";
 import { useGetAuthCurrentUserQuery } from "@/lib/api/api";
-import { RootState, useAppDispatch, type AppStore } from "@/states/store";
 import { api } from "@/lib/api/api";
 import { useRefreshTokenMutation } from "@/lib/api/auth-api.slice";
 import { logout, renewSession } from "@/states/slices/auth.slice";
-import { useEffect } from "react";
-import { useSelector, useStore } from "react-redux";
+
+// State
+import { RootState, useAppDispatch, type AppStore } from "@/states/store";
 
 const SocketProvider = ({ children }: { children: React.ReactNode }) => {
     const dispatch = useAppDispatch();
     const store = useStore() as AppStore;
     const [refreshToken] = useRefreshTokenMutation();
-    const accessToken = useSelector((state: RootState) => state.auth.accessToken);
+    const accessToken = useSelector(
+        (state: RootState) => state.auth.accessToken
+    );
     const { data: authUser } = useGetAuthCurrentUserQuery(undefined, {
         skip: !accessToken,
     });
@@ -25,12 +32,30 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
             const refreshSocketToken = () => {
                 if (refreshing) return;
                 refreshing = true;
-                void refreshToken().unwrap().then((response) => {
-                    if (active && store.getState().auth.accessToken === accessToken)
-                        dispatch(renewSession({ accessToken: response.data.accessToken, userInfo: response.data.user }));
-                }).catch(() => {
-                    if (active && store.getState().auth.accessToken === accessToken) dispatch(logout());
-                }).finally(() => { refreshing = false; });
+                void refreshToken()
+                    .unwrap()
+                    .then((response) => {
+                        if (
+                            active &&
+                            store.getState().auth.accessToken === accessToken
+                        )
+                            dispatch(
+                                renewSession({
+                                    accessToken: response.data.accessToken,
+                                    userInfo: response.data.user,
+                                })
+                            );
+                    })
+                    .catch(() => {
+                        if (
+                            active &&
+                            store.getState().auth.accessToken === accessToken
+                        )
+                            dispatch(logout());
+                    })
+                    .finally(() => {
+                        refreshing = false;
+                    });
             };
             const onDisconnect = (reason: string) => {
                 if (reason === "io server disconnect") refreshSocketToken();
@@ -56,10 +81,12 @@ const SocketProvider = ({ children }: { children: React.ReactNode }) => {
 
         const refreshChats = (data: { chatId?: number }) => {
             if (!data?.chatId) return;
-            dispatch(api.util.invalidateTags([
-                { type: "Chats", id: "LIST" },
-                { type: "Chats", id: data.chatId },
-            ]));
+            dispatch(
+                api.util.invalidateTags([
+                    { type: "Chats", id: "LIST" },
+                    { type: "Chats", id: data.chatId },
+                ])
+            );
         };
 
         socket.on("getMessage", refreshChats);
