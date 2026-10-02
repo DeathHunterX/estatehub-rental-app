@@ -86,10 +86,21 @@ export function ApplicationPaymentActions({
         application.originalMonthlyRent ??
         0;
     const hasExistingLease = !!application.leaseId;
+
     const [draft, setDraft] = useState<{ base: number; value: string } | null>(
         null
     );
+    const [action, setAction] = useState<
+        | "schedule-cancellation"
+        | "report-missing"
+        | "resolve-dispute"
+        | "withdraw-application"
+        | "retract"
+        | null
+    >(null);
+
     const quote = draft && draft.base === rent ? draft.value : String(rent);
+
     const [updateQuote, { isLoading: savingQuote }] =
         useUpdateApplicationQuoteMutation();
     const [chooseMethod, { isLoading: changingMethod }] =
@@ -106,15 +117,9 @@ export function ApplicationPaymentActions({
         useRequestApplicationCancellationMutation();
     const [withdrawApplication, { isLoading: withdrawingApplication }] =
         useWithdrawApplicationMutation();
-    const [action, setAction] = useState<
-        | "schedule-cancellation"
-        | "report-missing"
-        | "resolve-dispute"
-        | "withdraw-application"
-        | "retract"
-        | null
-    >(null);
+
     const [reason, setReason] = useState("");
+
     const approved = application.status === "Approved";
     const total = rent + deposit;
     const tenantConfirmed = !!application.tenantConfirmedAt;
@@ -161,36 +166,46 @@ export function ApplicationPaymentActions({
     // Destructive or disputed actions share one confirmation step and reset it only on success.
     const submitAction = async () => {
         try {
-            if (action === "schedule-cancellation")
-                await requestCancellation({
-                    id: application.id,
-                    reason: reason.trim(),
-                }).unwrap();
-            if (action === "report-missing")
-                await reportMissing({
-                    id: application.id,
-                    reason: reason.trim(),
-                }).unwrap();
-            if (action === "resolve-dispute")
-                await resolveDispute({
-                    id: application.id,
-                    reason: reason.trim(),
-                }).unwrap();
-            if (action === "withdraw-application")
-                await withdrawApplication(application.id).unwrap();
-            if (action === "retract")
-                await retractClaim(application.id).unwrap();
-            toast.success(
-                action === "schedule-cancellation"
-                    ? "Cancellation locked; it will complete in 48 hours"
-                    : action === "report-missing"
-                      ? "Payment dispute recorded"
-                      : action === "resolve-dispute"
-                        ? "Payment dispute resolved"
-                        : action === "retract"
-                          ? "Cash claim retracted"
-                          : "Application updated"
-            );
+            switch (action) {
+                case "schedule-cancellation":
+                    await requestCancellation({
+                        id: application.id,
+                        reason: reason.trim(),
+                    }).unwrap();
+
+                    toast.success(
+                        "Cancellation locked; it will complete in 48 hours"
+                    );
+                    break;
+                case "report-missing":
+                    await reportMissing({
+                        id: application.id,
+                        reason: reason.trim(),
+                    }).unwrap();
+
+                    toast.success("Payment dispute recorded");
+                    break;
+                case "resolve-dispute":
+                    await resolveDispute({
+                        id: application.id,
+                        reason: reason.trim(),
+                    }).unwrap();
+
+                    toast.success("Payment dispute resolved");
+                    break;
+                case "withdraw-application":
+                    await withdrawApplication(application.id).unwrap();
+
+                    toast.success("Application withdrawn");
+                    break;
+                case "retract":
+                    await retractClaim(application.id).unwrap();
+                    toast.success("Cash confirmation retracted");
+                    break;
+                default:
+                    return;
+            }
+
             setAction(null);
             setReason("");
         } catch {

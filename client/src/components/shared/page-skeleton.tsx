@@ -38,86 +38,96 @@ function renderSkeletonContent(variant: SkeletonVariant) {
                 </div>
             );
         case "form":
-            <div className="max-w-2xl space-y-7 rounded-2xl border border-border bg-card p-6">
-                {[0, 1, 2, 3].map((item) => (
-                    <div key={item} className="space-y-3">
-                        <Skeleton className="h-4 w-28" />
-                        <Skeleton className="h-11 w-full" />
-                    </div>
-                ))}
-                <Skeleton className="h-11 w-36" />
-            </div>;
-        case "table":
-            <div className="overflow-hidden rounded-2xl border border-border bg-card p-5">
-                <div className="mb-6 grid grid-cols-3 gap-4">
-                    {[0, 1, 2].map((item) => (
-                        <Skeleton key={item} className="h-24" />
+            return (
+                <div className="max-w-2xl space-y-7 rounded-2xl border border-border bg-card p-6">
+                    {[0, 1, 2, 3].map((item) => (
+                        <div key={item} className="space-y-3">
+                            <Skeleton className="h-4 w-28" />
+                            <Skeleton className="h-11 w-full" />
+                        </div>
                     ))}
+                    <Skeleton className="h-11 w-36" />
                 </div>
-                {[0, 1, 2, 3, 4].map((item) => (
-                    <div
-                        key={item}
-                        className="flex gap-5 border-t border-border py-5"
-                    >
-                        <Skeleton className="h-5 w-1/3" />
-                        <Skeleton className="h-5 w-1/4" />
-                        <Skeleton className="ml-auto h-5 w-16" />
+            );
+        case "table":
+            return (
+                <div className="overflow-hidden rounded-2xl border border-border bg-card p-5">
+                    <div className="mb-6 grid grid-cols-3 gap-4">
+                        {[0, 1, 2].map((item) => (
+                            <Skeleton key={item} className="h-24" />
+                        ))}
                     </div>
-                ))}
-            </div>;
-        case "policy":
-            <div className="max-w-3xl space-y-8 rounded-2xl border border-border bg-card p-6">
-                {[0, 1, 2, 3].map((item) => (
-                    <div key={item} className="space-y-3">
-                        <Skeleton className="h-6 w-1/2" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-4/5" />
-                    </div>
-                ))}
-            </div>;
-        case "detail":
-            <>
-                <Skeleton className="h-64 w-full rounded-2xl sm:h-96" />
-                <div className="grid gap-7 md:grid-cols-[2fr_1fr]">
-                    <div className="space-y-4">
-                        <Skeleton className="h-7 w-2/3" />
-                        <Skeleton className="h-4 w-full" />
-                        <Skeleton className="h-4 w-4/5" />
-                        <Skeleton className="h-36 w-full" />
-                    </div>
-                    <Skeleton className="h-64 rounded-2xl" />
-                </div>
-            </>;
-        default:
-            <Fragment>
-                {variant === "landing" && (
-                    <Skeleton className="h-80 w-full rounded-3xl sm:h-[28rem]" />
-                )}
-                {(variant === "search" || variant === "workspace") && (
-                    <div className="flex gap-3">
-                        <Skeleton className="h-11 flex-1" />
-                        <Skeleton className="h-11 w-24" />
-                        <Skeleton className="h-11 w-24" />
-                    </div>
-                )}
-                <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-                    {[0, 1, 2, 3, 4, 5].map((item) => (
+                    {[0, 1, 2, 3, 4].map((item) => (
                         <div
                             key={item}
-                            className="overflow-hidden rounded-2xl border border-border bg-card"
+                            className="flex gap-5 border-t border-border py-5"
                         >
-                            <Skeleton className="h-44 w-full rounded-none" />
-                            <div className="space-y-3 p-5">
-                                <Skeleton className="h-6 w-3/4" />
-                                <Skeleton className="h-4 w-full" />
-                                <Skeleton className="h-4 w-1/2" />
-                                <Skeleton className="h-8 w-28" />
-                            </div>
+                            <Skeleton className="h-5 w-1/3" />
+                            <Skeleton className="h-5 w-1/4" />
+                            <Skeleton className="ml-auto h-5 w-16" />
                         </div>
                     ))}
                 </div>
-            </Fragment>;
+            );
+        case "policy":
+            return (
+                <div className="max-w-3xl space-y-8 rounded-2xl border border-border bg-card p-6">
+                    {[0, 1, 2, 3].map((item) => (
+                        <div key={item} className="space-y-3">
+                            <Skeleton className="h-6 w-1/2" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-4/5" />
+                        </div>
+                    ))}
+                </div>
+            );
+        case "detail":
+            return (
+                <Fragment>
+                    <Skeleton className="h-64 w-full rounded-2xl sm:h-96" />
+                    <div className="grid gap-7 md:grid-cols-[2fr_1fr]">
+                        <div className="space-y-4">
+                            <Skeleton className="h-7 w-2/3" />
+                            <Skeleton className="h-4 w-full" />
+                            <Skeleton className="h-4 w-4/5" />
+                            <Skeleton className="h-36 w-full" />
+                        </div>
+                        <Skeleton className="h-64 rounded-2xl" />
+                    </div>
+                </Fragment>
+            );
+        default:
+            return (
+                <Fragment>
+                    {variant === "landing" && (
+                        <Skeleton className="h-80 w-full rounded-3xl sm:h-[28rem]" />
+                    )}
+                    {(variant === "search" || variant === "workspace") && (
+                        <div className="flex gap-3">
+                            <Skeleton className="h-11 flex-1" />
+                            <Skeleton className="h-11 w-24" />
+                            <Skeleton className="h-11 w-24" />
+                        </div>
+                    )}
+                    <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+                        {[0, 1, 2, 3, 4, 5].map((item) => (
+                            <div
+                                key={item}
+                                className="overflow-hidden rounded-2xl border border-border bg-card"
+                            >
+                                <Skeleton className="h-44 w-full rounded-none" />
+                                <div className="space-y-3 p-5">
+                                    <Skeleton className="h-6 w-3/4" />
+                                    <Skeleton className="h-4 w-full" />
+                                    <Skeleton className="h-4 w-1/2" />
+                                    <Skeleton className="h-8 w-28" />
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </Fragment>
+            );
     }
 }
 

@@ -17,51 +17,42 @@ export const getMe = async (req: AuthenticatedRequest, res: Response) => {
         throw new NotFoundError("Not found current user!");
     }
 
-    if (user.role === "Tenant") {
-        const tenant = await prisma.tenant.findUnique({
-            where: {
-                userId: user.id,
-            },
-            include: {
-                user: true,
-                properties: true,
-                favorites: true,
-                applications: true,
-                leases: true,
-            },
-        });
+    switch (user.role) {
+        case "Tenant": {
+            const tenant = await prisma.tenant.findUnique({
+                where: { userId: user.id },
+                include: {
+                    user: true,
+                    properties: true,
+                    favorites: true,
+                    applications: true,
+                    leases: true,
+                },
+            });
 
-        if (!tenant) {
-            throw new NotFoundError("Tenant not found!");
+            if (!tenant) throw new NotFoundError("Tenant not found!");
+
+            const { userId, ...tenantData } = tenant;
+            return res.status(200).json({ success: true, data: tenantData });
         }
 
-        const { userId, ...tenantData } = tenant;
+        case "Manager": {
+            const manager = await prisma.manager.findUnique({
+                where: { userId: user.id },
+                include: {
+                    user: true,
+                    managedProperties: true,
+                },
+            });
 
-        return res.status(200).json({
-            success: true,
-            data: tenantData,
-        });
-    } else if (user.role === "Manager") {
-        const manager = await prisma.manager.findUnique({
-            where: {
-                userId: user.id,
-            },
-            include: {
-                user: true,
-                managedProperties: true,
-            },
-        });
+            if (!manager) throw new NotFoundError("Manager not found!");
 
-        if (!manager) {
-            throw new NotFoundError("Manager not found!");
+            const { userId, ...managerData } = manager;
+            return res.status(200).json({ success: true, data: managerData });
         }
 
-        const { userId, ...managerData } = manager;
-
-        return res.status(200).json({
-            success: true,
-            data: managerData,
-        });
+        default:
+            throw new Error(`Unsupported user role: ${user.role}`);
     }
 };
 
