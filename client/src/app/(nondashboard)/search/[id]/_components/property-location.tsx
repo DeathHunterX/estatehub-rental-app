@@ -1,7 +1,6 @@
 import PageSkeleton from "@/components/shared/page-skeleton";
 import { useGetPropertyQuery } from "@/lib/api/api";
 import { ExternalLink, MapPin } from "lucide-react";
-import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Link from "next/link";
 import {
@@ -9,8 +8,6 @@ import {
     propertyMapHref,
 } from "@/features/properties/lib/property-address";
 import { useEffect, useRef } from "react";
-
-mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
 
 const PropertyLocation = ({ propertyId }: PropertyDetailsProps) => {
     const {
@@ -26,34 +23,42 @@ const PropertyLocation = ({ propertyId }: PropertyDetailsProps) => {
             isError ||
             !property ||
             !mapContainerRef.current ||
-            !mapboxgl.accessToken
+            !process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN
         )
             return;
-
-        const map = new mapboxgl.Map({
-            container: mapContainerRef.current,
-            style: "mapbox://styles/mapbox/dark-v11",
-            center: [
-                property.location.coordinates.longitude,
-                property.location.coordinates.latitude,
-            ],
-            zoom: 14,
+        const container = mapContainerRef.current;
+        let cancelled = false;
+        let cleanup: (() => void) | undefined;
+        void import("mapbox-gl").then(({ default: mapboxgl }) => {
+            if (cancelled) return;
+            mapboxgl.accessToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN as string;
+            const map = new mapboxgl.Map({
+                container,
+                style: "mapbox://styles/mapbox/dark-v11",
+                center: [
+                    property.location.coordinates.longitude,
+                    property.location.coordinates.latitude,
+                ],
+                zoom: 14,
+            });
+            new mapboxgl.Marker({ color: "#eb8686" })
+                .setLngLat([
+                    property.location.coordinates.longitude,
+                    property.location.coordinates.latitude,
+                ])
+                .addTo(map);
+            map.on("load", () => map.resize());
+            const resizeObserver = new ResizeObserver(() => map.resize());
+            resizeObserver.observe(container);
+            cleanup = () => {
+                resizeObserver.disconnect();
+                map.remove();
+            };
         });
 
-        new mapboxgl.Marker({ color: "#eb8686" })
-            .setLngLat([
-                property.location.coordinates.longitude,
-                property.location.coordinates.latitude,
-            ])
-            .addTo(map);
-
-        map.on("load", () => map.resize());
-        const resizeObserver = new ResizeObserver(() => map.resize());
-        resizeObserver.observe(mapContainerRef.current);
-
         return () => {
-            resizeObserver.disconnect();
-            map.remove();
+            cancelled = true;
+            cleanup?.();
         };
     }, [property, isError, isLoading]);
 
@@ -89,7 +94,7 @@ const PropertyLocation = ({ propertyId }: PropertyDetailsProps) => {
                     View on Google Maps
                 </Link>
             </div>
-            {mapboxgl.accessToken ? (
+            {process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN ? (
                 <div
                     className="relative mt-5 h-[300px] overflow-hidden rounded-xl border border-border bg-card sm:h-[360px]"
                     ref={mapContainerRef}

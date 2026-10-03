@@ -20,7 +20,7 @@ import LeaseAgreementButton from "./lease-agreement-button";
 import { downloadLeasesCsv } from "@/lib/downloads";
 import {
     leaseStatus,
-    paymentSummary,
+    paymentSummaries,
     type LeaseStatus,
 } from "@/features/leases/lib/lease-overview";
 
@@ -56,6 +56,7 @@ export default function LeaseTable({
 }) {
     const [filter, setFilter] = useState<"All" | LeaseStatus>("All");
     const now = new Date();
+    const currentPayments = paymentSummaries(payments, now);
     const counts = { All: leases.length, Active: 0, Pending: 0, Expired: 0 };
     leases.forEach((lease) => {
         counts[leaseStatus(lease, now)] += 1;
@@ -150,11 +151,7 @@ export default function LeaseTable({
                                 <TableBody>
                                     {visibleLeases.map((lease) => {
                                         const status = leaseStatus(lease, now);
-                                        const payment = paymentSummary(
-                                            payments,
-                                            lease.id,
-                                            now
-                                        );
+                                        const payment = currentPayments.get(lease.id);
                                         const outstanding = payment
                                             ? Math.max(
                                                   0,

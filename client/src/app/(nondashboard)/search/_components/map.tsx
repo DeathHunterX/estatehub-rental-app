@@ -301,10 +301,12 @@ const Map = ({
                     element.style.visibility = visibility;
             });
             if (map.isMoving()) return;
+            if (!mapContainerRef.current?.classList.contains("map-show-prices"))
+                return;
             elements.forEach((element, id) => {
-                element.classList.remove("is-price-hidden");
                 const visible = visibleIds.has(id);
                 if (!visible) return;
+                element.classList.remove("is-price-hidden");
                 const pin = element.querySelector<HTMLElement>(
                     ".property-map-marker-pin"
                 );
@@ -319,8 +321,6 @@ const Map = ({
                               : 0,
                     });
             });
-            if (!mapContainerRef.current?.classList.contains("map-show-prices"))
-                return;
             const mapRect = mapContainerRef.current.getBoundingClientRect();
             const clusterRects = map.getLayer("search-property-clusters")
                 ? map

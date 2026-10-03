@@ -18,7 +18,11 @@ const logout = async (req: Request, res: Response) => {
 
     return res.status(200).json({
         success: true,
-        data: { message: refreshToken ? "Logged out successfully" : "You are already logged out" },
+        data: {
+            message: refreshToken
+                ? "Logged out successfully"
+                : "You are already logged out",
+        },
     });
 };
 

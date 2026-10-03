@@ -16,6 +16,7 @@ import {
 const NotificationDropdown = () => {
     const { data } = useGetNotificationsQuery(undefined, {
         pollingInterval: 30_000,
+        skipPollingIfUnfocused: true,
     });
     const notifications = data?.items ?? [];
     const [markRead] = useMarkNotificationReadMutation();

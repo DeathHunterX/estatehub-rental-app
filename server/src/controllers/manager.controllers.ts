@@ -1,4 +1,5 @@
 import type { GeographyQueryRow, AuthenticatedRequest } from "../types/global";
+import { Prisma } from "@prisma/client";
 import { wktToGeoJSON } from "@terraformer/wkt";
 import { Response } from "express";
 import { ForbiddenError } from "../errors/http-error";
@@ -40,24 +41,37 @@ export const getManagerProperties = async (
         },
     });
 
-    const propertiesWithFormattedLocation = await Promise.all(
-        properties.map(async (property) => {
-            const coordinates: GeographyQueryRow[] =
-                await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates FROM "Location" WHERE id = ${property.location.id}`;
-
-            const geoJSON: any = wktToGeoJSON(coordinates[0].coordinates || "");
-            const longitude = geoJSON.coordinates[0];
-            const latitude = geoJSON.coordinates[1];
-
-            return {
-                ...property,
-                location: {
-                    ...property.location,
-                    coordinates: { longitude: longitude, latitude },
-                },
-            };
-        })
+    // Fetch the coordinates for each property location and format them as GeoJSON.
+    const locationIds = properties.map((property) => property.location.id);
+    const coordinates: (GeographyQueryRow & { id: number })[] =
+        locationIds.length
+            ? await prisma.$queryRaw`
+                SELECT id, ST_asText(coordinates) as coordinates
+                FROM "Location"
+                WHERE id
+                IN (${Prisma.join(locationIds)})
+            `
+            : [];
+    const coordinatesById = new Map(
+        coordinates.map((row) => [row.id, row.coordinates])
     );
+
+    // Format the property locations as GeoJSON and include them in the response.
+    const propertiesWithFormattedLocation = properties.map((property) => {
+        const geoJSON: any = wktToGeoJSON(
+            coordinatesById.get(property.location.id) || ""
+        );
+        const longitude = geoJSON.coordinates[0];
+        const latitude = geoJSON.coordinates[1];
+
+        return {
+            ...property,
+            location: {
+                ...property.location,
+                coordinates: { longitude: longitude, latitude },
+            },
+        };
+    });
 
     return res.status(200).json({
         success: true,

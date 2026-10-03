@@ -57,7 +57,7 @@ export const listApplications = async (
                     user: true,
                 },
             },
-            lease: { include: { payments: { select: { id: true } } } },
+            lease: { include: { payments: { select: { id: true }, take: 1 } } },
         },
     });
 

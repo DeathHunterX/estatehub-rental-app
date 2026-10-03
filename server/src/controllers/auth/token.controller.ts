@@ -1,6 +1,10 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
-import { ForbiddenError, NotFoundError, UnauthorizedError } from "../../errors/http-error";
+import {
+    ForbiddenError,
+    NotFoundError,
+    UnauthorizedError,
+} from "../../errors/http-error";
 import config from "../../config";
 import prisma from "../../lib/prisma";
 import { generateAccessToken } from "../../utils/jwt";
@@ -37,7 +41,10 @@ const getAccessToken = async (req: Request, res: Response) => {
 
     let decoded: string | JwtPayload;
     try {
-        decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_TOKEN_SECRET!);
+        decoded = jwt.verify(
+            refreshToken,
+            process.env.JWT_REFRESH_TOKEN_SECRET!
+        );
     } catch {
         throw new UnauthorizedError("Unauthorized! Please login to continue");
     }

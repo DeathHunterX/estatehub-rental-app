@@ -43,7 +43,7 @@ export default function TenantPaymentsPage() {
         refetch,
     } = useGetApplicationsQuery(
         { userId, userType: "tenant" },
-        { skip: !userId, pollingInterval: 30_000, refetchOnFocus: true }
+        { skip: !userId, pollingInterval: 30_000, skipPollingIfUnfocused: true, refetchOnFocus: true }
     );
     const { due, completed } = partitionTenantPayments(applications ?? []);
 

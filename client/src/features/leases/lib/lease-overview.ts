@@ -19,3 +19,14 @@ export function paymentSummary<T extends PaymentRecord>(payments: T[] | undefine
         })
         .sort((a, b) => new Date(b.dueDate).getTime() - new Date(a.dueDate).getTime())[0] ?? null;
 }
+
+export function paymentSummaries<T extends PaymentRecord>(payments: T[] | undefined, now = new Date()): Map<number, T> {
+    const summaries = new Map<number, T>();
+    for (const payment of payments ?? []) {
+        const due = new Date(payment.dueDate);
+        if (due.getUTCMonth() !== now.getUTCMonth() || due.getUTCFullYear() !== now.getUTCFullYear()) continue;
+        const previous = summaries.get(payment.leaseId);
+        if (!previous || due.getTime() > new Date(previous.dueDate).getTime()) summaries.set(payment.leaseId, payment);
+    }
+    return summaries;
+}

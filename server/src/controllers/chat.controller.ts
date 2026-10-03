@@ -28,23 +28,10 @@ export const getChats = async (req: AuthenticatedRequest, res: Response) => {
     });
 
     for (const chat of chats) {
-        const receiverId =
-            chat.tenantUserId === tokenUserId
-                ? chat.managerUserId
-                : chat.tenantUserId;
-
-        const receiver = await prisma.user.findUnique({
-            where: {
-                id: receiverId,
-            },
-            select: {
-                id: true,
-                name: true,
-            },
-        });
-
-        // Need to use type assertion since receiver is not part of Chat type
-        (chat as any).receiver = receiver;
+        const user = chat.tenantUserId === tokenUserId
+            ? chat.manager.user
+            : chat.tenant.user;
+        (chat as any).receiver = { id: user.id, name: user.name };
     }
 
     return res.status(200).json({
@@ -92,15 +79,10 @@ export const getChat = async (req: AuthenticatedRequest, res: Response) => {
     const receiverId =
         chat.tenantUserId === id ? chat.managerUserId : chat.tenantUserId;
 
-    const receiver = await prisma.user.findUnique({
-        where: {
-            id: receiverId,
-        },
-        select: {
-            id: true,
-            name: true,
-        },
-    });
+    const receiverUser = chat.tenantUserId === id
+        ? chat.manager.user
+        : chat.tenant.user;
+    const receiver = { id: receiverUser.id, name: receiverUser.name };
 
     // Add receiver information to chat object
     (chat as any).receiverId = receiverId;
@@ -109,6 +91,24 @@ export const getChat = async (req: AuthenticatedRequest, res: Response) => {
     return res.status(200).json({
         success: true,
         data: chat,
+    });
+};
+
+export const getChatReceiver = async (req: AuthenticatedRequest, res: Response) => {
+    const { role, id } = req.user as UserIdentity;
+    const chat = await prisma.chat.findUnique({
+        where: {
+            id: Number(req.params.chatId),
+            ...(role === UserRole.Tenant
+                ? { tenantUserId: id }
+                : { managerUserId: id }),
+        },
+        select: { tenantUserId: true, managerUserId: true },
+    });
+    if (!chat) throw new NotFoundError("Chat not found");
+    return res.status(200).json({
+        success: true,
+        data: { receiverId: chat.tenantUserId === id ? chat.managerUserId : chat.tenantUserId },
     });
 };
 

@@ -27,7 +27,7 @@ const PropertyCardCompact = ({
                     alt={property.name}
                     fill
                     className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    sizes="(max-width: 1023px) 33vw, 11vw"
                     loading={eagerImage ? "eager" : "lazy"}
                     onError={() => setImgSrc("/placeholder.jpg")}
                 />}

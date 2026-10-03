@@ -7,19 +7,11 @@ import PropertyCard from "@/features/properties/components/property-card";
 import {
     useGetAuthCurrentUserQuery,
     useGetCurrentResidencesQuery,
-    useGetTenantQuery,
 } from "@/lib/api/api";
 
 const ResidencesPage = () => {
     const { data: authUser, isLoading: isAuthLoading } =
         useGetAuthCurrentUserQuery();
-    const { data: tenant, isLoading: isTenantLoading } = useGetTenantQuery(
-        authUser?.user?.id || "",
-        {
-            skip: !authUser?.user?.id,
-        }
-    );
-
     const {
         data: currentResidences,
         isLoading,
@@ -28,7 +20,7 @@ const ResidencesPage = () => {
         skip: !authUser?.user?.id,
     });
 
-    if (isAuthLoading || isTenantLoading || isLoading)
+    if (isAuthLoading || isLoading)
         return <PageSkeleton variant="cards" />;
     if (error)
         return (
@@ -49,12 +41,7 @@ const ResidencesPage = () => {
                         key={property.id}
                         property={property}
                         eagerImage={index < 4}
-                        isFavorite={
-                            tenant?.favorites?.some(
-                                (favorite: { id: number }) =>
-                                    favorite.id === property.id
-                            ) || false
-                        }
+                        isFavorite={false}
                         onFavoriteToggle={() => {}}
                         showFavoriteButton={false}
                         propertyLink={`/tenants/residences/${property.id}`}

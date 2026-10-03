@@ -61,14 +61,12 @@ const Listings = ({
         isLoading,
         isError,
     } = useGetPropertiesQuery(queryParams as FiltersState);
+    const favoriteIds = new Set(tenant?.favorites?.map((favorite: Property) => favorite.id));
 
     const handleFavoriteToggle = async (propertyId: number) => {
         if (!isTenant || !tenant?.id) return;
 
-        const isFavorite =
-            tenant?.favorites?.some(
-                (favorite: Property) => favorite.id === propertyId
-            ) || false;
+        const isFavorite = favoriteIds.has(propertyId);
 
         if (isFavorite) {
             await removeFavoriteProperty({
@@ -190,12 +188,7 @@ const Listings = ({
                                     key={property.id}
                                     property={property}
                                     eagerImage={index < 3}
-                                    isFavorite={
-                                        tenant?.favorites?.some(
-                                            (fav: Property) =>
-                                                fav.id === property.id
-                                        ) || false
-                                    }
+                                    isFavorite={favoriteIds.has(property.id)}
                                     onFavoriteToggle={() =>
                                         handleFavoriteToggle(property.id)
                                     }
@@ -207,12 +200,7 @@ const Listings = ({
                                     key={property.id}
                                     property={property}
                                     eagerImage={index < 3}
-                                    isFavorite={
-                                        tenant?.favorites?.some(
-                                            (fav: Property) =>
-                                                fav.id === property.id
-                                        ) || false
-                                    }
+                                    isFavorite={favoriteIds.has(property.id)}
                                     onFavoriteToggle={() =>
                                         handleFavoriteToggle(property.id)
                                     }

@@ -4,6 +4,7 @@
 import { X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense, useEffect, useState, useSyncExternalStore } from "react";
+import dynamic from "next/dynamic";
 
 // Components
 import SearchPageSkeleton from "@/features/search/components/search-page-skeleton";
@@ -17,7 +18,7 @@ import { Button } from "@/components/ui/button";
 import FiltersBar from "./_components/filters-bar";
 import FiltersFull from "./_components/filters-full";
 import Listings from "./_components/listings";
-import Map from "./_components/map";
+const Map = dynamic(() => import("./_components/map"), { ssr: false });
 
 // State
 import { setViewMode } from "@/states";

@@ -34,22 +34,33 @@ io.on("connection", (socket) => {
     scheduleExpiry();
     socket.on("disconnect", () => clearTimeout(expiryTimer));
     const authorizedChats = new Map<number, string>();
+    const pendingChatChecks = new Map<number, Promise<string | null>>();
     // Check chat membership through the API before relaying events, then cache it per socket.
     const canNotify = async (chatId: number, receiverId: string) => {
         if (authorizedChats.get(chatId) === receiverId) return true;
-        try {
-            const response = await fetch(`${config.apiBaseUrl}/chats/${chatId}`, {
-                headers: { Authorization: `Bearer ${socket.data.accessToken}` },
-                signal: AbortSignal.timeout(3000),
-            });
-            if (!response.ok) return false;
-            const body = await response.json() as { data?: { receiverId?: string } };
-            if (body.data?.receiverId !== receiverId) return false;
+        let pending = pendingChatChecks.get(chatId);
+        if (!pending) {
+            pending = (async () => {
+                try {
+                    const response = await fetch(`${config.apiBaseUrl}/chats/${chatId}/receiver`, {
+                        headers: { Authorization: `Bearer ${socket.data.accessToken}` },
+                        signal: AbortSignal.timeout(3000),
+                    });
+                    if (!response.ok) return null;
+                    const body = await response.json() as { data?: { receiverId?: string } };
+                    return body.data?.receiverId ?? null;
+                } catch {
+                    return null;
+                }
+            })().finally(() => pendingChatChecks.delete(chatId));
+            pendingChatChecks.set(chatId, pending);
+        }
+        const authorizedReceiver = await pending;
+        if (authorizedReceiver === receiverId) {
             authorizedChats.set(chatId, receiverId);
             return true;
-        } catch {
-            return false;
         }
+        return false;
     };
 
     socket.on(

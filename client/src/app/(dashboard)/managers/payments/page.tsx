@@ -59,7 +59,7 @@ export default function ManagerPaymentsPage() {
         refetch,
     } = useGetApplicationsQuery(
         { userId, userType: "manager" },
-        { skip: !userId, pollingInterval: 30_000, refetchOnFocus: true }
+        { skip: !userId, pollingInterval: 30_000, skipPollingIfUnfocused: true, refetchOnFocus: true }
     );
     const [dueDays, setDueDays] = useState<Record<number, number>>({});
     const [busyId, setBusyId] = useState<number | null>(null);

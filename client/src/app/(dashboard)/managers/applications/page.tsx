@@ -65,6 +65,7 @@ const ApplicationsPage = () => {
         {
             skip: !authUser?.user?.id,
             pollingInterval: 30_000,
+            skipPollingIfUnfocused: true,
             refetchOnFocus: true,
         }
     );
