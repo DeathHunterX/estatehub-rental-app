@@ -25,8 +25,5 @@
         "start:client": "cd client && bun run start",
         "start:server": "cd server && bun run start",
         "start:socket": "cd socket && bun run start"
-    },
-    "devDependencies": {
-        "@types/lodash": "^4.17.20"
     }
 }

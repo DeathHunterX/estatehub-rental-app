@@ -130,6 +130,27 @@ npm run dev:client
 
 Then open `http://localhost:3000`. The root package has separate `dev:client` and `dev:server` scripts; it does not have a combined `dev` script.
 
+## Build and start a deployment
+
+Install all dependencies and generate the Prisma client before building. Build each service once when creating its deployment artifact:
+
+```powershell
+npm run prisma:generate --prefix server
+npm run build --prefix server
+npm run build --prefix socket
+npm run build --prefix client
+```
+
+Start each service as a separate process with its environment configured:
+
+```powershell
+npm run start --prefix server
+npm run start --prefix socket
+npm run start --prefix client
+```
+
+The API and socket `start` commands run their compiled JavaScript without rebuilding it. Keep `server/dist`, `socket/dist`, the generated Prisma client, and runtime dependencies in the deployed artifacts. Rebuild after every source change. Apply database migrations separately with `npm run prisma:deploy --prefix server` as part of the deployment process.
+
 ## Development commands
 
 | Working directory | Command | Purpose |
@@ -138,6 +159,7 @@ Then open `http://localhost:3000`. The root package has separate `dev:client` an
 | `client/` | `npx tsc --noEmit` | Check frontend types |
 | `server/` | `npm test` | Build and run API tests |
 | `socket/` | `npm test` | Build and run socket tests |
+| `socket/` | `npm run typecheck` | Check all socket TypeScript files without creating `dist` |
 | `server/` | `npm run prisma:validate` | Validate the Prisma schema |
 | `server/` | `npm run prisma:deploy` | Apply checked-in migrations |
 | `server/` | `npm run prisma:status` | Check applied and pending migrations |
@@ -145,12 +167,20 @@ Then open `http://localhost:3000`. The root package has separate `dev:client` an
 
 ## Current scope
 
-Applications, listing availability, cash settlement, leases, and renewals are modeled in the app. An approved application does not become a lease until the cash handover is confirmed by both parties. Managers can export a property's application, lease, and payment history as CSV.
+EstateHub supports the rental journey from application to lease renewal. Tenants can follow their applications and first payment; managers can track listing availability, review applications, manage leases, and export a property's application, lease, and payment history as CSV. Approval alone does not create a lease: both sides must confirm the cash handover first.
 
-On first sign-in, a manager is directed to **Lease agreement setup**. They must save a legal name, agreement terms, an encrypted signature and two acknowledgements covering applicant privacy and information sharing before creating a property or approving an application. The API enforces the same rule, including for existing managers with an incomplete setup. Managers can revise the setup later from Settings. The signature passphrase stays in the browser and is not stored by the server.
+### Before a manager publishes a home
 
-Managers can open **Payments & deadlines** from their sidebar (or from Applications) to choose a payment term when approving a pending application, follow approved payments, and review completed first payments. Approval sets a deadline 7–21 days later (14 days by default). An hourly server task declines an unpaid application after its deadline if the tenant has not reported handing over cash. A tenant cash claim keeps the application open for manager confirmation or dispute. A manager can request cancellation of an approved, unpaid application without a lease or cash claim; the server locks payment immediately and completes the non-reversible cancellation after 48 hours. For an older approved application with no lease, payment, or cash claim, the manager can set one new 7–21 day window from today and the tenant receives an account notification. Older approvals with an existing lease remain visible for payment follow-up, but have no automatic application deadline because a lease already exists.
+On first sign-in, a manager is guided to **Lease agreement setup**. They provide a legal name and agreement terms, save an encrypted signature, and acknowledge applicant privacy and information sharing. These steps are required before they can create a property or approve an application, including on existing accounts; the API checks them too. Managers can update the setup later in Settings. The signature passphrase stays in the browser and is never stored by the server.
 
-Tenants can open **Payments** from their sidebar or an approved application to see the first amount due, deadline, payment method, cash handover confirmations, and completed payment records. The tenant Applications page supports status filters and property-name search; its payment action links to the dedicated page.
+### From approval to payment
 
-Bank transfer is not connected to a payment provider yet, so the API rejects that payment method. In-app notifications are available; outbound notification emails are not configured. Cash handover relies on the tenant's and manager's confirmations and may require manual dispute resolution.
+When approving a pending application, a manager chooses a payment window of 7–21 days (14 by default). **Payments & deadlines**, available from the sidebar or Applications, shows approved payments and completed first payments. Tenants can open **Payments** from the sidebar or an approved application to see the amount due, deadline, payment method, cash confirmations, and payment records. Their Applications page also has status filters and property-name search.
+
+If the deadline passes before the tenant reports handing over cash, an hourly server task declines the unpaid application. Once the tenant reports a handover, the application remains open until the manager confirms it or raises a dispute. A manager may request cancellation of an approved, unpaid application only when it has no lease or cash claim. That immediately locks payment; the cancellation becomes final after 48 hours.
+
+Older approved applications have a path forward too. If one has no lease, payment, or cash claim, the manager can set one new 7–21 day window starting today, and the tenant receives an in-app notification. An older approval that already has a lease remains visible for payment follow-up but has no automatic application deadline.
+
+### Current limits
+
+Cash handover depends on confirmation from both people, and a dispute may need manual resolution. Bank transfer is not connected to a payment provider, so the API rejects it. Notifications appear in the app; outbound notification emails are not configured.
