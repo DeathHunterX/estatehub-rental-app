@@ -26,6 +26,7 @@ import type {
     SigningProfileUpdate,
 } from "@/features/signing/types/signing-profile";
 import type { AgreementDraft } from "@/features/leases/lib/lease-agreement-pdf";
+import type { DestinationSummary } from "@/lib/destinations";
 
 type ApplicationListItem = Application & {
     firstPaymentAvailable: boolean;
@@ -171,6 +172,7 @@ export const api = createApi({
             }) => response.data,
             invalidatesTags: (result) => [
                 { type: "Properties", id: result?.id },
+                { type: "Properties", id: "LIST" },
                 { type: "Managers", id: result?.manger?.id },
             ],
             async onQueryStarted(_, { queryFulfilled }) {
@@ -225,6 +227,12 @@ export const api = createApi({
                     error: "Failed to load properties.",
                 });
             },
+        }),
+
+        getDestinations: builder.query<DestinationSummary[], void>({
+            query: () => "properties/destinations",
+            transformResponse: (response: { success: boolean; data: DestinationSummary[] }) => response.data,
+            providesTags: [{ type: "Properties", id: "LIST" }],
         }),
 
         getProperty: builder.query<
@@ -306,7 +314,6 @@ export const api = createApi({
                 response.data,
             invalidatesTags: (result) => [
                 { type: "Tenants", id: result?.id },
-                { type: "Properties", id: "LIST" },
             ],
             async onQueryStarted(_, { queryFulfilled }) {
                 await withToast(queryFulfilled, {
@@ -327,7 +334,6 @@ export const api = createApi({
                 response.data,
             invalidatesTags: (result) => [
                 { type: "Tenants", id: result?.id },
-                { type: "Properties", id: "LIST" },
             ],
             async onQueryStarted(_, { queryFulfilled }) {
                 await withToast(queryFulfilled, {
@@ -834,6 +840,7 @@ export const {
     useCreatePropertyMutation,
     useUpdatePropertyMutation,
     useGetPropertiesQuery,
+    useGetDestinationsQuery,
     useGetPropertyQuery,
     // tenant related endpoints
     useGetTenantQuery,

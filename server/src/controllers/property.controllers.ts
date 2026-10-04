@@ -207,6 +207,43 @@ export const getProperties = async (req: Request, res: Response) => {
     });
 };
 
+export const getDestinations = async (_req: Request, res: Response) => {
+    const destinations = await prisma.$queryRaw`
+        WITH available AS (
+            SELECT p.id,
+                   BTRIM(l.city) AS city,
+                   BTRIM(l.state) AS state,
+                   BTRIM(l.country) AS country,
+                   NULLIF(p."photoUrls"[1], '') AS "photoUrl",
+                   ST_X(l.coordinates::geometry) AS longitude,
+                   ST_Y(l.coordinates::geometry) AS latitude
+            FROM "Property" p
+            JOIN "Location" l ON l.id = p."locationId"
+            WHERE p."archivedAt" IS NULL
+              AND p."listingStatus" = 'Free'::"PropertyListingStatus"
+              AND NOT EXISTS (
+                  SELECT 1 FROM "Lease" active
+                  WHERE active."propertyId" = p.id
+                    AND active."startDate" <= NOW()
+                    AND active."endDate" >= NOW() - INTERVAL '1 day'
+              )
+        )
+        SELECT (ARRAY_AGG(city ORDER BY id))[1] AS city,
+               (ARRAY_AGG(state ORDER BY id))[1] AS state,
+               (ARRAY_AGG(country ORDER BY id))[1] AS country,
+               COUNT(*)::integer AS count,
+               (ARRAY_AGG("photoUrl" ORDER BY id) FILTER (WHERE "photoUrl" IS NOT NULL))[1] AS "photoUrl",
+               json_build_object(
+                   'longitude', (ARRAY_AGG(longitude ORDER BY id))[1],
+                   'latitude', (ARRAY_AGG(latitude ORDER BY id))[1]
+               ) AS coordinates
+        FROM available
+        WHERE city <> ''
+        GROUP BY LOWER(city), LOWER(state), LOWER(country)
+    `;
+    return res.status(200).json({ success: true, data: destinations });
+};
+
 export const getProperty = async (req: Request, res: Response) => {
     const { propertyId } = req.params;
     const property = await prisma.property.findUnique({
@@ -219,7 +256,7 @@ export const getProperty = async (req: Request, res: Response) => {
     });
 
     if (property && !property.archivedAt) {
-        const [occupied, waiting] = await Promise.all([
+        const [occupied, waiting, coordinates] = await Promise.all([
             prisma.lease.findFirst({
                 where: { propertyId: property.id, ...activeLeaseWhere() },
                 select: { id: true },
@@ -228,10 +265,8 @@ export const getProperty = async (req: Request, res: Response) => {
                 where: { propertyId: property.id, status: "Pending" },
                 select: { id: true },
             }),
+            prisma.$queryRaw<GeographyQueryRow[]>`SELECT ST_asText(coordinates) as coordinates FROM "Location" WHERE id = ${property.location.id}`,
         ]);
-        const coordinates: GeographyQueryRow[] =
-            await prisma.$queryRaw`SELECT ST_asText(coordinates) as coordinates FROM "Location" WHERE id = ${property.location.id}`;
-
         const geoJSON: any = wktToGeoJSON(coordinates[0].coordinates || "");
         const longitude = geoJSON.coordinates[0];
         const latitude = geoJSON.coordinates[1];
@@ -395,6 +430,12 @@ export const getPropertyLeases = async (
 };
 
 const uploadWindows = new Map<string, PropertyPhotoRateLimit>();
+setInterval(() => {
+    const now = Date.now();
+    for (const [userId, window] of uploadWindows) {
+        if (window.resetAt <= now) uploadWindows.delete(userId);
+    }
+}, 60 * 60 * 1000).unref();
 
 export const uploadPropertyPhoto = async (
     req: AuthenticatedRequest,

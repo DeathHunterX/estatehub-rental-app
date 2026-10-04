@@ -6,49 +6,29 @@ import prisma from "../../lib/prisma";
 export const getAuthSession = async (res: Response) => {};
 
 export const getMe = async (req: AuthenticatedRequest, res: Response) => {
-    const { id } = req.user!;
-    const user = await prisma.user.findUnique({
-        where: {
-            id,
-        },
-    });
-
-    if (!user) {
-        throw new NotFoundError("Not found current user!");
-    }
+    const user = req.user!;
 
     switch (user.role) {
         case "Tenant": {
             const tenant = await prisma.tenant.findUnique({
                 where: { userId: user.id },
-                include: {
-                    user: true,
-                    properties: true,
-                    favorites: true,
-                    applications: true,
-                    leases: true,
-                },
+                select: { id: true },
             });
 
             if (!tenant) throw new NotFoundError("Tenant not found!");
 
-            const { userId, ...tenantData } = tenant;
-            return res.status(200).json({ success: true, data: tenantData });
+            return res.status(200).json({ success: true, data: { id: tenant.id, user } });
         }
 
         case "Manager": {
             const manager = await prisma.manager.findUnique({
                 where: { userId: user.id },
-                include: {
-                    user: true,
-                    managedProperties: true,
-                },
+                select: { id: true },
             });
 
             if (!manager) throw new NotFoundError("Manager not found!");
 
-            const { userId, ...managerData } = manager;
-            return res.status(200).json({ success: true, data: managerData });
+            return res.status(200).json({ success: true, data: { id: manager.id, user } });
         }
 
         default:

@@ -1,7 +1,7 @@
 "use client";
 
 // Libraries
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowUpRight, LocateFixed, MapPin } from "lucide-react";
@@ -11,11 +11,11 @@ import { usablePropertyPhotos } from "@/features/properties/lib/property-image";
 import {
     Destination,
     destinationSearchHref,
-    rankDestinations,
+    rankDestinationSummaries,
 } from "@/lib/destinations";
 
 // APIs
-import { useGetPropertiesQuery } from "@/lib/api/api";
+import { useGetDestinationsQuery } from "@/lib/api/api";
 
 type LocationStatus = "idle" | "locating" | "ready" | "unavailable";
 
@@ -91,16 +91,16 @@ const DestinationsSection = () => {
         data: properties = [],
         isLoading,
         isError,
-    } = useGetPropertiesQuery({ silent: true });
+    } = useGetDestinationsQuery();
     const [location, setLocation] = useState<{
         latitude: number;
         longitude: number;
     } | null>(null);
     const [locationStatus, setLocationStatus] =
         useState<LocationStatus>("idle");
-    const popular = rankDestinations(properties, null);
+    const popular = useMemo(() => rankDestinationSummaries(properties, null), [properties]);
     const nearby = location
-        ? rankDestinations(properties, location).filter(
+        ? rankDestinationSummaries(properties, location).filter(
               (destination) =>
                   destination.distanceKm !== null &&
                   destination.distanceKm <= 250

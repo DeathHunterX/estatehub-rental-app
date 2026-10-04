@@ -3,6 +3,7 @@ import multer from "multer";
 import {
     createProperty,
     getProperties,
+    getDestinations,
     getProperty,
     getPropertyLeases,
     getPropertyPayments,
@@ -24,6 +25,7 @@ const upload = multer({
 const router = express.Router();
 
 router.get("/", getProperties);
+router.get("/destinations", getDestinations);
 router.post(
     "/",
     authMiddleware(["manager"]),

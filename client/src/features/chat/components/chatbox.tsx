@@ -2,7 +2,7 @@
 
 // Libraries
 import { CheckCheck, ChevronDown, ChevronUp, Send, X } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { memo, useEffect, useRef, useState } from "react";
 
 // Components
 import PageSkeleton from "@/components/shared/page-skeleton";
@@ -28,6 +28,42 @@ import { Message } from "@/types/prisma";
 
 const messageTime = (date: Date | string) =>
     new Date(date).toLocaleTimeString([], { hour: "numeric", minute: "2-digit" });
+
+const ChatMessageList = memo(function ChatMessageList({
+    messages,
+    ownUserId,
+    ownUserName,
+    partnerName,
+}: {
+    messages: Message[];
+    ownUserId?: string;
+    ownUserName?: string;
+    partnerName: string;
+}) {
+    let lastOwnMessageId: number | undefined;
+    for (let index = messages.length - 1; index >= 0; index--) {
+        if (messages[index].senderId === ownUserId) {
+            lastOwnMessageId = messages[index].id;
+            break;
+        }
+    }
+    return messages.map((item) => {
+        const isOwn = item.senderId === ownUserId;
+        return (
+            <div key={item.id} className={`flex items-end gap-2 ${isOwn ? "justify-end" : "justify-start"}`}>
+                {!isOwn && <Avatar className="mb-4 size-7 shrink-0"><AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">{partnerName.charAt(0).toUpperCase()}</AvatarFallback></Avatar>}
+                <div className={`flex max-w-[78%] flex-col ${isOwn ? "items-end" : "items-start"}`}>
+                    <div className={`break-words rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm ${isOwn ? "rounded-br-sm bg-secondary-600 text-white dark:bg-secondary-500 dark:text-primary-950" : "rounded-bl-sm border border-border bg-card text-card-foreground"}`}>{item.content}</div>
+                    <span className="mt-1 flex items-center gap-1 px-1 text-[11px] text-muted-foreground">
+                        {messageTime(item.createdAt)}
+                        {isOwn && item.id === lastOwnMessageId && <><CheckCheck className="size-3" aria-hidden="true" /> Sent</>}
+                    </span>
+                </div>
+                {isOwn && <Avatar className="mb-4 size-7 shrink-0"><AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">{(ownUserName || "Y").charAt(0).toUpperCase()}</AvatarFallback></Avatar>}
+            </div>
+        );
+    });
+});
 
 const ChatWindow = ({ chatId, mobileDashboardNav }: { chatId: number; mobileDashboardNav: boolean }) => {
     const accessToken = useAppSelector((state) => state.auth.accessToken);
@@ -145,11 +181,6 @@ const ChatWindow = ({ chatId, mobileDashboardNav }: { chatId: number; mobileDash
     };
 
     const partnerName = partner?.name || "Conversation";
-    const messages = activeChat?.messages ?? [];
-    const lastOwnMessageId = [...messages].reverse().find(
-        (item: Message) => item.senderId === authUser?.user?.id
-    )?.id;
-
     return (
         <section aria-label={`Chat with ${partnerName}`} className={`fixed bottom-0 right-2 z-50 w-[min(24rem,calc(100vw-1rem))] sm:right-5 ${mobileDashboardNav ? "max-md:bottom-[calc(4rem+env(safe-area-inset-bottom))]" : ""}`}>
             <div className="flex flex-col overflow-hidden rounded-t-2xl border border-border bg-card text-card-foreground shadow-2xl">
@@ -186,24 +217,9 @@ const ChatWindow = ({ chatId, mobileDashboardNav }: { chatId: number; mobileDash
                         }} className="relative flex h-80 flex-col gap-3 overflow-y-auto bg-muted/20 px-4 py-4" aria-live="polite">
                             {activeChatLoading ? (
                                 <PageSkeleton variant="chat" />
-                            ) : messages.length === 0 ? (
+                            ) : !activeChat?.messages.length ? (
                                 <p className="m-auto text-center text-sm text-muted-foreground">Start the conversation with a message.</p>
-                            ) : messages.map((item: Message) => {
-                                const isOwn = item.senderId === authUser?.user?.id;
-                                return (
-                                    <div key={item.id} className={`flex items-end gap-2 ${isOwn ? "justify-end" : "justify-start"}`}>
-                                        {!isOwn && <Avatar className="mb-4 size-7 shrink-0"><AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">{partnerName.charAt(0).toUpperCase()}</AvatarFallback></Avatar>}
-                                        <div className={`flex max-w-[78%] flex-col ${isOwn ? "items-end" : "items-start"}`}>
-                                            <div className={`break-words rounded-2xl px-3.5 py-2.5 text-sm leading-relaxed shadow-sm ${isOwn ? "rounded-br-sm bg-secondary-600 text-white dark:bg-secondary-500 dark:text-primary-950" : "rounded-bl-sm border border-border bg-card text-card-foreground"}`}>{item.content}</div>
-                                            <span className="mt-1 flex items-center gap-1 px-1 text-[11px] text-muted-foreground">
-                                                {messageTime(item.createdAt)}
-                                                {isOwn && item.id === lastOwnMessageId && <><CheckCheck className="size-3" aria-hidden="true" /> Sent</>}
-                                            </span>
-                                        </div>
-                                        {isOwn && <Avatar className="mb-4 size-7 shrink-0"><AvatarFallback className="bg-primary/10 text-xs font-semibold text-primary">{(authUser?.user?.name || "Y").charAt(0).toUpperCase()}</AvatarFallback></Avatar>}
-                                    </div>
-                                );
-                            })}
+                            ) : <ChatMessageList messages={activeChat.messages} ownUserId={authUser?.user?.id} ownUserName={authUser?.user?.name} partnerName={partnerName} />}
                             {hasNewMessages && <Button type="button" size="sm" onClick={scrollToBottom} className="sticky bottom-2 mx-auto rounded-full bg-primary px-3 text-xs shadow-lg">New messages ↓</Button>}
                         </div>
                         <div className="flex min-h-7 items-center gap-1.5 border-t border-border px-4 pt-1 text-xs text-primary" aria-live="polite">

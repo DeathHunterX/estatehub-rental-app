@@ -1,15 +1,5 @@
 type Coordinates = { latitude: number; longitude: number };
 
-export type DestinationListing = {
-    location: {
-        city: string;
-        state: string;
-        country: string;
-        coordinates: Coordinates;
-    };
-    photoUrls?: string[];
-};
-
 export type Destination = {
     city: string;
     state: string;
@@ -17,6 +7,10 @@ export type Destination = {
     count: number;
     photoUrl?: string;
     distanceKm: number | null;
+};
+
+export type DestinationSummary = Omit<Destination, "distanceKm"> & {
+    coordinates: Coordinates;
 };
 
 export const destinationSearchHref = (
@@ -36,54 +30,28 @@ const distanceKm = (a: Coordinates, b: Coordinates) => {
     return 6371 * 2 * Math.atan2(Math.sqrt(scale), Math.sqrt(1 - scale));
 };
 
-export const rankDestinations = (
-    listings: DestinationListing[],
+export const rankDestinationSummaries = (
+    summaries: DestinationSummary[],
     currentLocation: Coordinates | null,
     limit = 4
 ): Destination[] => {
-    const grouped = new Map<string, Destination>();
-    for (const listing of listings) {
-        const { city, state, country, coordinates } = listing.location;
-        if (!city?.trim()) continue;
-        const key = [city, state, country]
-            .map((value) => value?.trim().toLowerCase())
-            .join("|");
-        const existing = grouped.get(key);
-        if (existing) {
-            existing.count += 1;
-            if (!existing.photoUrl && listing.photoUrls?.[0])
-                existing.photoUrl = listing.photoUrls[0];
-        } else {
-            grouped.set(key, {
-                city: city.trim(),
-                state: state?.trim() ?? "",
-                country: country?.trim() ?? "",
-                count: 1,
-                photoUrl: listing.photoUrls?.[0],
-                distanceKm:
-                    currentLocation &&
-                    Number.isFinite(coordinates?.latitude) &&
-                    Number.isFinite(coordinates?.longitude)
-                        ? distanceKm(currentLocation, coordinates)
-                        : null,
-            });
-        }
-    }
-    const destinations = [...grouped.values()];
+    const destinations = summaries.map(({ coordinates, ...summary }) => ({
+        ...summary,
+        distanceKm:
+            currentLocation &&
+            Number.isFinite(coordinates?.latitude) &&
+            Number.isFinite(coordinates?.longitude)
+                ? distanceKm(currentLocation, coordinates)
+                : null,
+    }));
     destinations.sort((a, b) => {
         if (currentLocation) {
             const aNearby = (a.distanceKm ?? Infinity) <= 250;
             const bNearby = (b.distanceKm ?? Infinity) <= 250;
             if (aNearby !== bNearby) return aNearby ? -1 : 1;
             if (aNearby)
-                return (
-                    b.count - a.count ||
-                    (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity)
-                );
-            return (
-                (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity) ||
-                b.count - a.count
-            );
+                return b.count - a.count || (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity);
+            return (a.distanceKm ?? Infinity) - (b.distanceKm ?? Infinity) || b.count - a.count;
         }
         return b.count - a.count || a.city.localeCompare(b.city);
     });
